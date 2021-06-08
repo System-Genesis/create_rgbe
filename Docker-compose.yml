@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  rabbit:
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  buildentity:
+    image: bentity
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - rabbit
+
+  send-to-rabit:
+    image: sendr
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - rabbit
+    ports:
+      - 7707:7707
