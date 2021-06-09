@@ -20,10 +20,13 @@ export const create = {
 };
 
 export const connect = {
-  og: async (role: string, og: string) => {
+  ogToRole: async (role: string, og: string) => {
     return (await axios.post(`${config.krtflApi}/og`, { og, role })).data;
   },
-  di: async (role: string, di: string) => {
+  diToRole: async (role: string, di: string) => {
     return (await axios.post(`${config.krtflApi}/di`, { di, role })).data;
+  },
+  diToEntity: async (entityId: string, di: string) => {
+    return (await axios.post(`${config.krtflApi}/di`, { di, entityId })).data;
   },
 };

@@ -1,4 +1,4 @@
-import { createEntity, getEntity, updateEntity } from '../../axios/entity';
+import { createEntity, getEntity, updateEntity } from '../../api/entity';
 import { logInfo } from '../../logger/logger';
 import { entity } from '../../types/entityType';
 import { diff } from '../../util/utils';

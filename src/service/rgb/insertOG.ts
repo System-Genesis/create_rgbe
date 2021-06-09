@@ -1,14 +1,21 @@
-import { get, create, update } from '../../axios/rgb';
+import { get, create, update } from '../../api/rgb';
+import { logInfo } from '../../logger/logger';
 import { diff } from '../../util/utils';
 
 export const insertOG = async (og: { _id: string }) => {
-  const krtflOg = await get.og(og._id);
+  let krtflOg = await get.og(og._id);
 
   if (!krtflOg) {
-    return (await create.og(og))._id;
+    krtflOg = (await create.og(og))._id;
+
+    logInfo('OG created', krtflOg);
   } else {
     const ogDiff = diff(og, krtflOg);
 
-    return (await update.og(ogDiff))._id;
+    (await update.og(ogDiff))._id;
+
+    logInfo('OG was updated', krtflOg);
   }
+
+  return krtflOg._id;
 };

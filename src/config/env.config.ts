@@ -7,6 +7,7 @@ export default {
     uri: env.get('RABBIT_URI').required().asString(),
     logger: env.get('LOGGER').required().asString(),
     getEntity: env.get('GET_DATA').required().asString(),
+    connectRToE: env.get('CONNECT_R_E').required().asString(),
     getRGB: env.get('GET_RGB').required().asString(),
     retryOptions: {
       minTimeout: env.get('RABBIT_RETRY_MIN_TIMEOUT').default(1000).asIntPositive(),

@@ -1,34 +1,37 @@
-import { create, get, update, connect } from '../../axios/rgb';
+import { create, get, update, connect } from '../../api/rgb';
+import { logInfo } from '../../logger/logger';
 import { diff } from '../../util/utils';
 
 export const insertRole = async (role: { _id: string }, ogId: string, diId: string) => {
   let targetGroup: string | undefined;
   let di: string | undefined;
 
-  const krtflRole = await get.role(role._id);
+  let krtflRole = await get.role(role._id);
 
   if (!krtflRole) {
     role['targetGroup'] = ogId;
     role['di'] = diId;
 
-    create.og(role);
+    krtflRole = await create.og(role);
+    logInfo('Role created', krtflRole);
   } else {
     const diffROle = diff(role, krtflRole);
 
     if (diffROle.targetGroup) {
       targetGroup = diffROle.targetGroup;
+      if (targetGroup !== ogId) connect.ogToRole(krtflRole._id, ogId);
       delete diffROle.targetGroup;
     }
 
     if (diffROle.di) {
       di = diffROle.di;
+      if (di !== diId) connect.diToRole(krtflRole._id, diId);
       delete diffROle.di;
     }
 
-    const updatedRole = await update.og(role);
-
-    if (di && di !== diId) connect.di(updatedRole._id, diId);
-    if (targetGroup && targetGroup !== ogId) connect.og(updatedRole._id, ogId);
+    await update.og(role);
+    logInfo('Role was updated', krtflRole);
   }
-  return role;
+
+  return krtflRole;
 };
