@@ -1,4 +1,4 @@
-import { roleApi, diApi, ogApi } from '../../api/rgb';
+import { roleApi } from '../../api/rgb';
 import { logInfo } from '../../logger/logger';
 import { diff } from '../../util/utils';
 
@@ -19,13 +19,13 @@ export const insertRole = async (role: { _id: string }, ogId: string, diId: stri
 
     if (diffROle.targetGroup) {
       targetGroup = diffROle.targetGroup;
-      if (targetGroup !== ogId) ogApi.connectToRole(krtflRole._id, ogId);
+      if (targetGroup !== ogId) roleApi.connectToOG(krtflRole._id, ogId);
       delete diffROle.targetGroup;
     }
 
     if (diffROle.di) {
       di = diffROle.di;
-      if (di !== diId) diApi.connectToRole(krtflRole._id, diId);
+      if (di !== diId) roleApi.connectToDI(krtflRole._id, diId);
       delete diffROle.di;
     }
 

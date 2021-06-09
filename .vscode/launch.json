@@ -3,19 +3,20 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
+    "configurations": [     
         {
-            "type": "pwa-node",
+            "type": "node",
             "request": "launch",
             "name": "Launch Program",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\src\\config\\entity.config.ts",
-            "preLaunchTask": "tsc: build - tsconfig.json",
+            "program": "${workspaceFolder}/src/index.ts",
+            "preLaunchTask": "npm: build",
             "outFiles": [
-                "${workspaceFolder}/dist/**/*.js"
-            ]
+                "${workspaceFolder}/*/.js"
+            ],
+            "console": "integratedTerminal"
         }
     ]
 }
