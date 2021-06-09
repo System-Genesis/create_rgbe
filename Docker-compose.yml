@@ -8,8 +8,8 @@ services:
       - 5672:5672
       - 15672:15672
 
-  buildentity:
-    image: bentity
+  rgbe:
+    image: rgbe
     restart: unless-stopped
     env_file: .env
     depends_on:

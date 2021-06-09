@@ -3,14 +3,17 @@ import { entity } from '../types/entityType';
 import config from '../config/env.config';
 
 export const createEntity = async (entity: entity) => {
-  await axios.post(`${config.krtflApi}/create`, entity);
+  return (await axios.post(`${config.krtflApi}/entities`, entity)).data;
 };
 
-export const updateEntity = async (entity: entity) => {
-  await axios.patch(`${config.krtflApi}/update`, entity);
+export const updateEntity = async (id: string, entity: entity) => {
+  return (await axios.patch(`${config.krtflApi}/entities/${id}`, entity)).data;
+};
+
+export const deleteEntity = async (id: string) => {
+  return (await axios.delete(`${config.krtflApi}/entities/${id}`)).data;
 };
 
 export const getEntity = async (id: string): Promise<entity> => {
-  const res = await axios.get(`${config.krtflApi}/id/${id}`);
-  return res.data as entity;
+  return (await axios.get(`${config.krtflApi}/entities/${id}`)).data;
 };
