@@ -1,4 +1,4 @@
-import { di as diApi } from '../../api/rgb';
+import { diApi } from '../../api/rgb';
 import { logInfo } from '../../logger/logger';
 import { diff } from '../../util/utils';
 

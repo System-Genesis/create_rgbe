@@ -1,7 +1,7 @@
 import menash, { ConsumerMessage } from 'menashmq';
 import config from '../config/env.config';
 import { logInfo, logError } from '../logger/logger';
-import { insertEntity } from '../service/entity/insertEntity';
+import { insertEntity } from '../service/entity/saveEntity';
 import { createRgb } from '../service/rgb/rgbHandler';
 import { entity } from '../types/entityType';
 import { rgb } from '../types/rgbType';

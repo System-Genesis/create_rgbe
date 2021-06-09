@@ -1,6 +1,6 @@
-import { insertOG } from './insertOG';
-import { insertRole } from './insertRole';
-import { insertDI } from './insertDI';
+import { insertOG } from './saveOG';
+import { insertRole } from './saveRole';
+import { insertDI } from './saveDI';
 import { rgb } from '../../types/rgbType';
 
 export const createRgb = async (obj: rgb) => {

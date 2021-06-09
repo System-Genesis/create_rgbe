@@ -1,4 +1,4 @@
-import { og as ogApi } from '../../api/rgb';
+import { ogApi } from '../../api/rgb';
 import { logInfo } from '../../logger/logger';
 import { diff } from '../../util/utils';
 
