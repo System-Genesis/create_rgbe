@@ -1,15 +1,9 @@
 import menash, { ConsumerMessage } from 'menashmq';
 import config from '../config/env.config';
 import { logInfo, logError } from '../logger/logger';
-import { insertEntity } from '../service/insertEntity';
-import { createRgb } from '../service/rgbHandler';
-import { entity } from '../types/entityType';
-
-type rgb = {
-  og: object;
-  di: object;
-  role: object;
-};
+import { insertEntity } from '../service/entity/insertEntity';
+import { createRgb } from '../service/rgb/rgbHandler';
+import { entity, rgb } from '../types/entityType';
 
 export const connectRabbit = async () => {
   await menash.connect(config.rabbit.uri, config.rabbit.retryOptions);

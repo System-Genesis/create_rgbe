@@ -41,8 +41,7 @@ export const logInfo = (msg: string, any: any = '') => {
   // });
   // if (any) logger.info(`${msg} ${JSON.stringify(any)}`);
   // else logger.info(msg);
-  console.log(msg);
-  console.log(any);
+  console.log(`${msg}. ${any ? JSON.stringify(any) : ''}`);
 };
 
 export const logError = (msg: string, any: any = '') => {

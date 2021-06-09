@@ -10,7 +10,7 @@ export const updateEntity = async (entity: entity) => {
   await axios.patch(`${config.krtflApi}/update`, entity);
 };
 
-export const getEntity = async (id: string) => {
+export const getEntity = async (id: string): Promise<entity> => {
   const res = await axios.get(`${config.krtflApi}/id/${id}`);
-  return res.data;
+  return res.data as entity;
 };
