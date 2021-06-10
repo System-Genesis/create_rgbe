@@ -1,4 +1,4 @@
-import { createEntity, deleteEntity, getEntity, updateEntity } from '../../api/entity';
+import { entityApi } from '../../api/entity';
 import { logInfo } from '../../logger/logger';
 import { entity } from '../../types/entityType';
 import { diff } from '../../util/utils';
@@ -8,21 +8,21 @@ export const insertEntity = async (entity: entity) => {
   let krtflEntityIC: any | undefined;
   let krtflEntity: any | undefined;
 
-  if (entity.personalNumber) krtflEntityPN = await getEntity(entity.personalNumber);
-  if (entity.identityCard) krtflEntityIC = await getEntity(entity.identityCard);
-  if (entity['goalUserId']) krtflEntity = await getEntity(entity['goalUserId']);
+  if (entity.personalNumber) krtflEntityPN = await entityApi.getEntity(entity.personalNumber);
+  if (entity.identityCard) krtflEntityIC = await entityApi.getEntity(entity.identityCard);
+  if (entity['goalUserId']) krtflEntity = await entityApi.getEntity(entity['goalUserId']);
 
   if (!krtflEntity && !krtflEntityPN && !krtflEntityIC) {
-    await createEntity(entity);
+    await entityApi.createEntity(entity);
   } else {
     if (krtflEntityPN && krtflEntityIC) {
-      await deleteEntity(krtflEntityPN._id);
+      await entityApi.deleteEntity(krtflEntityPN._id);
     }
 
     krtflEntity = krtflEntity || krtflEntityIC || krtflEntityPN;
 
     const diffEntity = diff(entity, krtflEntity);
-    await updateEntity(krtflEntity['_id'], diffEntity);
+    await entityApi.updateEntity(krtflEntity['_id'], diffEntity);
   }
 
   logInfo('Inserted entity successfully');
