@@ -1,5 +1,9 @@
+export type og = { id: string; hierarchy: string };
+export type di = { uniqueId: string; entityId?: string };
+export type role = { roleId: string };
+
 export type rgb = {
-  og: { _id: string };
-  di: { _id: string };
-  role: { _id: string };
+  og: og;
+  di: di;
+  role: role;
 };

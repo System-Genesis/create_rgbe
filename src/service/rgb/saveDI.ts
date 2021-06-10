@@ -1,22 +1,35 @@
 import { diApi } from '../../api/rgb';
 import { logInfo } from '../../logger/logger';
+import { di } from '../../types/rgbType';
 import { diff } from '../../util/utils';
 
-export const insertDI = async (di: { _id: string }) => {
-  let krtflDI = await diApi.get(di._id);
+export const insertDI = async (di: di) => {
+  const entityId = di.entityId!;
+  let krtflDI: di = await diApi.get(di.uniqueId);
 
   if (!krtflDI) {
-    krtflDI = (await diApi.create(di))._id;
-    logInfo('DI created', krtflDI);
+    delete di.entityId;
+    krtflDI = await diApi.create(di);
+    logInfo('DI created', krtflDI.uniqueId);
   } else {
     const diDiff = diff(di, krtflDI);
 
-    (await diApi.update(di._id, diDiff))._id;
-    logInfo('DI was updated', krtflDI);
+    if (Object.keys(krtflDI).length === 0) {
+      krtflDI = await diApi.update(krtflDI.uniqueId, diDiff);
+
+      logInfo('DI was updated', krtflDI);
+    } else {
+      logInfo('Nothing to update', krtflDI);
+    }
   }
 
-  logInfo(`Send to connectQueue: DI => ${krtflDI._id} to Entity ${krtflDI['entityId']}`);
-  await diApi.connectToEntity(krtflDI._id, krtflDI['entityId']);
+  if (entityId) {
+    logInfo(`Send to connectQueue: DI => ${krtflDI.uniqueId} to Entity ${entityId}`);
 
-  return krtflDI;
+    await diApi.connectToEntity(krtflDI.uniqueId, entityId);
+  } else {
+    logInfo(`No entity to connect, DI => ${krtflDI.uniqueId}`);
+  }
+
+  return krtflDI.uniqueId;
 };

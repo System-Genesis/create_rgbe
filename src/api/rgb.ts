@@ -4,13 +4,15 @@ import config from '../config/env.config';
 const api = config.krtflApi;
 
 export const getResponseData = (res: AxiosResponse<any>) => {
-  return res.status >= 200 && res.status < 400 ? null : res.data;
+  return res.status >= 200 && res.status < 400 ? res.data : null;
 };
 
 export const ogApi = {
-  get: async (og: string) => getResponseData(await axios.get(`${api}/og/${og}`)),
-  create: async (og: object) => getResponseData(await axios.post(`${api}/og`, og)),
-  update: async (id: string, og: object) => getResponseData(await axios.patch(`${api}/${id}`, og)),
+  get: async (hierarchy: string) =>
+    getResponseData(await axios.get(encodeURI(`${api}/groups/${hierarchy}`))),
+  create: async (og: object) => getResponseData(await axios.post(`${api}/groups`, og)),
+  update: async (id: string, og: object) =>
+    getResponseData(await axios.patch(`${api}/groups/${id}`, og)),
 };
 
 export const diApi = {
@@ -20,7 +22,11 @@ export const diApi = {
     return getResponseData(await axios.patch(`${api}/digitalIdentities/${id}`, di));
   },
   connectToEntity: async (entityId: string, di: string) => {
-    return getResponseData(await axios.post(`${api}/di`, { di, entityId }));
+    return getResponseData(
+      await axios.patch(`${api}/entities/${entityId}/connectDigitalIdentity`, {
+        digitalIdentityUniqueId: di,
+      })
+    );
   },
 };
 
@@ -29,6 +35,7 @@ export const roleApi = {
   create: async (role: object) => getResponseData(await axios.post(`${api}/roles`, role)),
   update: async (id: string, role: object) =>
     getResponseData(await axios.patch(`${api}/roles/${id}`, role)),
+
   connectToDI: async (id: string, digitalIdentityUniqueId: string) => {
     return getResponseData(
       await axios.post(`${api}/roles/${id}/roles/{roleId}/connectDigitalIdentity`, {
@@ -36,6 +43,7 @@ export const roleApi = {
       })
     );
   },
+
   connectToOG: async (id: string, groupId: string) => {
     return getResponseData(await axios.post(`${api}/roles/${id}/moveToGroup`, { groupId }));
   },

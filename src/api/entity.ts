@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { entity } from '../types/entityType';
+import { krtflEntity, entity } from '../types/entityType';
 import config from '../config/env.config';
 import { getResponseData } from './rgb';
 
@@ -13,7 +13,7 @@ export const entityApi = {
   deleteEntity: async (id: string) => {
     return getResponseData(await axios.delete(`${config.krtflApi}/entities/${id}`));
   },
-  getEntity: async (id: string): Promise<entity> => {
+  getEntity: async (id: string): Promise<krtflEntity> => {
     return getResponseData(await axios.get(`${config.krtflApi}/entities/${id}`));
   },
 };

@@ -1,12 +1,13 @@
 import { roleApi } from '../../api/rgb';
 import { logInfo } from '../../logger/logger';
+import { role } from '../../types/rgbType';
 import { diff } from '../../util/utils';
 
-export const insertRole = async (role: { _id: string }, ogId: string, diId: string) => {
+export const insertRole = async (role: role, ogId: string, diId: string) => {
   let targetGroup: string | undefined;
   let di: string | undefined;
 
-  let krtflRole = await roleApi.get(role._id);
+  let krtflRole = await roleApi.get(role.roleId);
 
   if (!krtflRole) {
     role['targetGroup'] = ogId;
@@ -29,8 +30,12 @@ export const insertRole = async (role: { _id: string }, ogId: string, diId: stri
       delete diffROle.di;
     }
 
-    await roleApi.update(krtflRole._id, role);
-    logInfo('Role was updated', krtflRole);
+    if (Object.keys(krtflRole).length === 0) {
+      await roleApi.update(krtflRole._id, role);
+      logInfo('Role was updated', krtflRole);
+    } else {
+      logInfo('Nothing to update', krtflRole);
+    }
   }
 
   return krtflRole;
