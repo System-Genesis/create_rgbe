@@ -1,27 +1,30 @@
 import { ogApi } from '../../api/rgb';
 import { logInfo } from '../../logger/logger';
 import { og } from '../../types/rgbType';
-import { diff } from '../../util/utils';
 
 export const insertOG = async (og: og) => {
-  // how send hierarchy with /
-  let krtflOg = await ogApi.get(og.hierarchy);
+  let krtflOg: og = await ogApi.get(og.hierarchy);
 
   if (!krtflOg) {
-    krtflOg = (await ogApi.create(og)).id;
+    krtflOg = await ogApi.create(og);
 
-    logInfo('OG created', krtflOg);
-  } else {
-    const ogDiff = diff(og, krtflOg);
-
-    if (Object.keys(krtflOg).length === 0) {
-      (await ogApi.update(krtflOg, ogDiff)).id;
-      logInfo('OG was updated', krtflOg);
-    } else {
-      logInfo('Nothing to update', krtflOg);
-    }
+    logInfo('OG created', krtflOg.id);
   }
 
-  console.log(krtflOg);
-  return krtflOg;
+  return krtflOg.id;
 };
+
+// if need to update to OG
+//
+// import { diff } from '../../util/utils';
+//
+//  else {
+//   const ogDiff = diff(og, krtflOg);
+
+//   if (Object.keys(krtflOg).length === 0) {
+//     await ogApi.update(krtflOg.id, ogDiff);
+//     logInfo('OG was updated', krtflOg.id);
+//   } else {
+//     logInfo('Nothing to update', krtflOg.id);
+//   }
+// }

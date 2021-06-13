@@ -11,7 +11,7 @@ export const connectRabbit = async () => {
 
   await menash.declareQueue(config.rabbit.getEntity);
   await menash.declareQueue(config.rabbit.getRGB);
-  await menash.declareQueue(config.rabbit.connectRToE);
+  await menash.declareQueue(config.rabbit.connectDiToEntity);
   await menash.declareQueue(config.rabbit.logger);
 
   logInfo('Rabbit connected');
