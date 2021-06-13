@@ -18,11 +18,11 @@ export const insertDI = async (di: di) => {
   } else {
     const diDiff = diff(di, krtflDI);
 
-    if (Object.keys(krtflDI).length > 0) {
+    if (Object.keys(diDiff).length > 0) {
       await diApi.update(krtflDI.uniqueId, diDiff);
-      logInfo('DI was updated', krtflDI);
+      logInfo('DI was updated', krtflDI.uniqueId);
     } else {
-      logInfo('Nothing to update', krtflDI);
+      logInfo('Nothing to update', krtflDI.uniqueId);
     }
   }
 
