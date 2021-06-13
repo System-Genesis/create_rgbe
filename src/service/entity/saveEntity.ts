@@ -5,7 +5,7 @@ import { diff } from '../../util/utils';
 
 export const insertEntity = async (entity: entity) => {
   let krtflEntity: krtflEntity | undefined;
-  const entityId = entity.goalUserId || entity.identityCard || entity.personalNumber;
+  const entityId = entity.identityCard || entity.personalNumber || entity.goalUserId;
 
   krtflEntity = await entityApi.get(entityId!);
 
@@ -14,7 +14,7 @@ export const insertEntity = async (entity: entity) => {
   } else {
     const diffEntity = diff(entity, krtflEntity);
 
-    if (Object.keys(krtflEntity).length > 0) {
+    if (Object.keys(diffEntity).length > 0) {
       await entityApi.update(krtflEntity.id, diffEntity);
     } else {
       logInfo('Nothing to update', krtflEntity.id);
