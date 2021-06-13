@@ -9,7 +9,7 @@ export const getResponseData = (res: AxiosResponse<any>) => {
 
 export const ogApi = {
   get: async (hierarchy: string) =>
-    getResponseData(await axios.get(encodeURI(`${api}/groups/${hierarchy}`))),
+    getResponseData(await axios.get(encodeURI(`${api}/groups/${encodeURIComponent(hierarchy)}`))),
   create: async (og: object) => getResponseData(await axios.post(`${api}/groups`, og)),
   update: async (id: string, og: object) =>
     getResponseData(await axios.patch(`${api}/groups/${id}`, og)),

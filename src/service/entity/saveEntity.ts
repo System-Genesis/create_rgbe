@@ -15,12 +15,12 @@ export const insertEntity = async (entity: entity) => {
   if (!(krtflEntity && krtflEntityPN && krtflEntityIC)) {
     await entityApi.createEntity(entity);
   } else {
-    if (krtflEntityPN && krtflEntityIC) {
-      // handle DI
-      // disconnect
-      // connect IC
-      await entityApi.deleteEntity(krtflEntityPN.personalNumber as string);
-    }
+    // if (krtflEntityPN && krtflEntityIC) {
+    //   // handle DI
+    //   // disconnect
+    //   // connect IC
+    //   await entityApi.deleteEntity(krtflEntityPN.personalNumber as string);
+    // }
 
     krtflEntity = krtflEntity || krtflEntityIC || krtflEntityPN;
 
