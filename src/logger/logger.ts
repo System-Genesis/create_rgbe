@@ -1,8 +1,8 @@
-// import { menash } from 'menashmq';
+import { menash } from 'menashmq';
 import path from 'path';
 // import os from 'os';
 import winston, { config, format } from 'winston';
-// import configEnv from '../config/env.config';
+import configEnv from '../config/env.config';
 
 const date = () => new Date(Date.now()).toLocaleDateString();
 
@@ -11,16 +11,11 @@ export const logger = winston.createLogger({
 
   format: format.combine(
     format.colorize(),
-    // format.timestamp({
-    //   format: 'YYYY-MM-DD HH:mm:ss',
-    // }),
+    format.timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss',
+    }),
     format.splat(),
     format.simple(),
-    // format((info) => {
-    //   info.service = 'build entity';
-    //   info.hostname = os.hostname();
-    //   return info;
-    // })(),
     format.json()
   ),
   transports: [
@@ -33,24 +28,25 @@ export const logger = winston.createLogger({
 });
 
 export const logInfo = (msg: string, any: any = '') => {
-  // menash.send(configEnv.rabbit.logger, {
-  //   level: 'info',
-  //   message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
-  //   system: 'traking',
-  //   service: 'build entity',
-  // });
-  // if (any) logger.info(`${msg} ${JSON.stringify(any)}`);
-  // else logger.info(msg);
-  console.log(`${msg}. ${any ? JSON.stringify(any) : ''}`);
+  menash.send(configEnv.rabbit.logger, {
+    level: 'info',
+    message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
+    system: 'traking',
+    service: 'createRGBE',
+  });
+
+  if (any) logger.info(`${msg} ${JSON.stringify(any)}`);
+  else logger.info(msg);
 };
 
 export const logError = (msg: string, any: any = '') => {
-  // menash.send(configEnv.rabbit.logger, {
-  //   level: 'error',
-  //   message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
-  //   system: 'traking',
-  //   service: 'build entity',
-  // });
-  // logger.error(`${msg} ${!any ? '' : JSON.stringify(any)}`);
+  menash.send(configEnv.rabbit.logger, {
+    level: 'error',
+    message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
+    system: 'traking',
+    service: 'build entity',
+  });
+
+  logger.error(`${msg} ${!any ? '' : JSON.stringify(any)}`);
   logInfo(msg, any);
 };
