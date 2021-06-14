@@ -1,6 +1,5 @@
 import { menash } from 'menashmq';
 import path from 'path';
-// import os from 'os';
 import winston, { config, format } from 'winston';
 import configEnv from '../config/env.config';
 
@@ -19,7 +18,6 @@ export const logger = winston.createLogger({
     format.json()
   ),
   transports: [
-    new winston.transports.Console(),
     new winston.transports.File({
       filename: path.join(__dirname, `../../log/${date()}-logger.log`),
       maxsize: 50000,
@@ -40,6 +38,8 @@ export const logInfo = (msg: string, any: any = '') => {
     service: 'createRGBE',
   });
 
+  console.log(`${msg} ${JSON.stringify(any)}`);
+
   if (any) logger.info(`${msg} ${JSON.stringify(any)}`);
   else logger.info(msg);
 };
@@ -56,6 +56,8 @@ export const logError = (msg: string, any: any = '') => {
     system: 'traking',
     service: 'build entity',
   });
+
+  console.log(`${msg} ${JSON.stringify(any)}`);
 
   logger.error(`${msg} ${!any ? '' : JSON.stringify(any)}`);
   logInfo(msg, any);

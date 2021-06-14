@@ -23,16 +23,19 @@ export const diApi = {
   update: async (id: string, di: object) => {
     return getResData(await axios.patch(`${api}/digitalIdentities/${id}`, di));
   },
-  connectToEntity: async (entityId: string, di: string) => {
+  connectToEntity: async (entityId: string, diId: string) => {
     // send to queue
-    logInfo(`Send to connectDiToEntity queue entity: ${entityId}, di: ${di}`);
-    await menash.send(envConfig.rabbit.connectDiToEntity, { entityId, di });
-    // return getResData(
-    //   await axios.patch(`${api}/entities/${entityId}/connectDigitalIdentity`, {
-    //     digitalIdentityUniqueId: di,
-    //   })
-    // );
+    logInfo(`Send to connectDiToEntity queue entity: ${entityId}, diId: ${diId}`);
+    await menash.send(envConfig.rabbit.connectDiToEntity, { entityId, di: diId });
   },
+};
+
+export const connectDiToEntityApi = async (entityId: string, diId: string) => {
+  return getResData(
+    await axios.patch(`${api}/entities/${entityId}/connectDigitalIdentity`, {
+      digitalIdentityUniqueId: diId,
+    })
+  );
 };
 
 export const roleApi = {
