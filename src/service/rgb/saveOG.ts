@@ -2,6 +2,11 @@ import { ogApi } from '../../api/rgb';
 import { logInfo } from '../../logger/logger';
 import { og } from '../../types/rgbType';
 
+/**
+ * Create kartoffel og from given og
+ * @param og the got from rgb object
+ * @returns object id from kartoffel
+ */
 export const insertOG = async (og: og) => {
   let krtflOg: og = await ogApi.get(og.hierarchy);
 

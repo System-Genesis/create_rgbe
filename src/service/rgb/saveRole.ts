@@ -2,7 +2,13 @@ import { roleApi } from '../../api/rgb';
 import { role } from '../../types/rgbType';
 import { diff } from '../../util/utils';
 import { logError, logInfo } from './../../logger/logger';
-
+/**
+ * Create/update(the fields with changes) from given role to kartoffel
+ * And connect to his di and og
+ * @param role the got from rgb object
+ * @param ogId to connect to role
+ * @param diId to connect to role
+ */
 export const insertRole = async (role: role, ogId: string, diId: string) => {
   let krtflRole = await roleApi.get(role.roleId);
 
@@ -29,10 +35,13 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
       logInfo('Nothing to update', krtflRole);
     }
   }
-
-  return krtflRole;
 };
 
+/**
+ * Connect role to OG
+ * @param ogId to send to kartoffel api
+ * @param krtflRole to send to kartoffel api
+ */
 async function connectRoleToOG(ogId: string, krtflRole: role) {
   if (ogId !== krtflRole.directGroup) {
     try {
@@ -44,6 +53,11 @@ async function connectRoleToOG(ogId: string, krtflRole: role) {
   }
 }
 
+/**
+ * Connect role to di
+ * @param diId to send to kartoffel api
+ * @param krtflRole to send to kartoffel api
+ */
 async function connectRoleToDI(diId: string, krtflRole: role) {
   if (diId !== krtflRole.digitalIdentityUniqueId) {
     try {

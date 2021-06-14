@@ -3,6 +3,10 @@ import { logInfo } from '../../logger/logger';
 import { krtflEntity, entity } from '../../types/entityType';
 import { diff } from '../../util/utils';
 
+/**
+ * Create/update (only fields that change) entity from buildEntity queue to kartoffel
+ * @param entity - from buildEntity queue
+ */
 export const insertEntity = async (entity: entity) => {
   let krtflEntity: krtflEntity | undefined;
   const entityId = entity.identityCard || entity.personalNumber || entity.goalUserId;

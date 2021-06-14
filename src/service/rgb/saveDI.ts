@@ -4,6 +4,12 @@ import { di } from '../../types/rgbType';
 import { diff } from '../../util/utils';
 import { entityApi } from './../../api/entity';
 
+/**
+ * Create/update(the fields with changes) from given di to kartoffel
+ * And connect to his entity by id of di end entity
+ * @param di the got from rgb object
+ * @returns object id from kartoffel
+ */
 export const insertDI = async (di: di) => {
   const entityId = di.entityId;
 
@@ -35,6 +41,11 @@ export const insertDI = async (di: di) => {
   return krtflDI.uniqueId;
 };
 
+/**
+ * Connect di and entity (send to queue)
+ * @param krtflDI di id to connect to entity
+ * @param entityId entity id to connect to di
+ */
 async function connectDiToEntity(krtflDI: di, entityId: string) {
   if (!krtflDI.entityId || (await entityApi.get(krtflDI.entityId)).id !== krtflDI.entityId) {
     logInfo(`Send to connectQueue: DI => ${krtflDI.uniqueId} to Entity ${entityId}`);

@@ -3,10 +3,14 @@ import { insertRole } from './saveRole';
 import { insertDI } from './saveDI';
 import { rgb } from '../../types/rgbType';
 
-export const createRgb = async (obj: rgb) => {
-  const ogId = await insertOG(obj.og);
+/**
+ * Handler to creat/update roll-OG-DI by specific order to get the needed information between objects
+ * @param rgbObj {og:{...},role:{...},di:{...}} get from buildRGB queue
+ */
+export const createRgb = async (rgbObj: rgb) => {
+  const ogId = await insertOG(rgbObj.og);
 
-  const diId = await insertDI(obj.di);
+  const diId = await insertDI(rgbObj.di);
 
-  await insertRole(obj.role, ogId, diId);
+  await insertRole(rgbObj.role, ogId, diId);
 };

@@ -27,6 +27,11 @@ export const logger = winston.createLogger({
   ],
 });
 
+/**
+ * Send log in level INFO to logger queue and to local logger
+ * @param msg - explanation of logger
+ * @param any - objet to add to msg
+ */
 export const logInfo = (msg: string, any: any = '') => {
   menash.send(configEnv.rabbit.logger, {
     level: 'info',
@@ -39,6 +44,11 @@ export const logInfo = (msg: string, any: any = '') => {
   else logger.info(msg);
 };
 
+/**
+ * Send log in level ERROR to logger queue and to local logger
+ * @param msg - explanation of logger
+ * @param any - objet to add to msg
+ */
 export const logError = (msg: string, any: any = '') => {
   menash.send(configEnv.rabbit.logger, {
     level: 'error',
