@@ -17,44 +17,14 @@ export const connectRabbit = async () => {
 
   logInfo('Rabbit connected');
 
-  await menash.queue(config.rabbit.connectDiToEntity).activateConsumer(
-    async (msg: ConsumerMessage) => {
-      try {
-        const { entityId, diId } = msg.getContent() as { entityId: string; diId: string };
-        logInfo(`Try to connect entity: ${entityId} to di: ${diId}`, { entityId, diId });
-        await connectDiToEntity(entityId, diId);
+  await consumeDiToEntity();
 
-        logInfo(`Success to connect entity: ${entityId} to di: ${diId}`, { entityId, diId });
-        msg.ack();
-      } catch (error) {
-        logError(error);
+  await consumeGetEntity();
 
-        // handle error reject or else ...
-        msg.ack();
-      }
-    },
-    { noAck: false }
-  );
+  await consumeGetRGB();
+};
 
-  await menash.queue(config.rabbit.getEntity).activateConsumer(
-    async (msg: ConsumerMessage) => {
-      try {
-        const entity = msg.getContent() as entity;
-        logInfo(`Got from queue => `, entity);
-        await insertEntity(entity);
-
-        logInfo('Entity insertion is done');
-        msg.ack();
-      } catch (error) {
-        logError(error);
-
-        // handle error reject or else ...
-        msg.ack();
-      }
-    },
-    { noAck: false }
-  );
-
+async function consumeGetRGB() {
   await menash.queue(config.rabbit.getRGB).activateConsumer(
     async (msg: ConsumerMessage) => {
       try {
@@ -74,6 +44,50 @@ export const connectRabbit = async () => {
     },
     { noAck: false }
   );
-};
+}
+
+async function consumeGetEntity() {
+  await menash.queue(config.rabbit.getEntity).activateConsumer(
+    async (msg: ConsumerMessage) => {
+      try {
+        const entity = msg.getContent() as entity;
+        logInfo(`Got from queue => `, entity);
+        await insertEntity(entity);
+
+        logInfo('Entity insertion is done');
+        msg.ack();
+      } catch (error) {
+        logError(error);
+
+        // handle error reject or else ...
+        msg.ack();
+      }
+    },
+    { noAck: false }
+  );
+}
+
+async function consumeDiToEntity() {
+  await menash.queue(config.rabbit.connectDiToEntity).activateConsumer(
+    async (msg: ConsumerMessage) => {
+      const { entityId, diId } = msg.getContent() as { entityId: string; diId: string };
+      try {
+        logInfo(`Try to connect entity: ${entityId} to di: ${diId}`, { entityId, diId });
+        await connectDiToEntity(entityId, diId);
+
+        logInfo(`Success to connect entity: ${entityId} to di: ${diId}`, { entityId, diId });
+        msg.ack();
+      } catch (error) {
+        logError(error);
+        // send to end of the queue
+        menash.send(config.rabbit.connectDiToEntity, { entityId, diId });
+
+        // handle error reject or else ...
+        msg.ack();
+      }
+    },
+    { noAck: false }
+  );
+}
 
 export default { connectRabbit };

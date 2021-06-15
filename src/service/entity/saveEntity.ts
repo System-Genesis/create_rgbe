@@ -14,7 +14,7 @@ export const insertEntity = async (entity: entity) => {
   krtflEntity = await entityApi.get(entityId!);
 
   if (!krtflEntity) {
-    await entityApi.create(entity);
+    krtflEntity = await entityApi.create(entity);
   } else {
     const diffEntity = diff(entity, krtflEntity);
 
@@ -25,7 +25,7 @@ export const insertEntity = async (entity: entity) => {
     }
   }
 
-  logInfo('Inserted entity successfully', krtflEntity.id);
+  logInfo('Inserted entity successfully', krtflEntity?.id);
 };
 
 // export const insertEntity = async (entity: entity) => {

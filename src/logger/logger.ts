@@ -38,7 +38,7 @@ export const logInfo = (msg: string, any: any = '') => {
     service: 'createRGBE',
   });
 
-  console.log(`${msg} ${JSON.stringify(any)}`);
+  console.log(`${msg} ${!any ? '' : JSON.stringify(any)}`);
 
   if (any) logger.info(`${msg} ${JSON.stringify(any)}`);
   else logger.info(msg);
@@ -57,8 +57,7 @@ export const logError = (msg: string, any: any = '') => {
     service: 'build entity',
   });
 
-  console.log(`${msg} ${JSON.stringify(any)}`);
+  console.log(`Error ${msg} ${!any ? '' : JSON.stringify(any)}`);
 
   logger.error(`${msg} ${!any ? '' : JSON.stringify(any)}`);
-  logInfo(msg, any);
 };

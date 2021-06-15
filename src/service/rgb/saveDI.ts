@@ -11,7 +11,7 @@ import { entityApi } from './../../api/entity';
  * @returns object id from kartoffel
  */
 export const insertDI = async (di: di) => {
-  const entityId = di.entityId;
+  const entityIdentifier = di.entityId;
 
   let krtflDI: di = await diApi.get(di.uniqueId);
 
@@ -32,8 +32,8 @@ export const insertDI = async (di: di) => {
     }
   }
 
-  if (entityId) {
-    await connectDiToEntity(krtflDI, entityId);
+  if (entityIdentifier) {
+    await connectDiToEntity(krtflDI, entityIdentifier);
   } else {
     logInfo(`No entity to connect, DI => ${krtflDI.uniqueId}`);
   }
@@ -43,14 +43,22 @@ export const insertDI = async (di: di) => {
 
 /**
  * Connect di and entity (send to queue)
- * @param krtflDI di id to connect to entity
- * @param entityId entity id to connect to di
+ * @param krtflDI di to connect to
+ * @param entityIdentifier entity to connect
  */
-async function connectDiToEntity(krtflDI: di, entityId: string) {
-  if (!krtflDI.entityId || (await entityApi.get(krtflDI.entityId)).id !== krtflDI.entityId) {
-    logInfo(`Send to connectQueue: DI => ${krtflDI.uniqueId} to Entity ${entityId}`);
-    await diApi.connectToEntity(krtflDI.uniqueId, entityId);
-  } else {
-    logInfo(`DI already connected ${krtflDI.uniqueId} => ${entityId}`);
+async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
+  let needConnection = true;
+
+  if (krtflDI.entityId) {
+    const connectedEntityId = (await entityApi.get(entityIdentifier)).id;
+
+    if (connectedEntityId === krtflDI.entityId) {
+      needConnection = false;
+      logInfo(`DI already connected di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`);
+    }
+  }
+
+  if (needConnection) {
+    await diApi.connectToEntity(krtflDI.uniqueId, entityIdentifier);
   }
 }
