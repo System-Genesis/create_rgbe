@@ -58,7 +58,7 @@ async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
     }
   }
 
-  if (needConnection) {
-    await diApi.connectToEntity(krtflDI.uniqueId, entityIdentifier);
+  if (needConnection) {    
+    await diApi.connectToEntity(entityIdentifier, krtflDI.uniqueId);
   }
 }
