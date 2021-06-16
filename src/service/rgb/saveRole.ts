@@ -26,7 +26,7 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
 
     if (Object.keys(diffRole).length > 0) {
       try {
-        await roleApi.update(krtflRole._id, role);
+        await roleApi.update(krtflRole.roleId, role);
         logInfo('Role was updated', krtflRole);
       } catch (error) {
         logInfo('Role was not updated', krtflRole);

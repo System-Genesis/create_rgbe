@@ -15,10 +15,10 @@ export const insertDI = async (di: di) => {
 
   let krtflDI: di = await diApi.get(di.uniqueId);
 
-  if (!krtflDI) {
-    // create DI without entity connected (connect later)
-    delete di.entityId;
+  // create/update DI without entity connected (connect later)
+  delete di.entityId;
 
+  if (!krtflDI) {
     krtflDI = await diApi.create(di);
     logInfo('DI created', krtflDI.uniqueId);
   } else {
@@ -58,7 +58,7 @@ async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
     }
   }
 
-  if (needConnection) {    
+  if (needConnection) {
     await diApi.connectToEntity(entityIdentifier, krtflDI.uniqueId);
   }
 }
