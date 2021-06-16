@@ -1,5 +1,4 @@
 /**
-import { diff } from './utils';
  * Check the which fields has change
  * @param newObj obj to compare from
  * @param krtObj obj to compare to

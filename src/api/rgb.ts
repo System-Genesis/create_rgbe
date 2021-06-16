@@ -46,13 +46,13 @@ export const roleApi = {
 
   connectToDI: async (roleId: string, digitalIdentityUniqueId: string) => {
     return await getResData(
-      axios.post(`${api}/roles/${roleId}/connectDigitalIdentity`, {
+      axios.patch(`${api}/roles/${roleId}/connectDigitalIdentity`, {
         digitalIdentityUniqueId,
       })
     );
   },
 
   connectToOG: async (id: string, groupId: string) => {
-    return await getResData(axios.post(`${api}/roles/${id}/moveToGroup`, { groupId }));
+    return await getResData(axios.patch(`${api}/roles/${id}/moveToGroup`, { groupId }));
   },
 };
