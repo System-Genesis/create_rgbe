@@ -6,5 +6,6 @@ export interface entity {
 export interface krtflEntity {
   id: string;
   identityCard?: string;
+  goalUserId?: string;
   personalNumber?: string;
 }
