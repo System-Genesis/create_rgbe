@@ -11,6 +11,13 @@ export const insertOG = async (og: og) => {
   let krtflOg: og = await ogApi.get(og.hierarchy);
 
   if (!krtflOg) {
+    // add hierarchyIds
+    if (hasFatherGroup(og)) {
+      const fatherOg = createFatherGroup(og);
+      await insertOG(fatherOg);
+    }
+
+    console.log('OG created', og.hierarchy);
     krtflOg = await ogApi.create(og);
 
     logInfo('OG created', krtflOg.id);
@@ -19,6 +26,17 @@ export const insertOG = async (og: og) => {
   return krtflOg.id;
 };
 
+function createFatherGroup(og: og) {
+  const fatherHierarchy = og.hierarchy.slice(0, og.hierarchy.lastIndexOf('/'));
+
+  let fatherOg = Object.assign({}, og);
+  fatherOg.hierarchy = fatherHierarchy;
+  return fatherOg;
+}
+
+function hasFatherGroup(og: og) {
+  return og.hierarchy.includes('/');
+}
 // if need to update to OG
 //
 // import { diff } from '../../util/utils';
