@@ -1,6 +1,6 @@
 import { entityApi } from '../../api/entity';
 import { logInfo } from '../../logger/logger';
-import { krtflEntity, entity } from '../../types/entityType';
+import { entity } from '../../types/entityType';
 import { diff } from '../../util/utils';
 
 /**
@@ -8,10 +8,7 @@ import { diff } from '../../util/utils';
  * @param entity - from buildEntity queue
  */
 export const insertEntity = async (entity: entity) => {
-  let krtflEntity: krtflEntity | undefined;
-  const entityId = entity.identityCard || entity.personalNumber || entity.goalUserId;
-
-  krtflEntity = await entityApi.get(entityId!);
+  let krtflEntity = await getExistsEntity(entity);
 
   if (!krtflEntity) {
     krtflEntity = await entityApi.create(entity);
@@ -27,6 +24,15 @@ export const insertEntity = async (entity: entity) => {
 
   logInfo('Inserted entity successfully', krtflEntity?.id);
 };
+
+async function getExistsEntity(entity: entity) {
+  if (entity.goalUserId) return await entityApi.get(entity.goalUserId);
+
+  return (
+    (await entityApi.get(entity.identityCard || entity.personalNumber!)) ||
+    (await entityApi.get(entity.personalNumber!))
+  );
+}
 
 // export const insertEntity = async (entity: entity) => {
 //   let krtflEntityPN: krtflEntity | undefined;
