@@ -8,7 +8,7 @@ import { og } from '../../types/rgbType';
  * @returns object id from kartoffel
  */
 export const insertOG = async (og: og) => {
-  let krtflOg: og = await ogApi.get(og.hierarchy);
+  let krtflOg: og = await ogApi.get(og.hierarchy + '/' + og.name);
 
   if (!krtflOg) {
     if (hasFatherGroup(og)) {
@@ -26,7 +26,9 @@ export const insertOG = async (og: og) => {
 };
 
 function createFatherGroup(og: og) {
-  const fatherHierarchy = og.hierarchy.slice(0, og.hierarchy.lastIndexOf('/'));
+  const fatherHierarchy = og.hierarchy.includes('/')
+    ? og.hierarchy.slice(0, og.hierarchy.lastIndexOf('/'))
+    : '';
 
   let fatherOg = Object.assign({}, og);
   fatherOg.hierarchy = fatherHierarchy;
