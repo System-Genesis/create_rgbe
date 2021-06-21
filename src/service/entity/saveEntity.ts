@@ -25,6 +25,13 @@ export const insertEntity = async (entity: entity) => {
   logInfo('Inserted entity successfully', krtflEntity?.id);
 };
 
+/**
+ * Search entity in kartofel by goalUserId or identityCard and/or personalNumber
+ * If has identityCard but not found steel need to check by personalNumber
+ * If there in so identityCard field than personalNumber must to exist
+ * @param entity from queue
+ * @returns kartofel entity / null
+ */
 async function getExistsEntity(entity: entity) {
   if (entity.goalUserId) return await entityApi.get(entity.goalUserId);
 

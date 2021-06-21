@@ -16,7 +16,6 @@ export const insertOG = async (og: og) => {
       await insertOG(fatherOg);
     }
 
-    console.log('OG created', og.hierarchy);
     krtflOg = await ogApi.create(og);
 
     logInfo('OG created', krtflOg.id);
@@ -38,7 +37,7 @@ function createFatherGroup(og: og) {
 }
 
 function hasFatherGroup(og: og) {
-  return og.hierarchy == '' ? false : true;
+  return !(og.hierarchy == '');
 }
 
 // if need to update to OG

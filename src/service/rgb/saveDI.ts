@@ -6,9 +6,9 @@ import { entityApi } from './../../api/entity';
 
 /**
  * Create/update(the fields with changes) from given di to kartoffel
- * And connect to his entity by id of di end entity
+ * And connect to his entity by id of DI end entity
  * @param di the got from rgb object
- * @returns object id from kartoffel
+ * @returns objectId of kartoffel DI
  */
 export const insertDI = async (di: di) => {
   const entityIdentifier = di.entityId;
@@ -43,8 +43,8 @@ export const insertDI = async (di: di) => {
 
 /**
  * Connect di and entity (send to queue)
- * @param krtflDI di to connect to
- * @param entityIdentifier entity to connect
+ * @param krtflDI di from kartoffel to connect to
+ * @param entityIdentifier entity to connect by identifier (goalUserId/identityCard/personalNumber)
  */
 async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
   let needConnection = true;
