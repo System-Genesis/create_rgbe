@@ -36,6 +36,7 @@ export const logInfo = (msg: string, any: any = '') => {
     message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
     system: 'traking',
     service: 'createRGBE',
+    extraFields: any
   });
 
   console.log(`${msg} ${!any ? '' : JSON.stringify(any)}`);
@@ -55,6 +56,7 @@ export const logError = (msg: string, any: any = '') => {
     message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
     system: 'traking',
     service: 'build entity',
+    extraFields: any
   });
 
   console.log(`Error ${msg} ${!any ? '' : JSON.stringify(any)}`);
