@@ -49,12 +49,14 @@ export const insertDI = async (di: di) => {
 async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
   let needConnection = true;
 
-  if (krtflDI.entityId != undefined || krtflDI.entityId != null) {
+  if (krtflDI.entityId) {
     const connectedEntityId = (await entityApi.get(entityIdentifier)).id;
 
     if (connectedEntityId === krtflDI.entityId) {
       needConnection = false;
       logInfo(`DI already connected di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`);
+    }else{
+      logInfo(`DI moved, di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`);
     }
   }
 

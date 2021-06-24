@@ -1,9 +1,7 @@
 import axios from 'axios';
 import config from '../config/env.config';
 import { getResData } from './getResData';
-import { menash } from 'menashmq';
-import envConfig from '../config/env.config';
-import { logInfo } from '../logger/logger';
+import { connectDiToEntityQueue } from '../rabbit/rabbit';
 
 const api = config.krtflApi;
 
@@ -25,8 +23,7 @@ export const diApi = {
   },
   connectToEntity: async (entityId: string, diId: string) => {
     // send to queue
-    logInfo(`Send to connectDiToEntity queue entity: ${entityId}, diId: ${diId}`);
-    menash.send(envConfig.rabbit.connectDiToEntity, { entityId, diId });
+    connectDiToEntityQueue(entityId, diId);
   },
 };
 

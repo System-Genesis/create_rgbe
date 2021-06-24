@@ -25,12 +25,8 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
     connectRoleToDI(diId, krtflRole);
 
     if (Object.keys(diffRole).length > 0) {
-      try {
-        await roleApi.update(krtflRole.roleId, role);
-        logInfo('Role was updated', krtflRole);
-      } catch (error) {
-        logInfo('Role was not updated', krtflRole);
-      }
+      await roleApi.update(krtflRole.roleId, role);
+      logInfo('Role was updated', krtflRole);
     } else {
       logInfo('Nothing to update', krtflRole);
     }
@@ -46,7 +42,7 @@ async function connectRoleToOG(ogId: string, krtflRole: role) {
   if (ogId !== krtflRole.directGroup) {
     try {
       await roleApi.connectToOG(krtflRole.roleId, ogId);
-      logInfo(`Role ${krtflRole.roleId} connected to OG ${ogId}`);
+      logInfo(`Role ${krtflRole.roleId} moved to OG ${ogId}`);
     } catch (error) {
       logError(`Role ${krtflRole.roleId} not connected to OG ${ogId}`);
     }
@@ -62,7 +58,7 @@ async function connectRoleToDI(diId: string, krtflRole: role) {
   if (diId !== krtflRole.digitalIdentityUniqueId) {
     try {
       await roleApi.connectToDI(krtflRole.roleId, diId);
-      logInfo(`Role ${krtflRole.roleId} connected to OG ${diId}`);
+      logInfo(`Role ${krtflRole.roleId} moved to OG ${diId}`);
     } catch (error) {
       logError(`Role ${krtflRole.roleId} not connected to OG ${diId}`);
     }

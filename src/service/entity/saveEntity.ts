@@ -41,6 +41,8 @@ async function getExistsEntity(entity: entity) {
   );
 }
 
+// if we will delete old entity when find two entity related
+//
 // export const insertEntity = async (entity: entity) => {
 //   let krtflEntityPN: krtflEntity | undefined;
 //   let krtflEntityIC: krtflEntity | undefined;
