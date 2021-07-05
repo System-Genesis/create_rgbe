@@ -14,7 +14,7 @@
             "program": "${workspaceFolder}/src/app.ts",
             "preLaunchTask": "npm: build",
             "outFiles": [
-                "${workspaceFolder}/*/.js"
+                "${workspaceFolder}/**/*.js"
             ],
             "console": "integratedTerminal"
         }

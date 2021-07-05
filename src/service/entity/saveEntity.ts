@@ -12,17 +12,17 @@ export const insertEntity = async (entity: entity) => {
 
   if (!krtflEntity) {
     krtflEntity = await entityApi.create(entity);
+    logInfo('Entity created successfully', krtflEntity?.id);
   } else {
     const diffEntity = diff(entity, krtflEntity);
 
     if (Object.keys(diffEntity).length > 0) {
       await entityApi.update(krtflEntity.id, diffEntity);
+      logInfo('Entity updated successfully', krtflEntity?.id);
     } else {
       logInfo('Nothing to update', krtflEntity.id);
     }
   }
-
-  logInfo('Inserted entity successfully', krtflEntity?.id);
 };
 
 /**
@@ -32,7 +32,7 @@ export const insertEntity = async (entity: entity) => {
  * @param entity from queue
  * @returns kartofel entity / null
  */
-async function getExistsEntity(entity: entity) {
+export async function getExistsEntity(entity: entity) {
   if (entity.goalUserId) return await entityApi.get(entity.goalUserId);
 
   return (

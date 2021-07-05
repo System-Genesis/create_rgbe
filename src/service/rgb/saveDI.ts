@@ -1,5 +1,5 @@
 import { diApi } from '../../api/rgb';
-import { logInfo } from '../../logger/logger';
+import { logInfo, logWarn } from '../../logger/logger';
 import { di } from '../../types/rgbType';
 import { diff } from '../../util/utils';
 import { entityApi } from './../../api/entity';
@@ -28,14 +28,14 @@ export const insertDI = async (di: di) => {
       await diApi.update(krtflDI.uniqueId, diDiff);
       logInfo('DI was updated', krtflDI.uniqueId);
     } else {
-      logInfo('Nothing to update', krtflDI.uniqueId);
+      logWarn('Nothing to update', krtflDI.uniqueId);
     }
   }
 
   if (entityIdentifier) {
     await connectDiToEntity(krtflDI, entityIdentifier);
   } else {
-    logInfo(`No entity to connect, DI => ${krtflDI.uniqueId}`);
+    logWarn(`No entity to connect`, krtflDI.uniqueId);
   }
 
   return krtflDI.uniqueId;
@@ -50,12 +50,12 @@ async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
   let needConnection = true;
 
   if (krtflDI.entityId) {
-    const connectedEntityId = (await entityApi.get(entityIdentifier)).id;
+    const connectedEntityId = (await entityApi.get(entityIdentifier))?.id;
 
     if (connectedEntityId === krtflDI.entityId) {
       needConnection = false;
       logInfo(`DI already connected di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`);
-    }else{
+    } else {
       logInfo(`DI moved, di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`);
     }
   }

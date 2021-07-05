@@ -36,7 +36,27 @@ export const logInfo = (msg: string, any: any = '') => {
     message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
     system: 'traking',
     service: 'createRGBE',
-    extraFields: any
+    extraFields: any,
+  });
+
+  console.log(`${msg} ${!any ? '' : JSON.stringify(any)}`);
+
+  if (any) logger.info(`${msg} ${JSON.stringify(any)}`);
+  else logger.info(msg);
+};
+
+/**
+ * Send log in level warn to logger queue and to local logger
+ * @param msg - explanation of logger
+ * @param any - objet to add to msg
+ */
+export const logWarn = (msg: string, any: any = '') => {
+  menash.send(configEnv.rabbit.logger, {
+    level: 'warn',
+    message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
+    system: 'traking',
+    service: 'createRGBE',
+    extraFields: any,
   });
 
   console.log(`${msg} ${!any ? '' : JSON.stringify(any)}`);
@@ -56,7 +76,7 @@ export const logError = (msg: string, any: any = '') => {
     message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
     system: 'traking',
     service: 'build entity',
-    extraFields: any
+    extraFields: any,
   });
 
   console.log(`Error ${msg} ${!any ? '' : JSON.stringify(any)}`);
