@@ -1,5 +1,7 @@
 import { connectRabbit } from './rabbit/rabbit';
 
-(async () => {
+const start = async () => {
   await connectRabbit();
-})();
+};
+
+start();
