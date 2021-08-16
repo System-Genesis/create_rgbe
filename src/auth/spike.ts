@@ -18,8 +18,10 @@ const options = {
   httpsValidation: false,
 };
 
-const getToken = () => ({
-  headers: { Authorization: getTokenCreator(options) },
+const token = getTokenCreator(options);
+
+const getToken = async () => ({
+  headers: { Authorization: await token() },
 });
 
 export default getToken;

@@ -6,26 +6,20 @@ import getToken from '../auth/spike';
 
 export const entityApi = {
   create: async (entity: entity) => {
-    return await getResData(
-      axios.post(`${config.krtflApi}/entities`, entity, getToken())
-    );
+    return await getResData(axios.post(`${config.krtflApi}/entities`, entity, await getToken()));
   },
 
   update: async (id: string, entity: entity) => {
     return await getResData(
-      axios.patch(`${config.krtflApi}/entities/${id}`, entity, getToken())
+      axios.patch(`${config.krtflApi}/entities/${id}`, entity, await getToken())
     );
   },
 
   delete: async (id: string) => {
-    return await getResData(
-      axios.delete(`${config.krtflApi}/entities/${id}`, getToken())
-    );
+    return await getResData(axios.delete(`${config.krtflApi}/entities/${id}`, await getToken()));
   },
 
   get: async (id: string): Promise<krtflEntity> => {
-    return await getResData(
-      axios.get(`${config.krtflApi}/entities/${id}`, getToken())
-    );
+    return await getResData(axios.get(`${config.krtflApi}/entities/${id}`, await getToken()));
   },
 };

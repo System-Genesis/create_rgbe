@@ -7,27 +7,24 @@ import getToken from '../auth/spike';
 const api = config.krtflApi;
 
 export const ogApi = {
-  create: async (og: object) =>
-    await getResData(axios.post(`${api}/groups`, og, getToken())),
+  create: async (og: object) => await getResData(axios.post(`${api}/groups`, og, await getToken())),
   get: async (hierarchy: string) => {
     return await getResData(
-      axios.get(`${api}/groups/${encodeURIComponent(hierarchy)}`, getToken())
+      axios.get(`${api}/groups/${encodeURIComponent(hierarchy)}`, await getToken())
     );
   },
   update: async (id: string, og: object) => {
-    return await getResData(axios.patch(`${api}/groups/${id}`, og, getToken()));
+    return await getResData(axios.patch(`${api}/groups/${id}`, og, await getToken()));
   },
 };
 
 export const diApi = {
   get: async (di: string) =>
-    await getResData(axios.get(`${api}/digitalIdentities/${di}`, getToken())),
+    await getResData(axios.get(`${api}/digitalIdentities/${di}`, await getToken())),
   create: async (di: object) =>
-    await getResData(axios.post(`${api}/digitalIdentities`, di, getToken())),
+    await getResData(axios.post(`${api}/digitalIdentities`, di, await getToken())),
   update: async (id: string, di: object) => {
-    return await getResData(
-      axios.patch(`${api}/digitalIdentities/${id}`, di, getToken())
-    );
+    return await getResData(axios.patch(`${api}/digitalIdentities/${id}`, di, await getToken()));
   },
   connectToEntity: async (entityId: string, diId: string) => {
     // send to queue
@@ -42,18 +39,17 @@ export const connectDiToEntityApi = async (entityId: string, diId: string) => {
       {
         digitalIdentityUniqueId: diId,
       },
-      getToken()
+      await getToken()
     )
   );
 };
 
 export const roleApi = {
-  get: async (id: string) =>
-    await getResData(axios.get(`${api}/roles/${id}`, getToken())),
+  get: async (id: string) => await getResData(axios.get(`${api}/roles/${id}`, await getToken())),
   create: async (role: object) =>
-    await getResData(axios.post(`${api}/roles`, role, getToken())),
+    await getResData(axios.post(`${api}/roles`, role, await getToken())),
   update: async (id: string, role: object) =>
-    await getResData(axios.patch(`${api}/roles/${id}`, role, getToken())),
+    await getResData(axios.patch(`${api}/roles/${id}`, role, await getToken())),
 
   connectToDI: async (roleId: string, digitalIdentityUniqueId: string) => {
     return await getResData(
@@ -62,14 +58,14 @@ export const roleApi = {
         {
           digitalIdentityUniqueId,
         },
-        getToken()
+        await getToken()
       )
     );
   },
 
   connectToOG: async (id: string, groupId: string) => {
     return await getResData(
-      axios.patch(`${api}/roles/${id}/moveToGroup`, { groupId }, getToken())
+      axios.patch(`${api}/roles/${id}/moveToGroup`, { groupId }, await getToken())
     );
   },
 };
