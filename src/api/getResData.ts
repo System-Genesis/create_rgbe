@@ -5,7 +5,11 @@ export const getResData = async (req: Promise<AxiosResponse<any>>) => {
   try {
     return (await req).data;
   } catch (error) {
-    logError(`Can't get response`, `${error}`.split('\n'));
+    logError(`Response ${error.response.data}, status:  ${error.response.status}`, {
+      url: error.config.url,
+      data: JSON.parse(error.config.data),
+      msg: error.message,
+    });
     return null;
   }
 };
