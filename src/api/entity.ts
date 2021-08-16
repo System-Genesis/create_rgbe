@@ -19,7 +19,9 @@ export const entityApi = {
     return await getResData(axios.delete(`${config.krtflApi}/entities/${id}`, await getToken()));
   },
 
-  get: async (id: string): Promise<krtflEntity> => {
-    return await getResData(axios.get(`${config.krtflApi}/entities/${id}`, await getToken()));
+  get: async (identifier: string): Promise<krtflEntity> => {
+    return await getResData(
+      axios.get(`${config.krtflApi}/entities/identifier/${identifier}`, await getToken())
+    );
   },
 };

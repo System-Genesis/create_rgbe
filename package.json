@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "nodemon ./src/app.ts",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "docker": "docker build -t systemgenesis0/create_rgbe . & docker push systemgenesis0/create_rgbe"
   },
   "repository": {
     "type": "git",
