@@ -16,13 +16,17 @@ export default {
     },
   },
   krtflApi: env.get('KRTFL_API').required().asString(),
+  redisUrl: env.get('REDIS_URL').required().asString(),
   spike: {
     spikeUrl: env.get('SPIKE_URL').required().asString(),
-    redisUrl: env.get('REDIS_URL').required().asString(),
     redisKeyName: env.get('REDIS_KEY_NAME').required().asString(),
     myAud: env.get('MY_AUDIENCE').required().asString(),
     clientId: env.get('MY_CLIENT_ID').required().asString(),
     clientSecret: env.get('MY_CLIENT_SECRET').required().asString(),
     kartofelAud: env.get('KARTOFEL_AUDIENCE').required().asString(),
+  },
+  daily: {
+    hour: env.get('HOUR').required().asInt(),
+    minute: env.get('MINUTE').required().asInt(),
   },
 };

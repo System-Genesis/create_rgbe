@@ -1,6 +1,6 @@
 import { entityApi } from '../../api/entity';
 import { logInfo } from '../../logger/logger';
-import { entityEvent } from '../../redis/connectDiToEntity';
+import { entityEvent } from '../../redis/connectDiToEntityRedis';
 import { entity } from '../../types/entityType';
 import { diff } from '../../util/utils';
 

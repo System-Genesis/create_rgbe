@@ -28,7 +28,7 @@ export const insertDI = async (di: di) => {
       await diApi.update(krtflDI.uniqueId, diDiff);
       logInfo('DI was updated', krtflDI.uniqueId);
     } else {
-      logWarn('Nothing to update', krtflDI.uniqueId);
+      logInfo('Nothing to update', krtflDI.uniqueId);
     }
   }
 

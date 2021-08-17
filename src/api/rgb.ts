@@ -1,7 +1,7 @@
 import axios from 'axios';
 import config from '../config/env.config';
 import { getResData } from './getResData';
-import { connectDiToEntity } from '../redis/connectDiToEntity';
+import { connectDiToEntity } from '../redis/connectDiToEntityRedis';
 import getToken from '../auth/spike';
 
 const api = config.krtflApi;

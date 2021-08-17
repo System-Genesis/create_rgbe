@@ -3,10 +3,10 @@ import config from '../config/env.config';
 import path from 'path';
 import process from 'process';
 
-const { spike } = config;
+const { spike, redisUrl } = config;
 
 const options = {
-  redisHost: spike.redisUrl,
+  redisHost: redisUrl,
   clientId: spike.clientId,
   clientSecret: spike.clientSecret,
   spikeURL: spike.spikeUrl,
