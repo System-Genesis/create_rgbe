@@ -1,5 +1,6 @@
 import { entityApi } from '../../api/entity';
 import { logInfo } from '../../logger/logger';
+import { entityEvent } from '../../redis/connectDiToEntity';
 import { entity } from '../../types/entityType';
 import { diff } from '../../util/utils';
 
@@ -13,6 +14,7 @@ export const insertEntity = async (entity: entity) => {
   if (!krtflEntity) {
     krtflEntity = await entityApi.create(entity);
     logInfo('Entity created successfully', krtflEntity?.id);
+    entityEvent(entity.identityCard || entity.personalNumber || entity.goalUserId!);
   } else {
     const diffEntity = diff(entity, krtflEntity);
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import config from '../config/env.config';
 import { getResData } from './getResData';
-import { connectDiToEntityQueue } from '../rabbit/rabbit';
+import { connectDiToEntity } from '../redis/connectDiToEntity';
 import getToken from '../auth/spike';
 
 const api = config.krtflApi;
@@ -28,7 +28,7 @@ export const diApi = {
   },
   connectToEntity: async (entityId: string, diId: string) => {
     // send to queue
-    connectDiToEntityQueue(entityId, diId);
+    connectDiToEntity(entityId, diId);
   },
 };
 

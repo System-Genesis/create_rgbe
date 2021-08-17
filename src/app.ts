@@ -1,7 +1,8 @@
 import { connectRabbit } from './rabbit/rabbit';
+import redisClient from './redis/redis';
 
-const start = async () => {
-  await connectRabbit();
+const start = () => {
+  redisClient(connectRabbit);
 };
 
 start();

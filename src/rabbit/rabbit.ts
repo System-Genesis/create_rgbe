@@ -84,9 +84,4 @@ async function consumeDiToEntity() {
   );
 }
 
-export const connectDiToEntityQueue = (entityId: string, diId: string) => {
-  logInfo(`Send to connectDiToEntity queue entity: ${entityId}, diId: ${diId}`);
-  menash.send(config.rabbit.connectDiToEntity, { entityId, diId });
-};
-
 export default { connectRabbit };
