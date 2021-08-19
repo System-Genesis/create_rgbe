@@ -18,7 +18,7 @@ const options = {
   httpsValidation: false,
 };
 
-const token = getTokenCreator(options);
+export const token = getTokenCreator(options);
 
 const getToken = async () => ({
   headers: { Authorization: await token() },

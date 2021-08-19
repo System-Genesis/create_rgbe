@@ -12,11 +12,13 @@ export const connectDiToEntity = async (entityId: string, diId: string) => {
   }
 };
 
-export const entityEvent = async (entityId: string) => {
+export const handleEntityEvent = async (entityId: string) => {
   const data = await getArray(entityId);
 
   if (data.length > 0) {
-    data.forEach((diId) => connectDiToEntityApi(entityId, diId));
+    for (let i = 0; i < data.length; i++) {
+      await connectDiToEntityApi(entityId, data[i]);
+    }
   }
 
   delValue(entityId);
@@ -27,7 +29,7 @@ export const runAll = async () => {
 
   keys.forEach(async (entityId) => {
     if (await entityApi.get(entityId)) {
-      entityEvent(entityId);
+      handleEntityEvent(entityId);
     }
   });
 };

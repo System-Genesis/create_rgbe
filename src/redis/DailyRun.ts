@@ -5,14 +5,14 @@ import { runAll } from './connectDiToEntityRedis';
 
 const { hour: defHour, minute: defMinute } = config.daily;
 
-export class DailyRun {
-  static instance: DailyRun;
+export class RecoveryDiConnection {
+  static instance: RecoveryDiConnection;
 
-  public static getInstance(): DailyRun {
-    if (!DailyRun.instance) {
-      DailyRun.instance = new DailyRun();
+  public static getInstance(): RecoveryDiConnection {
+    if (!RecoveryDiConnection.instance) {
+      RecoveryDiConnection.instance = new RecoveryDiConnection();
     }
-    return DailyRun.instance;
+    return RecoveryDiConnection.instance;
   }
 
   hour: number;
