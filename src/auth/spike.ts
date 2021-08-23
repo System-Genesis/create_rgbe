@@ -1,7 +1,6 @@
 import getTokenCreator from 'spike-get-token';
 import config from '../config/env.config';
 import path from 'path';
-import process from 'process';
 
 const { spike, redisUrl } = config;
 
