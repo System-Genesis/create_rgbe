@@ -1,7 +1,4 @@
-import chai, { assert } from 'chai';
 import { diff } from './../src/util/utils';
-
-chai.should();
 
 describe('utils', () => {
   describe('diff', () => {
@@ -10,7 +7,7 @@ describe('utils', () => {
       const compareTo = { name: 'a', age: 1, active: true };
       const expected = {};
 
-      assert.deepEqual(diff(toCompare, compareTo), expected);
+      expect(diff(toCompare, compareTo)).toEqual(expected);
     });
 
     it('Should return empty obj because there is no changes in toCompare obj', () => {
@@ -18,7 +15,7 @@ describe('utils', () => {
       const compareTo = { name: 'a', age: 1, active: true };
       const expected = {};
 
-      assert.deepEqual(diff(toCompare, compareTo), expected);
+      expect(diff(toCompare, compareTo)).toEqual(expected);
     });
 
     it('Should return obj with name field that change to "b"', () => {
@@ -26,7 +23,7 @@ describe('utils', () => {
       const compareTo = { name: 'a', age: 1, active: true };
       const expected = { name: 'b' };
 
-      assert.deepEqual(diff(toCompare, compareTo), expected);
+      expect(diff(toCompare, compareTo)).toEqual(expected);
     });
   });
 
@@ -36,7 +33,7 @@ describe('utils', () => {
       const compareTo = { name: 'a', age: 1, active: { a: true } };
       const expected = {};
 
-      assert.deepEqual(diff(toCompare, compareTo), expected);
+      expect(diff(toCompare, compareTo)).toEqual(expected);
     });
 
     it('Should return empty obj because there is no changes in toCompare obj', () => {
@@ -44,7 +41,7 @@ describe('utils', () => {
       const compareTo = { name: 'a', age: 1, active: { a: true } };
       const expected = {};
 
-      assert.deepEqual(diff(toCompare, compareTo), expected);
+      expect(diff(toCompare, compareTo)).toEqual(expected);
     });
 
     it('Should return obj with name field that change to "b"', () => {
@@ -52,7 +49,7 @@ describe('utils', () => {
       const compareTo = { name: 'a', age: 1, active: { a: false } };
       const expected = { active: { a: true } };
 
-      assert.deepEqual(diff(toCompare, compareTo), expected);
+      expect(diff(toCompare, compareTo)).toEqual(expected);
     });
   });
 });

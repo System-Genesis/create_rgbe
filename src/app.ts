@@ -1,5 +1,12 @@
 import { connectRabbit } from './rabbit/rabbit';
+import { RecoveryDiConnection } from './redis/DailyRun';
+import redisClient from './redis/redis';
 
-(async () => {
-  await connectRabbit();
-})();
+const start = () => {
+  redisClient(async () => {
+    await connectRabbit();
+    RecoveryDiConnection.getInstance().start();
+  });
+};
+
+start();

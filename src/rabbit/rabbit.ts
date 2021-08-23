@@ -18,9 +18,7 @@ export const connectRabbit = async () => {
   logInfo('Rabbit connected');
 
   await consumeDiToEntity();
-
   await consumeGetEntity();
-
   await consumeGetRGB();
 };
 
@@ -38,7 +36,6 @@ async function consumeGetRGB() {
       } catch (error) {
         logError(error);
 
-        // handle error reject or else ...
         msg.ack();
       }
     },
@@ -59,7 +56,6 @@ async function consumeGetEntity() {
       } catch (error) {
         logError(error);
 
-        // handle error reject or else ...
         msg.ack();
       }
     },
@@ -79,20 +75,13 @@ async function consumeDiToEntity() {
         msg.ack();
       } catch (error) {
         logError(error);
-        // send to end of the queue
         menash.send(config.rabbit.connectDiToEntity, { entityId, diId });
 
-        // handle error reject or else ...
         msg.ack();
       }
     },
     { noAck: false }
   );
-}
-
-export const connectDiToEntityQueue = (entityId:string,diId:string)=>{
-  logInfo(`Send to connectDiToEntity queue entity: ${entityId}, diId: ${diId}`);
-  menash.send(config.rabbit.connectDiToEntity, { entityId, diId });
 }
 
 export default { connectRabbit };

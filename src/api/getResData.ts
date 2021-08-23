@@ -1,11 +1,25 @@
-import { AxiosResponse } from 'axios';
-import { logError } from './../logger/logger';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { token } from '../auth/spike';
+import config from '../config/env.config';
+import { logWarn } from './../logger/logger';
 
-export const getResData = async (req: Promise<AxiosResponse<any>>) => {
+axios.interceptors.request.use(async (req: AxiosRequestConfig) => {
+  req.headers.authorization = await token();
+  req.baseURL += config.krtflApi;
+  return req;
+});
+
+export const getResData = async (axiosReq: Promise<AxiosResponse<any>>) => {
   try {
-    return (await req).data;
+    const res = await axiosReq;
+    return res.data;
   } catch (error) {
-    logError(`Can't get response`, `${error}`.split('\n'));
+    logWarn(`Response ${error.response?.data}, status:  ${error.response?.status}`, {
+      url: error.config?.url,
+      data: JSON.parse(error.config?.data || '{}'),
+      msg: error.message,
+    });
+
     return null;
   }
 };

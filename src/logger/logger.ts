@@ -3,21 +3,22 @@ import path from 'path';
 import winston, { config, format } from 'winston';
 import configEnv from '../config/env.config';
 
-const date = () => new Date(Date.now()).toLocaleDateString();
+const date = () => new Date(Date.now()).toLocaleDateString().replace(/\//g, '_');
 
 export const logger = winston.createLogger({
   levels: config.npm.levels,
 
   format: format.combine(
     format.colorize(),
-    format.timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss',
-    }),
+    // format.timestamp({
+    //   format: 'YYYY-MM-DD HH:mm:ss',
+    // }),
     format.splat(),
-    format.simple(),
-    format.json()
+    format.simple()
+    // format.json()
   ),
   transports: [
+    new winston.transports.Console(),
     new winston.transports.File({
       filename: path.join(__dirname, `../../log/${date()}-logger.log`),
       maxsize: 50000,
@@ -30,19 +31,17 @@ export const logger = winston.createLogger({
  * @param msg - explanation of logger
  * @param any - objet to add to msg
  */
-export const logInfo = (msg: string, any: any = '') => {
-  menash.send(configEnv.rabbit.logger, {
-    level: 'info',
-    message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
-    system: 'traking',
-    service: 'createRGBE',
-    extraFields: any
-  });
+export const logInfo = (msg: string, any?: any) => {
+  logs('info', msg, any);
+};
 
-  console.log(`${msg} ${!any ? '' : JSON.stringify(any)}`);
-
-  if (any) logger.info(`${msg} ${JSON.stringify(any)}`);
-  else logger.info(msg);
+/**
+ * Send log in level warn to logger queue and to local logger
+ * @param msg - explanation of logger
+ * @param any - objet to add to msg
+ */
+export const logWarn = (msg: string, any?: any) => {
+  logs('warn', msg, any);
 };
 
 /**
@@ -50,16 +49,18 @@ export const logInfo = (msg: string, any: any = '') => {
  * @param msg - explanation of logger
  * @param any - objet to add to msg
  */
-export const logError = (msg: string, any: any = '') => {
+export const logError = (msg: string, any?: any) => {
+  logs('error', msg, any);
+};
+
+export const logs = (level: string, msg: string, any?: any) => {
   menash.send(configEnv.rabbit.logger, {
-    level: 'error',
+    level,
     message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
     system: 'traking',
-    service: 'build entity',
-    extraFields: any
+    service: 'CREATE RGBE',
+    extraFields: any,
   });
 
-  console.log(`Error ${msg} ${!any ? '' : JSON.stringify(any)}`);
-
-  logger.error(`${msg} ${!any ? '' : JSON.stringify(any)}`);
+  logger[level](`${msg} ${!any ? '' : JSON.stringify(any)}`);
 };

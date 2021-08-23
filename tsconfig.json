@@ -17,9 +17,10 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "outDir": "./dist/",
-    "lib": ["ES2020.Promise"]
+    "lib": ["ES2020.Promise","DOM"]
   },
-  "include": ["src/*/"]
+  "include": ["src/**/*", "src/server.ts", "src/config"]
 }
