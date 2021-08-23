@@ -13,7 +13,7 @@ const options = {
   tokenGrantType: 'client_credentials',
   tokenAudience: spike.kartofelAud,
   tokenRedisKeyName: spike.redisKeyName,
-  spikePublicKeyFullPath: path.join(process.cwd(), './key.pem'),
+  spikePublicKeyFullPath: path.join(__dirname, '../key/key.pem'),
   useRedis: true,
   httpsValidation: false,
 };
