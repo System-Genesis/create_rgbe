@@ -26,6 +26,7 @@ export class RecoveryDiConnection {
 
   public async start() {
     logInfo(`Daily run scheduled to ${this.hour}:${this.minute}`);
+    runAll();
     this.runFunc = schedule.scheduleJob({ hour: this.hour, minute: this.minute }, () => {
       logInfo('Daily run is starting');
       runAll();
