@@ -13,13 +13,11 @@ axios.interceptors.response.use(
   (r) => r,
   async (error) => {
     // Get new token if error reason is unauthorized
-    if (error.config && error.response && error.response.status === 401) {
-      error.config.headers.authorization = await token();
-      return axios.request(error.config);
-    }
-
-    // ReRequest if connection error
-    if (error.message === 'connect ECONNREFUSED 127.0.0.1:7709') {
+    // OR  ReRequest if connection error
+    if (
+      (error.config && error.response && error.response.status === 401) ||
+      error.code === 'ECONNREFUSED'
+    ) {
       return axios.request(error.config);
     }
 
