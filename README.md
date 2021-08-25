@@ -1,5 +1,5 @@
 # createRGBE
-
+ 
 create\update and synchronize Role DI OG Entity
 
 - start object : GET_ENTITY_QUEUE
