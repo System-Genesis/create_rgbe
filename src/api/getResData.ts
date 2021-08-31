@@ -5,9 +5,25 @@ import { logWarn } from './../logger/logger';
 
 axios.interceptors.request.use(async (req: AxiosRequestConfig) => {
   req.headers.authorization = await token();
-  req.baseURL += config.krtflApi;
+  req.baseURL = config.krtflApi;
   return req;
 });
+
+axios.interceptors.response.use(
+  (r) => r,
+  async (error) => {
+    // Get new token if error reason is unauthorized
+    // OR  ReRequest if connection error
+    if (
+      (error.config && error.response && error.response.status === 401) ||
+      error.code === 'ECONNREFUSED'
+    ) {
+      return axios.request(error.config);
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export const getResData = async (axiosReq: Promise<AxiosResponse<any>>) => {
   try {

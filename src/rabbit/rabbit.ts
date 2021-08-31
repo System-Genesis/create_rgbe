@@ -51,7 +51,6 @@ async function consumeGetEntity() {
         logInfo(`Got from queue => `, entity);
         await insertEntity(entity);
 
-        logInfo('Entity insertion is done');
         msg.ack();
       } catch (error) {
         logError(error);

@@ -1,5 +1,5 @@
 import { connectRabbit } from './rabbit/rabbit';
-import { RecoveryDiConnection } from './redis/DailyRun';
+import { RecoveryDiConnection } from './redis/DailyRecovery';
 import redisClient from './redis/redis';
 
 const start = () => {

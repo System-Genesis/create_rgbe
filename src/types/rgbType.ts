@@ -1,4 +1,11 @@
-export type og = { id: string; hierarchy: string; ancestors: string[]; name: string };
+export type og = {
+  id: string;
+  hierarchy: string;
+  ancestors: string[];
+  name: string;
+  directGroup?: string;
+};
+
 export type di = { uniqueId: string; entityId?: string };
 export type role = { roleId: string; directGroup: string; digitalIdentityUniqueId: string };
 

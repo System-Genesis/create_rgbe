@@ -13,7 +13,8 @@ export const insertOG = async (og: og) => {
   if (!krtflOg) {
     if (hasFatherGroup(og)) {
       const fatherOg = createFatherGroup(og);
-      await insertOG(fatherOg);
+      const krtflOgId = await insertOG(fatherOg);
+      og.directGroup = krtflOgId;
     }
 
     krtflOg = await ogApi.create(og);

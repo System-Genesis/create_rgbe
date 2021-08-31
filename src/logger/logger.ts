@@ -1,9 +1,6 @@
 import { menash } from 'menashmq';
-import path from 'path';
 import winston, { config, format } from 'winston';
 import configEnv from '../config/env.config';
-
-const date = () => new Date(Date.now()).toLocaleDateString().replace(/\//g, '_');
 
 export const logger = winston.createLogger({
   levels: config.npm.levels,
@@ -17,13 +14,7 @@ export const logger = winston.createLogger({
     format.simple()
     // format.json()
   ),
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({
-      filename: path.join(__dirname, `../../log/${date()}-logger.log`),
-      maxsize: 50000,
-    }),
-  ],
+  transports: [new winston.transports.Console()],
 });
 
 /**
