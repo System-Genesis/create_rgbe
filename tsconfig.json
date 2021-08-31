@@ -4,6 +4,7 @@
     "module": "CommonJS",
     "allowJs": false,
     "sourceMap": true,
+    "checkJs": false,
     "removeComments": true,
     "strict": true,
     "noImplicitAny": false,
