@@ -9,16 +9,27 @@ axios.interceptors.request.use(async (req: AxiosRequestConfig) => {
   return req;
 });
 
+let reRequestCount = 0;
+
 axios.interceptors.response.use(
-  (r) => r,
+  (res) => {
+    reRequestCount = 0;
+    return res;
+  },
   async (error) => {
     // Get new token if error reason is unauthorized
     // OR  ReRequest if connection error
+    // after 500 error in a row stop resend
     if (
       (error.config && error.response && error.response.status === 401) ||
       error.code === 'ECONNREFUSED'
     ) {
-      return axios.request(error.config);
+      if (reRequestCount < 500) {
+        reRequestCount++;
+        return axios.request(error.config);
+      }
+    } else {
+      reRequestCount = 0;
     }
 
     return Promise.reject(error);
