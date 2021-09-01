@@ -13,8 +13,15 @@ export const insertEntity = async (entity: entity) => {
 
   if (!krtflEntity) {
     krtflEntity = await entityApi.create(entity);
-    logInfo('Entity created successfully', krtflEntity?.id);
-    handleEntityEvent(entity.identityCard || entity.personalNumber || entity.goalUserId!);
+    if (krtflEntity) {
+      logInfo('Entity created successfully', krtflEntity?.id);
+      handleEntityEvent(entity.identityCard || entity.personalNumber || entity.goalUserId!);
+    } else {
+      throw {
+        msg: 'Entity not created',
+        identifier: entity.identityCard || entity.personalNumber || entity.goalUserId!,
+      };
+    }
   } else {
     const diffEntity = diff(entity, krtflEntity);
 
