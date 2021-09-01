@@ -19,10 +19,12 @@ axios.interceptors.response.use(
   async (error) => {
     // Get new token if error reason is unauthorized
     // OR  ReRequest if connection error
+    // OR  SPIKE didn't give token
     // after 500 error in a row stop resend
     if (
       (error.config && error.response && error.response.status === 401) ||
-      error.code === 'ECONNREFUSED'
+      error.code === 'ECONNREFUSED' ||
+      error.message.toLowerCase().includes('spike')
     ) {
       if (reRequestCount < 500) {
         reRequestCount++;
@@ -41,11 +43,16 @@ export const getResData = async (axiosReq: Promise<AxiosResponse<any>>) => {
     const res = await axiosReq;
     return res.data;
   } catch (error) {
-    logWarn(`Response ${error.response?.data}, status:  ${error.response?.status}`, {
-      url: error.config?.url,
-      data: JSON.parse(error.config?.data || '{}'),
-      msg: error.message,
-    });
+    logWarn(
+      `Response ${error.response?.data || error.code}, status: ${
+        error.response?.status || 'no status'
+      }`,
+      {
+        url: error.config?.url,
+        data: JSON.parse(error.config?.data || '{}'),
+        msg: error.message,
+      }
+    );
 
     return null;
   }
