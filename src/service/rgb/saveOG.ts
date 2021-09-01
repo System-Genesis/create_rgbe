@@ -19,7 +19,8 @@ export const insertOG = async (og: og) => {
 
     krtflOg = await ogApi.create(og);
 
-    logInfo('OG created', krtflOg.id);
+    if (krtflOg) logInfo('OG created', krtflOg.id);
+    else throw { msg: 'OG not created', identifier: og.hierarchy + og.name };
   }
 
   return krtflOg.id;

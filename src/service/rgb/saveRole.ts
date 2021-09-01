@@ -17,7 +17,8 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
     role.digitalIdentityUniqueId = diId;
 
     krtflRole = await roleApi.create(role);
-    logInfo('Role created', krtflRole);
+    if (krtflRole) logInfo('Role created', krtflRole);
+    else throw { msg: 'Role not created', identifier: role.roleId };
   } else {
     const diffRole = diff(role, krtflRole);
 
