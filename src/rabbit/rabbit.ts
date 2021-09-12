@@ -53,7 +53,7 @@ async function consumeGetEntity() {
 
         msg.ack();
       } catch (error) {
-        logError(error);
+        logError(error.msg || error, error.identifier);
 
         msg.ack();
       }
