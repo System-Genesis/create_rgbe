@@ -1,9 +1,15 @@
 import axios from 'axios';
 import { getResData } from './getResData';
 import { connectDiToEntity } from '../redis/connectDiToEntityRedis';
+import { og, postOg } from '../types/rgbType';
 
 export const ogApi = {
-  create: async (og: object) => await getResData(axios.post(`/groups`, og)),
+  create: async (og: og) => {
+    const postOg: postOg = { ...og };
+    delete postOg.hierarchy;
+
+    return await getResData(axios.post(`/groups`, postOg));
+  },
   get: async (hierarchy: string) => {
     return await getResData(axios.get(`/groups/${encodeURIComponent(hierarchy)}`));
   },

@@ -6,6 +6,14 @@ export type og = {
   directGroup?: string;
 };
 
+export type postOg = {
+  id: string;
+  hierarchy?: string;
+  ancestors: string[];
+  name: string;
+  directGroup?: string;
+};
+
 export type di = { uniqueId: string; entityId?: string };
 export type role = { roleId: string; directGroup: string; digitalIdentityUniqueId: string };
 

@@ -42,7 +42,7 @@ export const getResData = async (axiosReq: Promise<AxiosResponse<any>>) => {
   try {
     const res = await axiosReq;
     return res.data;
-  } catch (error) {
+  } catch (error: any) {
     logWarn(
       `Response ${error.response?.data || error.code}, status: ${
         error.response?.status || 'no status'
