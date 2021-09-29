@@ -5,8 +5,7 @@ import { og, postOg } from '../types/rgbType';
 
 export const ogApi = {
   create: async (og: og) => {
-    const postOg: postOg = { ...og };
-    delete postOg.hierarchy;
+    const postOg: postOg = { name: og.name, source: og.source, directGroup: og.directGroup };
 
     return await getResData(axios.post(`/groups`, postOg));
   },

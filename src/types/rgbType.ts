@@ -3,14 +3,13 @@ export type og = {
   hierarchy: string;
   ancestors: string[];
   name: string;
+  source: string;
   directGroup?: string;
 };
 
 export type postOg = {
-  id: string;
-  hierarchy?: string;
-  ancestors: string[];
   name: string;
+  source: string;
   directGroup?: string;
 };
 
