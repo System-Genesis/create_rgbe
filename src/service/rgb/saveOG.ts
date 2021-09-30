@@ -14,6 +14,7 @@ export const insertOG = async (og: og) => {
     if (hasFatherGroup(og)) {
       const fatherOg = createFatherGroup(og);
       const krtflOgId = await insertOG(fatherOg);
+
       og.directGroup = krtflOgId;
     }
 
@@ -23,13 +24,12 @@ export const insertOG = async (og: og) => {
     else throw { msg: 'OG not created', identifier: og.hierarchy + og.name };
   }
 
-  return krtflOg.id;
+  // TODO delete _id
+  return krtflOg._id || krtflOg.id;
 };
 
 function createFatherGroup(og: og) {
-  const fatherHierarchy = og.hierarchy.includes('/')
-    ? og.hierarchy.slice(0, og.hierarchy.lastIndexOf('/'))
-    : '';
+  const fatherHierarchy = og.hierarchy.includes('/') ? og.hierarchy.slice(0, og.hierarchy.lastIndexOf('/')) : '';
 
   let fatherOg = Object.assign({}, og);
   fatherOg.hierarchy = fatherHierarchy;

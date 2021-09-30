@@ -1,5 +1,7 @@
 export type og = {
   id: string;
+  // TODO delete
+  _id: string;
   hierarchy: string;
   ancestors: string[];
   name: string;

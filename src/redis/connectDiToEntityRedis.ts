@@ -2,13 +2,14 @@ import { entityApi } from '../api/entity';
 import { connectDiToEntityApi } from '../api/rgb';
 import { pushToArray, getArray, getAllKeys, delValue } from './redis';
 
-export const connectDiToEntity = async (entityId: string, diId: string) => {
-  const entity = await entityApi.get(entityId);
+export const connectDiToEntity = async (entityIdentifier: string, diId: string) => {
+  const entity = await entityApi.get(entityIdentifier);
 
   if (entity) {
-    connectDiToEntityApi(entityId, diId);
+    // TODO delete _id
+    connectDiToEntityApi(entity.id || entity['_id'], diId);
   } else {
-    pushToArray(entityId, diId);
+    pushToArray(entityIdentifier, diId);
   }
 };
 
