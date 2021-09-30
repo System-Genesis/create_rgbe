@@ -37,7 +37,7 @@ describe('rgbHandler', () => {
 
   it('Should create only DI (has OG)', async () => {
     await createRgb({
-      og: { id: '2', hierarchy: 'string', ancestors: ['string'], name: 'string' },
+      og: { id: '2', hierarchy: 'string', ancestors: ['string'], name: 'string', source: 'aka' },
       di: { uniqueId: 'string', entityId: 'string' },
       role: null,
     });
@@ -61,7 +61,7 @@ describe('rgbHandler', () => {
 
   it('Should create all', async () => {
     await createRgb({
-      og: { id: '2', hierarchy: 'string', ancestors: ['string'], name: 'string' },
+      og: { id: '2', hierarchy: 'string', ancestors: ['string'], name: 'string', source: 'aka' },
       di: { uniqueId: 'string', entityId: 'string' },
       role: { roleId: 'string', directGroup: 'string', digitalIdentityUniqueId: 'string' },
     });

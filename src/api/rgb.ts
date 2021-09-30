@@ -9,7 +9,7 @@ export const ogApi = {
 
     return await getResData(axios.post(`/groups`, postOg));
   },
-  get: async (hierarchy: string) => {
+  getByHierarchy: async (hierarchy: string) => {
     return await getResData(axios.get(`/groups/hierarchy/${encodeURIComponent(hierarchy)}`));
   },
   update: async (id: string, og: object) => {
