@@ -34,7 +34,7 @@ export const diApi = {
 };
 
 export const connectDiToEntityApi = async (entityId: string, diId: string) => {
-  return await getResData(axios.patch(`/entities/${entityId}/digitalIdentity/${diId}`));
+  return await getResData(axios.put(`/entities/${entityId}/digitalIdentity/${diId}`));
 };
 
 export const roleApi = {
@@ -43,14 +43,14 @@ export const roleApi = {
   update: async (id: string, role: object) => await getResData(axios.patch(`/roles/${id}`, role)),
 
   connectToDI: async (roleId: string, digitalIdentityUniqueId: string) => {
-    return await getResData(
-      axios.patch(`/roles/${roleId}/connectDigitalIdentity`, {
-        digitalIdentityUniqueId,
-      })
-    );
+    return await getResData(axios.put(`/roles/${roleId}/digitalIdentity/${digitalIdentityUniqueId}`));
+  },
+
+  disconnectToDI: async (roleId: string, digitalIdentityUniqueId: string) => {
+    return await getResData(axios.delete(`/roles/${roleId}/digitalIdentity/${digitalIdentityUniqueId}`));
   },
 
   connectToOG: async (id: string, groupId: string) => {
-    return await getResData(axios.patch(`/roles/${id}/group/${groupId}`));
+    return await getResData(axios.put(`/roles/${id}/group/${groupId}`));
   },
 };

@@ -15,7 +15,10 @@ export const insertEntity = async (entity: entity) => {
     krtflEntity = await entityApi.create(entity);
     if (krtflEntity) {
       logInfo('Entity created successfully', krtflEntity?.id);
-      handleEntityEvent(entity.identityCard || entity.personalNumber || entity.goalUserId!);
+      handleEntityEvent(
+        entity.identityCard || entity.personalNumber || entity.goalUserId!,
+        krtflEntity.id || krtflEntity['_id']
+      );
     } else {
       throw {
         msg: 'Entity not created',
@@ -26,7 +29,7 @@ export const insertEntity = async (entity: entity) => {
     const diffEntity = diff(entity, krtflEntity);
 
     if (Object.keys(diffEntity).length > 0) {
-      await entityApi.update(krtflEntity.id, diffEntity);
+      await entityApi.update(krtflEntity.id || krtflEntity['_id'], diffEntity);
       logInfo('Entity updated successfully', krtflEntity?.id);
     } else {
       logInfo('Nothing to update', krtflEntity.id);
