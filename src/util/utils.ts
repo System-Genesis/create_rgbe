@@ -8,7 +8,15 @@ export function diff<T>(newObj: T, krtObj: T): T {
   const diffObj: T = {} as T;
 
   Object.keys(newObj).forEach((k) => {
-    if (newObj[k] instanceof Object) {
+    if (Array.isArray(newObj[k])) {
+      for (let i = 0; i < newObj[k].length; i++) {
+        const element = newObj[k][i];
+        if (!krtObj[k].includes(element)) {
+          diffObj[k] = newObj[k];
+          break;
+        }
+      }
+    } else if (newObj[k] instanceof Object) {
       diffObj[k] = diff(newObj[k], krtObj[k]);
 
       if (Object.keys(diffObj[k]).length === 0) delete diffObj[k];
