@@ -20,6 +20,10 @@ export const insertDI = async (di: di) => {
 
   if (!krtflDI) {
     krtflDI = await diApi.create(di);
+
+    //TODO fix response
+    if (krtflDI) krtflDI = { ...di };
+
     logInfo('DI created', krtflDI.uniqueId);
   } else {
     const diDiff = diff(di, krtflDI);
@@ -38,7 +42,7 @@ export const insertDI = async (di: di) => {
     logWarn(`No entity to connect`, krtflDI.uniqueId);
   }
 
-  return krtflDI.uniqueId;
+  return krtflDI.uniqueId || di.uniqueId;
 };
 
 /**

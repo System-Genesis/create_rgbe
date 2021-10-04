@@ -33,7 +33,7 @@ async function consumeGetRGB() {
         logInfo('RGB insertion is done');
 
         msg.ack();
-      } catch (error) {
+      } catch (error: any) {
         logError(error);
 
         msg.ack();
@@ -52,7 +52,7 @@ async function consumeGetEntity() {
         await insertEntity(entity);
 
         msg.ack();
-      } catch (error) {
+      } catch (error: any) {
         logError(error.msg || error, error.identifier);
 
         msg.ack();
@@ -72,7 +72,7 @@ async function consumeDiToEntity() {
 
         logInfo(`Success to connect entity: ${entityId} to di: ${diId}`, { entityId, diId });
         msg.ack();
-      } catch (error) {
+      } catch (error: any) {
         logError(error);
         menash.send(config.rabbit.connectDiToEntity, { entityId, diId });
 

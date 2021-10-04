@@ -14,9 +14,11 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
 
   if (!krtflRole) {
     role.directGroup = ogId;
-    role.digitalIdentityUniqueId = diId;
 
     krtflRole = await roleApi.create(role);
+
+    if (krtflRole) connectRoleToDI(diId, role);
+
     if (krtflRole) logInfo('Role created', krtflRole);
     else throw { msg: 'Role not created', identifier: role.roleId };
   } else {
@@ -58,10 +60,14 @@ async function connectRoleToOG(ogId: string, krtflRole: role) {
 async function connectRoleToDI(diId: string, krtflRole: role) {
   if (diId !== krtflRole.digitalIdentityUniqueId) {
     try {
+      if (krtflRole.digitalIdentityUniqueId) {
+        await roleApi.disconnectToDI(krtflRole.roleId, krtflRole.digitalIdentityUniqueId);
+      }
+
       await roleApi.connectToDI(krtflRole.roleId, diId);
-      logInfo(`Role ${krtflRole.roleId} moved to OG ${diId}`);
+      logInfo(`Role ${krtflRole.roleId} moved to DI ${diId}`);
     } catch (error) {
-      logError(`Role ${krtflRole.roleId} not connected to OG ${diId}`);
+      logError(`Role ${krtflRole.roleId} not connected to DI ${diId}`);
     }
   }
 }
