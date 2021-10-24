@@ -1,4 +1,4 @@
-import getTokenCreator from 'spike-get-token';
+import getTokenCreator from 'spike-token-manager';
 import config from '../config/env.config';
 import path from 'path';
 
