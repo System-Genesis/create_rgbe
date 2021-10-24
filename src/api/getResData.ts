@@ -43,6 +43,11 @@ export const getResData = async (axiosReq: Promise<AxiosResponse<any>>) => {
     const res = await axiosReq;
     return res.data;
   } catch (error: any) {
+    if (error.response?.data?.id) {
+      return {
+        id: error.response.data.id,
+      };
+    }
     logWarn(
       `Response ${error.response?.data || error.code}, status: ${
         error.response?.status || 'no status'
