@@ -1,3 +1,4 @@
+import { logInfo } from './../logger/logger';
 import { entityApi } from '../api/entity';
 import { connectDiToEntityApi } from '../api/rgb';
 import { pushToArray, getArray, getAllKeys, delValue } from './redis';
@@ -19,6 +20,7 @@ export const handleEntityEvent = async (entityIdentifier: string, entId: string)
   if (data.length > 0) {
     for (let i = 0; i < data.length; i++) {
       await connectDiToEntityApi(entId, data[i]);
+      logInfo('entity connected', { entity: entId, di: data[i] });
     }
   }
 

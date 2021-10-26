@@ -17,8 +17,8 @@ export const connectRabbit = async () => {
 
     logInfo('Rabbit connected');
 
-    await menash.queue(config.rabbit.getEntity).prefetch(1000);
-    await menash.queue(config.rabbit.getRGB).prefetch(1000);
+    await menash.queue(config.rabbit.getEntity).prefetch(250);
+    await menash.queue(config.rabbit.getRGB).prefetch(250);
 
     await consumeGetEntity();
     await consumeGetRGB();

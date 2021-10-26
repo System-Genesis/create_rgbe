@@ -1,8 +1,8 @@
-import { diApi } from "../../api/rgb";
-import { logInfo, logWarn } from "../../logger/logger";
-import { di } from "../../types/rgbType";
-import { diff } from "../../util/utils";
-import { entityApi } from "./../../api/entity";
+import { diApi } from '../../api/rgb';
+import { logError, logInfo, logWarn } from '../../logger/logger';
+import { di } from '../../types/rgbType';
+import { diff } from '../../util/utils';
+import { entityApi } from './../../api/entity';
 
 /**
  * Create/update(the fields with changes) from given di to kartoffel
@@ -19,19 +19,22 @@ export const insertDI = async (di: di) => {
 
   if (!krtflDI) {
     krtflDI = await diApi.create(di);
+    if (krtflDI) {
+      //TODO fix response
+      if (krtflDI) krtflDI = { ...di };
 
-    //TODO fix response
-    if (krtflDI) krtflDI = { ...di };
-
-    logInfo("DI created", krtflDI.uniqueId);
+      logInfo('DI created', krtflDI.uniqueId);
+    } else {
+      throw logError('DI not created');
+    }
   } else {
     const diDiff = diff(di, krtflDI);
 
     if (Object.keys(diDiff).length > 0) {
       await diApi.update(krtflDI.uniqueId, diDiff);
-      logInfo("DI was updated", krtflDI.uniqueId);
+      logInfo('DI was updated', krtflDI.uniqueId);
     } else {
-      logInfo("Nothing to update", krtflDI.uniqueId);
+      logInfo('Nothing to update', krtflDI.uniqueId);
     }
   }
 
@@ -54,17 +57,13 @@ async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
 
   if (krtflDI.entityId) {
     const getEnt = await entityApi.get(entityIdentifier);
-    const connectedEntityId = getEnt.id || getEnt["_id"];
+    const connectedEntityId = getEnt.id || getEnt['_id'];
 
     if (connectedEntityId === krtflDI.entityId) {
       needConnection = false;
-      logInfo(
-        `DI already connected di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`
-      );
+      logInfo(`DI already connected di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`);
     } else {
-      logInfo(
-        `DI moved, di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`
-      );
+      logInfo(`DI moved, di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`);
     }
   }
 
