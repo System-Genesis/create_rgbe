@@ -1,10 +1,10 @@
-import menash, { ConsumerMessage } from 'menashmq';
-import config from '../config/env.config';
-import { logInfo, logError } from '../logger/logger';
-import { insertEntity } from '../service/entity/saveEntity';
-import { createRgb } from '../service/rgb/rgbHandler';
-import { entity } from '../types/entityType';
-import { rgb } from '../types/rgbType';
+import menash, { ConsumerMessage } from "menashmq";
+import config from "../config/env.config";
+import { logInfo, logError } from "../logger/logger";
+import { insertEntity } from "../service/entity/saveEntity";
+import { createRgb } from "../service/rgb/rgbHandler";
+import { entity } from "../types/entityType";
+import { rgb } from "../types/rgbType";
 
 export const connectRabbit = async () => {
   try {
@@ -15,9 +15,11 @@ export const connectRabbit = async () => {
     await menash.declareQueue(config.rabbit.connectDiToEntity);
     await menash.declareQueue(config.rabbit.logger);
 
-    logInfo('Rabbit connected');
+    logInfo("Rabbit connected");
 
-    await menash.queue(config.rabbit.getEntity).prefetch(config.rabbit.prefetch);
+    await menash
+      .queue(config.rabbit.getEntity)
+      .prefetch(config.rabbit.prefetch);
     await menash.queue(config.rabbit.getRGB).prefetch(config.rabbit.prefetch);
 
     await consumeGetEntity();
@@ -35,7 +37,7 @@ async function consumeGetRGB() {
         logInfo(`Got from queue => `, rgb);
 
         await createRgb(rgb as rgb);
-        logInfo('RGB insertion is done');
+        logInfo("RGB insertion is done");
 
         msg.ack();
       } catch (error: any) {

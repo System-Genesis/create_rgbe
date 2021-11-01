@@ -1,6 +1,6 @@
-import { connectRabbit } from './rabbit/rabbit';
-import { RecoveryDiConnection } from './redis/DailyRecovery';
-import redisClient from './redis/redis';
+import { connectRabbit } from "./rabbit/rabbit";
+import { RecoveryDiConnection } from "./redis/DailyRecovery";
+import redisClient from "./redis/redis";
 
 const start = async () => {
   redisClient(async () => {

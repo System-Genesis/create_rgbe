@@ -1,7 +1,8 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { token } from '../auth/spike';
-import config from '../config/env.config';
-import { logWarn } from './../logger/logger';
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { token } from "../auth/spike";
+import config from "../config/env.config";
+import { sleep } from "../util/utils";
+import { logWarn } from "./../logger/logger";
 
 axios.interceptors.request.use(async (req: AxiosRequestConfig) => {
   req.headers.authorization = await token();
@@ -22,13 +23,19 @@ axios.interceptors.response.use(
     // OR  SPIKE didn't give token
     // after 500 error in a row stop resend
     if (
-      (error.config && error.response && error.response.status === 401) ||
-      error.code === 'ECONNREFUSED' ||
-      error.message.toLowerCase().includes('spike')
+      !error.response?.data?.id &&
+      ((error.config && error.response && error.response.status === 401) ||
+        error.response.status === 503 ||
+        (error.config.method === "post" &&
+          error.config.url.includes("group")) ||
+        error.code === "ECONNREFUSED" ||
+        error.message.toLowerCase().includes("spike"))
     ) {
       if (reRequestCount < 500) {
+        console.log("rereq");
         reRequestCount++;
-        return axios.request(error.config);
+        await sleep(3000);
+        return await axios.request(error.config);
       }
     } else {
       reRequestCount = 0;
@@ -43,18 +50,18 @@ export const getResData = async (axiosReq: Promise<AxiosResponse<any>>) => {
     const res = await axiosReq;
     return res.data;
   } catch (error: any) {
-    if (error.response?.data?.id) {
+    if (error.response?.data?.id) { 
       return {
         id: error.response.data.id,
       };
     }
     logWarn(
       `Response ${error.response?.data || error.code}, status: ${
-        error.response?.status || 'no status'
+        error.response?.status || "no status"
       }`,
       {
         url: error.config?.url,
-        data: JSON.parse(error.config?.data || '{}'),
+        data: JSON.parse(error.config?.data || "{}"),
         msg: error.message,
       }
     );
