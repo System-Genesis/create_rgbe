@@ -46,7 +46,7 @@ async function connectRoleToOG(ogId: string, krtflRole: role) {
     try {
       await roleApi.connectToOG(krtflRole.roleId, ogId);
       logInfo(`Role ${krtflRole.roleId} moved to OG ${ogId}`);
-    } catch (error) {
+    } catch (error: any) {
       logError(`Role ${krtflRole.roleId} not connected to OG ${ogId}`);
     }
   }
@@ -66,7 +66,7 @@ async function connectRoleToDI(diId: string, krtflRole: role) {
 
       await roleApi.connectToDI(krtflRole.roleId, diId);
       logInfo(`Role ${krtflRole.roleId} moved to DI ${diId}`);
-    } catch (error) {
+    } catch (error: any) {
       logError(`Role ${krtflRole.roleId} not connected to DI ${diId}`);
     }
   }

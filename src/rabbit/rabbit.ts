@@ -1,25 +1,32 @@
-import menash, { ConsumerMessage } from 'menashmq';
-import config from '../config/env.config';
-import { logInfo, logError } from '../logger/logger';
-import { insertEntity } from '../service/entity/saveEntity';
-import { connectDiToEntity } from '../service/diToEntity/connectDiToEntity';
-import { createRgb } from '../service/rgb/rgbHandler';
-import { entity } from '../types/entityType';
-import { rgb } from '../types/rgbType';
+import menash, { ConsumerMessage } from "menashmq";
+import config from "../config/env.config";
+import { logInfo, logError } from "../logger/logger";
+import { insertEntity } from "../service/entity/saveEntity";
+import { createRgb } from "../service/rgb/rgbHandler";
+import { entity } from "../types/entityType";
+import { rgb } from "../types/rgbType";
 
 export const connectRabbit = async () => {
-  await menash.connect(config.rabbit.uri, config.rabbit.retryOptions);
+  try {
+    await menash.connect(config.rabbit.uri, config.rabbit.retryOptions);
 
-  await menash.declareQueue(config.rabbit.getEntity);
-  await menash.declareQueue(config.rabbit.getRGB);
-  await menash.declareQueue(config.rabbit.connectDiToEntity);
-  await menash.declareQueue(config.rabbit.logger);
+    await menash.declareQueue(config.rabbit.getEntity);
+    await menash.declareQueue(config.rabbit.getRGB);
+    await menash.declareQueue(config.rabbit.connectDiToEntity);
+    await menash.declareQueue(config.rabbit.logger);
 
-  logInfo('Rabbit connected');
+    logInfo("Rabbit connected");
 
-  await consumeDiToEntity();
-  await consumeGetEntity();
-  await consumeGetRGB();
+    await menash
+      .queue(config.rabbit.getEntity)
+      .prefetch(config.rabbit.prefetch);
+    await menash.queue(config.rabbit.getRGB).prefetch(config.rabbit.prefetch);
+
+    await consumeGetEntity();
+    await consumeGetRGB();
+  } catch (error) {
+    logError(JSON.stringify(error));
+  }
 };
 
 async function consumeGetRGB() {
@@ -30,7 +37,7 @@ async function consumeGetRGB() {
         logInfo(`Got from queue => `, rgb);
 
         await createRgb(rgb as rgb);
-        logInfo('RGB insertion is done');
+        logInfo("RGB insertion is done");
 
         msg.ack();
       } catch (error: any) {
@@ -54,27 +61,6 @@ async function consumeGetEntity() {
         msg.ack();
       } catch (error: any) {
         logError(error.msg || error, error.identifier);
-
-        msg.ack();
-      }
-    },
-    { noAck: false }
-  );
-}
-
-async function consumeDiToEntity() {
-  await menash.queue(config.rabbit.connectDiToEntity).activateConsumer(
-    async (msg: ConsumerMessage) => {
-      const { entityId, diId } = msg.getContent() as { entityId: string; diId: string };
-      try {
-        logInfo(`Try to connect entity: ${entityId} to di: ${diId}`, { entityId, diId });
-        await connectDiToEntity(entityId, diId);
-
-        logInfo(`Success to connect entity: ${entityId} to di: ${diId}`, { entityId, diId });
-        msg.ack();
-      } catch (error: any) {
-        logError(error);
-        menash.send(config.rabbit.connectDiToEntity, { entityId, diId });
 
         msg.ack();
       }

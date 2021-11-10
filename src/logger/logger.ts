@@ -1,6 +1,6 @@
-import { menash } from 'menashmq';
-import winston, { config, format } from 'winston';
-import configEnv from '../config/env.config';
+import { menash } from "menashmq";
+import winston, { config, format } from "winston";
+import configEnv from "../config/env.config";
 
 export const logger = winston.createLogger({
   levels: config.npm.levels,
@@ -23,7 +23,7 @@ export const logger = winston.createLogger({
  * @param any - objet to add to msg
  */
 export const logInfo = (msg: string, any?: any) => {
-  logs('info', msg, any);
+  logs("info", msg, any);
 };
 
 /**
@@ -32,7 +32,7 @@ export const logInfo = (msg: string, any?: any) => {
  * @param any - objet to add to msg
  */
 export const logWarn = (msg: string, any?: any) => {
-  logs('warn', msg, any);
+  logs("warn", msg, any);
 };
 
 /**
@@ -41,17 +41,17 @@ export const logWarn = (msg: string, any?: any) => {
  * @param any - objet to add to msg
  */
 export const logError = (msg: string, any?: any) => {
-  logs('error', msg, any);
+  logs("error", msg, any);
 };
 
 export const logs = (level: string, msg: string, any?: any) => {
   menash.send(configEnv.rabbit.logger, {
     level,
-    message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
-    system: 'traking',
-    service: 'CREATE RGBE',
+    message: `${msg}. ${any ? JSON.stringify(any) : ""}`,
+    system: "traking",
+    service: "CREATE RGBE",
     extraFields: any,
   });
 
-  logger[level](`${msg} ${!any ? '' : JSON.stringify(any)}`);
+  logger[level](`${JSON.stringify(msg)} ${!any ? "" : JSON.stringify(any)}`);
 };

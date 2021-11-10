@@ -1,13 +1,12 @@
-import { connectRabbit } from './rabbit/rabbit';
-import { RecoveryDiConnection } from './redis/DailyRecovery';
-import redisClient from './redis/redis';
+import { connectRabbit } from "./rabbit/rabbit";
+import { RecoveryDiConnection } from "./redis/DailyRecovery";
+import redisClient from "./redis/redis";
 
-const start = () => {
+const start = async () => {
   redisClient(async () => {
     await connectRabbit();
     RecoveryDiConnection.getInstance().start();
   });
 };
 
-
-start();
+start().catch((e) => console.log(e));

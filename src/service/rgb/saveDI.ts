@@ -1,5 +1,5 @@
 import { diApi } from '../../api/rgb';
-import { logInfo, logWarn } from '../../logger/logger';
+import { logError, logInfo, logWarn } from '../../logger/logger';
 import { di } from '../../types/rgbType';
 import { diff } from '../../util/utils';
 import { entityApi } from './../../api/entity';
@@ -12,7 +12,6 @@ import { entityApi } from './../../api/entity';
  */
 export const insertDI = async (di: di) => {
   const entityIdentifier = di.entityId;
-
   let krtflDI: di = await diApi.get(di.uniqueId);
 
   // create/update DI without entity connected (connect later)
@@ -20,11 +19,14 @@ export const insertDI = async (di: di) => {
 
   if (!krtflDI) {
     krtflDI = await diApi.create(di);
+    if (krtflDI) {
+      //TODO fix response
+      if (krtflDI) krtflDI = { ...di };
 
-    //TODO fix response
-    if (krtflDI) krtflDI = { ...di };
-
-    logInfo('DI created', krtflDI.uniqueId);
+      logInfo('DI created', krtflDI.uniqueId);
+    } else {
+      throw logError('DI not created');
+    }
   } else {
     const diDiff = diff(di, krtflDI);
 
@@ -54,7 +56,8 @@ async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
   let needConnection = true;
 
   if (krtflDI.entityId) {
-    const connectedEntityId = (await entityApi.get(entityIdentifier))?.id;
+    const getEnt = await entityApi.get(entityIdentifier);
+    const connectedEntityId = getEnt.id || getEnt['_id'];
 
     if (connectedEntityId === krtflDI.entityId) {
       needConnection = false;
