@@ -24,7 +24,7 @@ const diffPic = (oldEntity: entity, entity: entity) => {
     oldPic?.avatar?.meta?.updateAt &&
     (!oldPic?.avatar?.meta?.updateAt || newPic?.avatar?.meta?.updateAt != oldPic?.avatar?.meta?.updateAt)
   ) {
-    oldEntity.pictures = { avatar: newPic?.avatar };
+    oldEntity.pictures = { avatar: newPic?.avatar, ...oldEntity.pictures };
   }
 };
 
