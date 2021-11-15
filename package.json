@@ -7,7 +7,8 @@
     "build": "tsc",
     "start": "nodemon ./src/app.ts",
     "test": "jest --coverage",
-    "docker": "docker build -t systemgenesis0/create_rgbe . & docker push systemgenesis0/create_rgbe"
+    "docker-dockerhub": "docker build -t systemgenesis0/create_rgbe . && docker push systemgenesis0/create_rgbe",
+    "docker-azure": "docker build -t genesisproject.azurecr.io/system-genesis/create_rgbe:latest . && docker push genesisproject.azurecr.io/system-genesis/create_rgbe:latest "
   },
   "repository": {
     "type": "git",

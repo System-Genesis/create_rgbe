@@ -59,5 +59,14 @@ describe('utils', () => {
 
       expect(diff(toCompare, compareTo)).toEqual(expected);
     });
+    
+    it('Should check nested obj', () => {
+      const toCompare: any = { a: { name: 'a', b: { age: 1 } }, active: { a: true } };
+      const compareTo: any = { a:{name: 'a', age: 1, },active: { a: false } };
+      const expected = { a: { name: 'a', b: { age: 1 } }, active: { a: true } };
+      const actual = diff(toCompare, compareTo);
+
+      expect(actual).toEqual(expected);
+    });
   });
 });

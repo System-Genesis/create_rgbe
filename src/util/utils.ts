@@ -20,6 +20,7 @@ export function diff<T>(newObj: T, krtObj: T): T {
       diffObj[k] = diff(newObj[k], krtObj[k]);
 
       if (Object.keys(diffObj[k]).length === 0) delete diffObj[k];
+      else diffObj[k] = newObj[k];
     } else if (!krtObj || newObj[k] != krtObj[k]) diffObj[k] = newObj[k];
   });
 
