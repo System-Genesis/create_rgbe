@@ -2,31 +2,7 @@ import { entityApi } from '../../api/entity';
 import { logInfo } from '../../logger/logger';
 import { handleEntityEvent } from '../../redis/connectDiToEntityRedis';
 import { entity } from '../../types/entityType';
-import { diff } from '../../util/utils';
-
-/**
- * diff of pictures only by updateAt
- */
-const diffPic = (oldEntity: entity, entity: entity) => {
-  const oldPic = oldEntity.pictures;
-  const newPic = entity.pictures;
-
-  delete entity.pictures;
-  delete oldEntity.pictures;
-
-  if (
-    oldPic?.profile?.meta?.updateAt &&
-    (!oldPic?.profile?.meta?.updateAt || newPic?.profile?.meta?.updateAt != oldPic?.profile?.meta?.updateAt)
-  ) {
-    oldEntity.pictures = { profile: newPic?.profile };
-  }
-  if (
-    oldPic?.avatar?.meta?.updateAt &&
-    (!oldPic?.avatar?.meta?.updateAt || newPic?.avatar?.meta?.updateAt != oldPic?.avatar?.meta?.updateAt)
-  ) {
-    oldEntity.pictures = { avatar: newPic?.avatar, ...oldEntity.pictures };
-  }
-};
+import { diff, diffPic } from '../../util/utils';
 
 /**
  * Create/update (only fields that change) entity from buildEntity queue to kartoffel

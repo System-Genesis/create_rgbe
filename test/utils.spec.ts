@@ -1,4 +1,4 @@
-import { diff } from './../src/util/utils';
+import { diff, diffPic } from './../src/util/utils';
 
 describe('utils', () => {
   describe('diff', () => {
@@ -59,14 +59,35 @@ describe('utils', () => {
 
       expect(diff(toCompare, compareTo)).toEqual(expected);
     });
-    
+
     it('Should check nested obj', () => {
       const toCompare: any = { a: { name: 'a', b: { age: 1 } }, active: { a: true } };
-      const compareTo: any = { a:{name: 'a', age: 1, },active: { a: false } };
+      const compareTo: any = { a: { name: 'a', age: 1 }, active: { a: false } };
       const expected = { a: { name: 'a', b: { age: 1 } }, active: { a: true } };
       const actual = diff(toCompare, compareTo);
 
       expect(actual).toEqual(expected);
+    });
+
+    it('Should diffPic', () => {
+      const toCompare: any = {
+        pictures: { profile: { meta: { updateAt: '123' } }, avatar: { meta: { updateAt: '23' } } },
+        a: { name: 'a', b: { age: 1 } },
+        active: { a: true },
+      };
+      const compareTo: any = {
+        pictures: { profile: { meta: { updateAt: '1234' } }, avatar: { meta: { updateAt: '23' } } },
+        a: { name: 'a', age: 1 },
+        active: { a: false },
+      };
+      const expected = {
+        pictures: { profile: { meta: { updateAt: '123' } } },
+        a: { name: 'a', age: 1 },
+        active: { a: false },
+      };
+      diffPic(toCompare, compareTo);
+
+      expect(compareTo).toEqual(expected);
     });
   });
 });

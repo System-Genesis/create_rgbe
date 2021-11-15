@@ -1,3 +1,5 @@
+import { entity } from '../types/entityType';
+
 /**
  * Check the which fields has change
  * @param newObj obj to compare from
@@ -26,6 +28,30 @@ export function diff<T>(newObj: T, krtObj: T): T {
 
   return diffObj;
 }
+
+/**
+ * diff of pictures only by updateAt
+ */
+export const diffPic = (newEntity: entity, oldEntity: entity) => {
+  const oldPic = oldEntity.pictures;
+  const newPic = newEntity.pictures;
+
+  delete newEntity.pictures;
+  delete oldEntity.pictures;
+
+  if (
+    oldPic?.profile?.meta?.updateAt &&
+    (!oldPic?.profile?.meta?.updateAt || newPic?.profile?.meta?.updateAt != oldPic?.profile?.meta?.updateAt)
+  ) {
+    oldEntity.pictures = { profile: newPic?.profile };
+  }
+  if (
+    oldPic?.avatar?.meta?.updateAt &&
+    (!oldPic?.avatar?.meta?.updateAt || newPic?.avatar?.meta?.updateAt != oldPic?.avatar?.meta?.updateAt)
+  ) {
+    oldEntity.pictures = { avatar: newPic?.avatar, ...oldEntity.pictures };
+  }
+};
 
 export const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
