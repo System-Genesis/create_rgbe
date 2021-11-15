@@ -68,20 +68,87 @@ describe('utils', () => {
 
       expect(actual).toEqual(expected);
     });
+  });
 
-    it('Should diffPic', () => {
+  describe('diffPic', () => {
+    it('Should diffPic only profile', () => {
       const toCompare: any = {
-        pictures: { profile: { meta: { updateAt: '123' } }, avatar: { meta: { updateAt: '23' } } },
+        pictures: {
+          profile: { meta: { updateAt: '123' } },
+          avatar: { meta: { updateAt: '23' } },
+        },
         a: { name: 'a', b: { age: 1 } },
         active: { a: true },
       };
       const compareTo: any = {
-        pictures: { profile: { meta: { updateAt: '1234' } }, avatar: { meta: { updateAt: '23' } } },
+        pictures: {
+          profile: { meta: { updateAt: '1234' } },
+          avatar: { meta: { updateAt: '23' } },
+        },
         a: { name: 'a', age: 1 },
         active: { a: false },
       };
       const expected = {
-        pictures: { profile: { meta: { updateAt: '123' } } },
+        pictures: {
+          profile: { meta: { updateAt: '123' } },
+        },
+        a: { name: 'a', age: 1 },
+        active: { a: false },
+      };
+      diffPic(toCompare, compareTo);
+
+      expect(compareTo).toEqual(expected);
+    });
+
+    it('Should diffPic only avatar', () => {
+      const toCompare: any = {
+        pictures: {
+          profile: { meta: { updateAt: '123' } },
+          avatar: { meta: { updateAt: '2s3' } },
+        },
+        a: { name: 'a', b: { age: 1 } },
+        active: { a: true },
+      };
+      const compareTo: any = {
+        pictures: {
+          profile: { meta: { updateAt: '123' } },
+          avatar: { meta: { updateAt: '23' } },
+        },
+        a: { name: 'a', age: 1 },
+        active: { a: false },
+      };
+      const expected = {
+        pictures: { avatar: { meta: { updateAt: '2s3' } } },
+        a: { name: 'a', age: 1 },
+        active: { a: false },
+      };
+      diffPic(toCompare, compareTo);
+
+      expect(compareTo).toEqual(expected);
+    });
+
+    it('Should diffPic profile & avatar', () => {
+      const toCompare: any = {
+        pictures: {
+          profile: { meta: { updateAt: '123' } },
+          avatar: { meta: { updateAt: '2s3' } },
+        },
+        a: { name: 'a', b: { age: 1 } },
+        active: { a: true },
+      };
+      const compareTo: any = {
+        pictures: {
+          profile: { meta: { updateAt: '1234' } },
+          avatar: { meta: { updateAt: '23' } },
+        },
+        a: { name: 'a', age: 1 },
+        active: { a: false },
+      };
+      const expected = {
+        pictures: {
+          profile: { meta: { updateAt: '123' } },
+          avatar: { meta: { updateAt: '2s3' } },
+        },
         a: { name: 'a', age: 1 },
         active: { a: false },
       };
