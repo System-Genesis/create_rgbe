@@ -1,8 +1,32 @@
-import { entityApi } from "../../api/entity";
-import { logInfo } from "../../logger/logger";
-import { handleEntityEvent } from "../../redis/connectDiToEntityRedis";
-import { entity } from "../../types/entityType";
-import { diff } from "../../util/utils";
+import { entityApi } from '../../api/entity';
+import { logInfo } from '../../logger/logger';
+import { handleEntityEvent } from '../../redis/connectDiToEntityRedis';
+import { entity } from '../../types/entityType';
+import { diff } from '../../util/utils';
+
+/**
+ * diff of pictures only by updateAt
+ */
+const diffPic = (oldEntity: entity, entity: entity) => {
+  const oldPic = oldEntity.pictures;
+  const newPic = entity.pictures;
+
+  delete entity.pictures;
+  delete oldEntity.pictures;
+
+  if (
+    oldPic?.profile?.meta?.updateAt &&
+    (!oldPic?.profile?.meta?.updateAt || newPic?.profile?.meta?.updateAt != oldPic?.profile?.meta?.updateAt)
+  ) {
+    oldEntity.pictures = { profile: newPic?.profile };
+  }
+  if (
+    oldPic?.avatar?.meta?.updateAt &&
+    (!oldPic?.avatar?.meta?.updateAt || newPic?.avatar?.meta?.updateAt != oldPic?.avatar?.meta?.updateAt)
+  ) {
+    oldEntity.pictures = { avatar: newPic?.avatar };
+  }
+};
 
 /**
  * Create/update (only fields that change) entity from buildEntity queue to kartoffel
@@ -14,29 +38,31 @@ export const insertEntity = async (entity: entity) => {
   if (!krtflEntity) {
     krtflEntity = await entityApi.create(entity);
     if (krtflEntity) {
-      logInfo("Entity created successfully", krtflEntity?.id);
+      logInfo('Entity created successfully', krtflEntity?.id);
       handleEntityEvent(
         entity.identityCard || entity.personalNumber || entity.goalUserId!,
-        krtflEntity.id || krtflEntity["_id"]
+        krtflEntity.id || krtflEntity['_id']
       );
     } else {
       throw {
-        msg: "Entity not created",
-        identifier:
-          entity.identityCard || entity.personalNumber || entity.goalUserId!,
+        msg: 'Entity not created',
+        identifier: entity.identityCard || entity.personalNumber || entity.goalUserId!,
       };
     }
   } else {
-    const diffEntity = diff(entity, krtflEntity);
+    const oldEntity = { ...krtflEntity };
+    diffPic(oldEntity, entity);
+
+    const diffEntity = diff(entity, oldEntity);
 
     if (Object.keys(diffEntity).length > 0) {
-      await entityApi.update(krtflEntity.id || krtflEntity["_id"], diffEntity);
-      logInfo("Entity updated successfully", {
+      await entityApi.update(krtflEntity.id || krtflEntity['_id'], diffEntity);
+      logInfo('Entity updated successfully', {
         id: krtflEntity?.id,
         update: diffEntity,
       });
     } else {
-      logInfo("Nothing to update", krtflEntity.id);
+      logInfo('Nothing to update', krtflEntity.id);
     }
   }
 };
