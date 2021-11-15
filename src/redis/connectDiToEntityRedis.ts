@@ -30,10 +30,11 @@ export const handleEntityEvent = async (entityIdentifier: string, entId: string)
 export const runAll = async () => {
   const keys = await getAllKeys();
 
-  keys.forEach(async (entityIdentifier) => {
+  for (let i = 0; i < keys.length; i++) {
+    const entityIdentifier = keys[i];
     const ent = await entityApi.get(entityIdentifier);
     if (ent) {
       handleEntityEvent(entityIdentifier, ent.id || ent['_id']);
     }
-  });
+  }
 };
