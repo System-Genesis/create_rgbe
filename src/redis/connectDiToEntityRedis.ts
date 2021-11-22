@@ -9,7 +9,7 @@ export const connectDiToEntity = async (entityIdentifier: string, diId: string) 
   if (entity) {
     // TODO delete _id
     connectDiToEntityApi(entity.id || entity['_id'], diId);
-    logger.logInfo(false, 'Entity connected to DI', 'SYSTEM', '', {
+    logger.logInfo(false, 'Entity connected to DI', 'APP', '', {
       entity: entityIdentifier,
       di: diId,
     });
@@ -24,7 +24,7 @@ export const handleEntityEvent = async (entityIdentifier: string, entId: string)
   if (data.length > 0) {
     for (let i = 0; i < data.length; i++) {
       await connectDiToEntityApi(entId, data[i]);
-      logger.logInfo(false, 'Entity connected to DI', 'SYSTEM', '', { entity: entId, di: data[i] });
+      logger.logInfo(false, 'Entity connected to DI', 'APP', '', { entity: entId, di: data[i] });
     }
   }
 

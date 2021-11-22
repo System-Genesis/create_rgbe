@@ -58,7 +58,7 @@ export const getResData = async (axiosReq: Promise<AxiosResponse<any>>) => {
     logger.logWarn(
       true,
       `Response ${JSON.stringify(erData?.message || erData || error.code)}`,
-      'SYSTEM',
+      'APP',
       error.message,
       { url: erConfig?.url, data: erConfig?.data }
     );

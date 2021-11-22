@@ -15,14 +15,14 @@ export const insertEntity = async (entity: entity) => {
   if (!krtflEntity) {
     krtflEntity = await entityApi.create(entity);
     if (krtflEntity) {
-      logger.logInfo(false, 'Entity created', 'SYSTEM', '', { id: krtflEntity?.id });
+      logger.logInfo(false, 'Entity created', 'APP', '', { id: krtflEntity?.id });
 
       handleEntityEvent(
         entity.identityCard || entity.personalNumber || entity.goalUserId!,
         krtflEntity.id || krtflEntity['_id']
       );
     } else {
-      logger.logError(false, 'Entity not Created', 'SYSTEM', '', {
+      logger.logError(false, 'Entity not Created', 'APP', '', {
         identifier: entity.identityCard || entity.personalNumber || entity.goalUserId!,
       });
     }
@@ -34,12 +34,12 @@ export const insertEntity = async (entity: entity) => {
 
     if (Object.keys(diffEntity).length > 0) {
       await entityApi.update(krtflEntity.id || krtflEntity['_id'], diffEntity);
-      logger.logInfo(false, 'Entity updated', 'SYSTEM', '', {
+      logger.logInfo(false, 'Entity updated', 'APP', '', {
         id: krtflEntity?.id,
         update: diffEntity,
       });
     } else {
-      logger.logInfo(true, 'Nothing to update', 'SYSTEM', '', { id: krtflEntity.id });
+      logger.logInfo(true, 'Nothing to update', 'APP', '', { id: krtflEntity.id });
     }
   }
 };

@@ -23,9 +23,9 @@ export const insertDI = async (di: di) => {
       //TODO fix response
       if (krtflDI) krtflDI = { ...di };
 
-      logger.logInfo(false, 'DI created', 'SYSTEM', '', { uniqueId: krtflDI.uniqueId });
+      logger.logInfo(false, 'DI created', 'APP', '', { uniqueId: krtflDI.uniqueId });
     } else {
-      logger.logError(false, 'DI not created', 'SYSTEM', '', { uniqueId: di.uniqueId });
+      logger.logError(false, 'DI not created', 'APP', '', { uniqueId: di.uniqueId });
       return;
     }
   } else {
@@ -33,16 +33,19 @@ export const insertDI = async (di: di) => {
 
     if (Object.keys(diDiff).length > 0) {
       await diApi.update(krtflDI.uniqueId, diDiff);
-      logger.logInfo(false, 'DI updated', 'SYSTEM', '', { uniqueId: krtflDI.uniqueId });
+      logger.logInfo(false, 'DI updated', 'APP', `updated: ${Object.keys(diDiff)}`, {
+        uniqueId: krtflDI.uniqueId,
+        updated: diDiff,
+      });
     } else {
-      logger.logInfo(false, 'DI already up to date', 'SYSTEM', '', { uniqueId: krtflDI.uniqueId });
+      logger.logWarn(true, 'DI already up to date', 'APP', '', { uniqueId: krtflDI.uniqueId });
     }
   }
 
   if (entityIdentifier) {
     await connectDiToEntity(krtflDI, entityIdentifier);
   } else {
-    logger.logWarn(true, 'No entity to connect', 'SYSTEM', '', { uniqueId: krtflDI.uniqueId });
+    logger.logWarn(true, 'No entity to connect', 'APP', '', { uniqueId: krtflDI.uniqueId });
   }
 
   return krtflDI.uniqueId || di.uniqueId;
@@ -60,7 +63,7 @@ async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
     const connectMsg = `di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`;
 
     if (connectedEntityId === krtflDI.entityId) {
-      return logger.logInfo(true, 'DI already connected', 'SYSTEM', connectMsg);
+      return logger.logInfo(true, 'DI already connected', 'APP', connectMsg);
     }
   }
 

@@ -19,7 +19,7 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
 
     if (krtflRole) connectRoleToDI(diId, role);
 
-    if (krtflRole) logger.logInfo(false, 'Role created', 'SYSTEM', '', { id: krtflRole.roleId });
+    if (krtflRole) logger.logInfo(false, 'Role created', 'APP', '', { id: krtflRole.roleId });
     else throw { msg: 'Role not created', identifier: role.roleId };
   } else {
     const diffRole = diff(role, krtflRole);
@@ -29,12 +29,12 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
 
     if (Object.keys(diffRole).length > 0) {
       await roleApi.update(krtflRole.roleId, role);
-      logger.logInfo(false, 'Role updated', 'SYSTEM', '', {
+      logger.logInfo(false, 'Role updated', 'APP', `updated: ${Object.keys(diffRole)}`, {
         id: krtflRole.roleId,
         update: diffRole,
       });
     } else {
-      logger.logInfo(false, 'Role updated', 'SYSTEM', '', { id: krtflRole.roleId });
+      logger.logInfo(true, 'Role not updated', 'APP', '', { id: krtflRole.roleId });
     }
   }
 };
@@ -50,9 +50,9 @@ async function connectRoleToOG(ogId: string, krtflRole: role) {
 
     try {
       await roleApi.connectToOG(krtflRole.roleId, ogId);
-      logger.logInfo(false, 'Role moved to Group', 'SYSTEM', moveMsg, { id: krtflRole.roleId });
+      logger.logInfo(false, 'Role moved to Group', 'APP', moveMsg, { id: krtflRole.roleId });
     } catch (error: any) {
-      logger.logError(false, 'Role fail to Group ', 'SYSTEM', moveMsg, {
+      logger.logError(false, 'Role fail to Group ', 'APP', moveMsg, {
         id: krtflRole.roleId,
         error,
       });
@@ -75,9 +75,9 @@ async function connectRoleToDI(diId: string, krtflRole: role) {
       }
 
       await roleApi.connectToDI(krtflRole.roleId, diId);
-      logger.logInfo(false, 'Role moved to DI', 'SYSTEM', moveMsg, { id: krtflRole.roleId });
+      logger.logInfo(false, 'Role moved to DI', 'APP', moveMsg, { id: krtflRole.roleId });
     } catch (error: any) {
-      logger.logError(false, 'Role fail to DI ', 'SYSTEM', moveMsg, {
+      logger.logError(false, 'Role fail to DI ', 'APP', moveMsg, {
         id: krtflRole.roleId,
         error,
       });
