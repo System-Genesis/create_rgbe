@@ -1,4 +1,4 @@
-name: "create_rgbe"
+name: "create-rgbe"
 replicaCount: 1
 
 images:
@@ -21,14 +21,5 @@ service:
 
 config:
   configmaps: 
-    name: create_rgbe
-
-ingress:
-  enabled: true
-  hosts:
-  - host: test-cd.branch-yesodot.org
-    paths:
-      - path: /message
-        service: testname
-        port: "3000"
+    name: create-rgbe
   
