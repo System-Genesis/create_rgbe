@@ -3,6 +3,8 @@ import './dotenv';
 import * as env from 'env-var';
 
 export default {
+  serviceName: env.get('SERVICE_NAME').required().asString(),
+  systemName: env.get('SYSTEM_NAME').required().asString(),
   rabbit: {
     uri: env.get('RABBIT_URI').required().asString(),
     logger: env.get('LOGGER_QUEUE').required().asString(),
