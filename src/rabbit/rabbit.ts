@@ -1,23 +1,22 @@
 import menash, { ConsumerMessage } from 'menashmq';
 import config from '../config/env.config';
-import { logInfo, logError } from '../logger/logger';
 import { insertEntity } from '../service/entity/saveEntity';
-import { connectDiToEntity } from '../service/diToEntity/connectDiToEntity';
 import { createRgb } from '../service/rgb/rgbHandler';
 import { entity } from '../types/entityType';
 import { rgb } from '../types/rgbType';
+import logger from 'logger-genesis';
 
 export const connectRabbit = async () => {
+  console.log('Trying to connect to RabbitMQ...');
+
   await menash.connect(config.rabbit.uri, config.rabbit.retryOptions);
 
   await menash.declareQueue(config.rabbit.getEntity);
   await menash.declareQueue(config.rabbit.getRGB);
-  await menash.declareQueue(config.rabbit.connectDiToEntity);
   await menash.declareQueue(config.rabbit.logger);
 
-  logInfo('Rabbit connected');
+  console.log('Rabbit connected');
 
-  await consumeDiToEntity();
   await consumeGetEntity();
   await consumeGetRGB();
 };
@@ -27,14 +26,14 @@ async function consumeGetRGB() {
     async (msg: ConsumerMessage) => {
       try {
         const rgb = msg.getContent();
-        logInfo(`Got from queue => `, rgb);
+        logger.logInfo(true, 'Got from RGB queue', 'SYSTEM', JSON.stringify(rgb));
 
         await createRgb(rgb as rgb);
-        logInfo('RGB insertion is done');
+        logger.logInfo(true, 'RGB insertion is done', 'SYSTEM', '');
 
         msg.ack();
-      } catch (error) {
-        logError(error);
+      } catch (error: any) {
+        logger.logError(false, 'Unknown error', 'SYSTEM', error.message);
 
         msg.ack();
       }
@@ -48,33 +47,13 @@ async function consumeGetEntity() {
     async (msg: ConsumerMessage) => {
       try {
         const entity = msg.getContent() as entity;
-        logInfo(`Got from queue => `, entity);
+        logger.logInfo(true, 'Got from ENTITY queue', 'SYSTEM', JSON.stringify(entity));
         await insertEntity(entity);
+        logger.logInfo(true, 'entity insertion is done', 'SYSTEM', '');
 
         msg.ack();
-      } catch (error) {
-        logError(error);
-
-        msg.ack();
-      }
-    },
-    { noAck: false }
-  );
-}
-
-async function consumeDiToEntity() {
-  await menash.queue(config.rabbit.connectDiToEntity).activateConsumer(
-    async (msg: ConsumerMessage) => {
-      const { entityId, diId } = msg.getContent() as { entityId: string; diId: string };
-      try {
-        logInfo(`Try to connect entity: ${entityId} to di: ${diId}`, { entityId, diId });
-        await connectDiToEntity(entityId, diId);
-
-        logInfo(`Success to connect entity: ${entityId} to di: ${diId}`, { entityId, diId });
-        msg.ack();
-      } catch (error) {
-        logError(error);
-        menash.send(config.rabbit.connectDiToEntity, { entityId, diId });
+      } catch (error: any) {
+        logger.logError(false, 'Unknown error', 'SYSTEM', error.message);
 
         msg.ack();
       }

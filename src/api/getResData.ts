@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { token } from '../auth/spike';
 import config from '../config/env.config';
-import { logWarn } from './../logger/logger';
+import logger from 'logger-genesis';
 
 axios.interceptors.request.use(async (req: AxiosRequestConfig) => {
   req.headers.authorization = await token();
@@ -40,12 +40,17 @@ export const getResData = async (axiosReq: Promise<AxiosResponse<any>>) => {
   try {
     const res = await axiosReq;
     return res.data;
-  } catch (error) {
-    logWarn(`Response ${error.response?.data}, status:  ${error.response?.status}`, {
-      url: error.config?.url,
-      data: JSON.parse(error.config?.data || '{}'),
-      msg: error.message,
-    });
+  } catch (error: any) {
+    logger.logWarn(
+      true,
+      `Response ${error.response?.data}, status:  ${error.response?.status}`,
+      'APP',
+      error.message,
+      {
+        url: error.config?.url,
+        data: JSON.parse(error.config?.data || '{}'),
+      }
+    );
 
     return null;
   }
