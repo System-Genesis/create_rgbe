@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import logger from 'logger-genesis';
 import { token } from '../auth/spike';
 import config from '../config/env.config';
 import { sleep } from '../util/utils';
-import { logWarn } from './../logger/logger';
 
 axios.interceptors.request.use(async (req: AxiosRequestConfig) => {
   req.headers.authorization = await token();
@@ -49,20 +49,18 @@ export const getResData = async (axiosReq: Promise<AxiosResponse<any>>) => {
     const res = await axiosReq;
     return res.data;
   } catch (error: any) {
-    if (error.response?.data?.id) {
-      return {
-        id: error.response.data.id,
-      };
-    }
-    logWarn(
-      `Response ${JSON.stringify(error.response?.data?.message || error.response?.data || error.code)}, status: ${
-        error.response?.status || 'no status'
-      }`,
-      {
-        url: error.config?.url,
-        data: JSON.parse(error.config?.data || '{}'),
-        msg: error.message,
-      }
+    const erData = error.response?.data;
+
+    if (erData?.id) return { id: erData.id };
+
+    const erConfig = error.config;
+
+    logger.logWarn(
+      true,
+      `Response ${JSON.stringify(erData?.message || erData || error.code)}`,
+      'SYSTEM',
+      error.message,
+      { url: erConfig?.url, data: erConfig?.data }
     );
 
     return null;

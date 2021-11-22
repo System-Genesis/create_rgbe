@@ -1,8 +1,9 @@
+import logger from 'logger-genesis';
 import { entityApi } from '../../api/entity';
-import { logInfo } from '../../logger/logger';
+
 import { handleEntityEvent } from '../../redis/connectDiToEntityRedis';
 import { entity } from '../../types/entityType';
-import { diff, diffPic } from '../../util/utils';
+import { diff, diffPicture } from '../../util/utils';
 
 /**
  * Create/update (only fields that change) entity from buildEntity queue to kartoffel
@@ -14,31 +15,31 @@ export const insertEntity = async (entity: entity) => {
   if (!krtflEntity) {
     krtflEntity = await entityApi.create(entity);
     if (krtflEntity) {
-      logInfo('Entity created successfully', krtflEntity?.id);
+      logger.logInfo(false, 'Entity created', 'SYSTEM', '', { id: krtflEntity?.id });
+
       handleEntityEvent(
         entity.identityCard || entity.personalNumber || entity.goalUserId!,
         krtflEntity.id || krtflEntity['_id']
       );
     } else {
-      throw {
-        msg: 'Entity not created',
+      logger.logError(false, 'Entity not Created', 'SYSTEM', '', {
         identifier: entity.identityCard || entity.personalNumber || entity.goalUserId!,
-      };
+      });
     }
   } else {
     const oldEntity = { ...krtflEntity };
-    diffPic(oldEntity, entity);
+    diffPicture(oldEntity, entity);
 
     const diffEntity = diff(entity, oldEntity);
 
     if (Object.keys(diffEntity).length > 0) {
       await entityApi.update(krtflEntity.id || krtflEntity['_id'], diffEntity);
-      logInfo('Entity updated successfully', {
+      logger.logInfo(false, 'Entity updated', 'SYSTEM', '', {
         id: krtflEntity?.id,
         update: diffEntity,
       });
     } else {
-      logInfo('Nothing to update', krtflEntity.id);
+      logger.logInfo(true, 'Nothing to update', 'SYSTEM', '', { id: krtflEntity.id });
     }
   }
 };
@@ -58,38 +59,3 @@ export async function getExistsEntity(entity: entity) {
     (await entityApi.get(entity.personalNumber!))
   );
 }
-
-// if we will delete old entity when find two entity related
-//
-// export const insertEntity = async (entity: entity) => {
-//   let krtflEntityPN: krtflEntity | undefined;
-//   let krtflEntityIC: krtflEntity | undefined;
-//   let krtflEntity: krtflEntity | undefined;
-
-//   if (entity.personalNumber) krtflEntityPN = await entityApi.get(entity.personalNumber);
-//   if (entity.identityCard) krtflEntityIC = await entityApi.get(entity.identityCard);
-//   if (entity.goalUserId) krtflEntity = await entityApi.get(entity.goalUserId);
-
-//   if (!(krtflEntity && krtflEntityPN && krtflEntityIC)) {
-//     await entityApi.create(entity);
-//   } else {
-//     if (krtflEntityPN && krtflEntityIC) {
-//       // handle DI
-//       // disconnect
-//       // connect IC
-//       await entityApi.deleteEntity(krtflEntityPN.personalNumber as string);
-//     }
-
-//     krtflEntity = krtflEntity || krtflEntityIC || krtflEntityPN;
-
-//     const diffEntity = diff(entity, krtflEntity);
-
-//     if (Object.keys(krtflEntity).length === 0) {
-//       await entityApi.update(krtflEntity.id, diffEntity);
-//     } else {
-//       logInfo('Nothing to update', krtflEntity);
-//     }
-//   }
-
-//   logInfo('Inserted entity successfully');
-// };

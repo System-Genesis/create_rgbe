@@ -1,7 +1,7 @@
+import logger from 'logger-genesis';
 import { roleApi } from '../../api/rgb';
 import { role } from '../../types/rgbType';
 import { diff } from '../../util/utils';
-import { logError, logInfo } from './../../logger/logger';
 /**
  * Create/update(the fields with changes) from given role to kartoffel
  * And connect to his di and og
@@ -19,7 +19,7 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
 
     if (krtflRole) connectRoleToDI(diId, role);
 
-    if (krtflRole) logInfo('Role created', krtflRole);
+    if (krtflRole) logger.logInfo(false, 'Role created', 'SYSTEM', '', { id: krtflRole.roleId });
     else throw { msg: 'Role not created', identifier: role.roleId };
   } else {
     const diffRole = diff(role, krtflRole);
@@ -29,9 +29,12 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
 
     if (Object.keys(diffRole).length > 0) {
       await roleApi.update(krtflRole.roleId, role);
-      logInfo('Role was updated', krtflRole);
+      logger.logInfo(false, 'Role updated', 'SYSTEM', '', {
+        id: krtflRole.roleId,
+        update: diffRole,
+      });
     } else {
-      logInfo('Nothing to update', krtflRole);
+      logger.logInfo(false, 'Role updated', 'SYSTEM', '', { id: krtflRole.roleId });
     }
   }
 };
@@ -43,11 +46,16 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
  */
 async function connectRoleToOG(ogId: string, krtflRole: role) {
   if (ogId !== krtflRole.directGroup) {
+    const moveMsg = `Role: ${krtflRole.roleId}, Group: ${ogId}`;
+
     try {
       await roleApi.connectToOG(krtflRole.roleId, ogId);
-      logInfo(`Role ${krtflRole.roleId} moved to OG ${ogId}`);
+      logger.logInfo(false, 'Role moved to Group', 'SYSTEM', moveMsg, { id: krtflRole.roleId });
     } catch (error: any) {
-      logError(`Role ${krtflRole.roleId} not connected to OG ${ogId}`);
+      logger.logError(false, 'Role fail to Group ', 'SYSTEM', moveMsg, {
+        id: krtflRole.roleId,
+        error,
+      });
     }
   }
 }
@@ -59,15 +67,20 @@ async function connectRoleToOG(ogId: string, krtflRole: role) {
  */
 async function connectRoleToDI(diId: string, krtflRole: role) {
   if (diId !== krtflRole.digitalIdentityUniqueId) {
+    const moveMsg = `Role: ${krtflRole.roleId}, DI: ${diId}`;
+
     try {
       if (krtflRole.digitalIdentityUniqueId) {
         await roleApi.disconnectToDI(krtflRole.roleId, krtflRole.digitalIdentityUniqueId);
       }
 
       await roleApi.connectToDI(krtflRole.roleId, diId);
-      logInfo(`Role ${krtflRole.roleId} moved to DI ${diId}`);
+      logger.logInfo(false, 'Role moved to DI', 'SYSTEM', moveMsg, { id: krtflRole.roleId });
     } catch (error: any) {
-      logError(`Role ${krtflRole.roleId} not connected to DI ${diId}`);
+      logger.logError(false, 'Role fail to DI ', 'SYSTEM', moveMsg, {
+        id: krtflRole.roleId,
+        error,
+      });
     }
   }
 }

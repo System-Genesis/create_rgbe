@@ -10,9 +10,14 @@ import { rgb } from '../../types/rgbType';
 export const createRgb = async (rgbObj: rgb) => {
   const diId = await insertDI(rgbObj.di);
 
-  if (rgbObj.og && rgbObj.role) {
-    const ogId = await insertOG(rgbObj.og);
+  if (diId && rgbObj.og && rgbObj.role) {
+    let ogId: string | undefined;
+    try {
+      ogId = await insertOG(rgbObj.og);
+    } catch (error) {
+      console.log(rgbObj.og, 'not created');
+    }
 
-    await insertRole(rgbObj.role, ogId, diId);
+    if (ogId) await insertRole(rgbObj.role, ogId, diId);
   }
 };

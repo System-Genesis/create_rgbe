@@ -1,5 +1,5 @@
+import logger from 'logger-genesis';
 import { diApi } from '../../api/rgb';
-import { logError, logInfo, logWarn } from '../../logger/logger';
 import { di } from '../../types/rgbType';
 import { diff } from '../../util/utils';
 import { entityApi } from './../../api/entity';
@@ -23,25 +23,26 @@ export const insertDI = async (di: di) => {
       //TODO fix response
       if (krtflDI) krtflDI = { ...di };
 
-      logInfo('DI created', krtflDI.uniqueId);
+      logger.logInfo(false, 'DI created', 'SYSTEM', '', { uniqueId: krtflDI.uniqueId });
     } else {
-      throw logError('DI not created');
+      logger.logError(false, 'DI not created', 'SYSTEM', '', { uniqueId: di.uniqueId });
+      return;
     }
   } else {
     const diDiff = diff(di, krtflDI);
 
     if (Object.keys(diDiff).length > 0) {
       await diApi.update(krtflDI.uniqueId, diDiff);
-      logInfo('DI was updated', krtflDI.uniqueId);
+      logger.logInfo(false, 'DI updated', 'SYSTEM', '', { uniqueId: krtflDI.uniqueId });
     } else {
-      logInfo('Nothing to update', krtflDI.uniqueId);
+      logger.logInfo(false, 'DI already up to date', 'SYSTEM', '', { uniqueId: krtflDI.uniqueId });
     }
   }
 
   if (entityIdentifier) {
     await connectDiToEntity(krtflDI, entityIdentifier);
   } else {
-    logWarn(`No entity to connect`, krtflDI.uniqueId);
+    logger.logWarn(true, 'No entity to connect', 'SYSTEM', '', { uniqueId: krtflDI.uniqueId });
   }
 
   return krtflDI.uniqueId || di.uniqueId;
@@ -53,21 +54,15 @@ export const insertDI = async (di: di) => {
  * @param entityIdentifier entity to connect by identifier (goalUserId/identityCard/personalNumber)
  */
 async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
-  let needConnection = true;
-
   if (krtflDI.entityId) {
     const getEnt = await entityApi.get(entityIdentifier);
     const connectedEntityId = getEnt.id || getEnt['_id'];
+    const connectMsg = `di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`;
 
     if (connectedEntityId === krtflDI.entityId) {
-      needConnection = false;
-      logInfo(`DI already connected di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`);
-    } else {
-      logInfo(`DI moved, di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`);
+      return logger.logInfo(true, 'DI already connected', 'SYSTEM', connectMsg);
     }
   }
 
-  if (needConnection) {
-    await diApi.connectToEntity(entityIdentifier, krtflDI.uniqueId);
-  }
+  await diApi.connectToEntity(entityIdentifier, krtflDI.uniqueId);
 }

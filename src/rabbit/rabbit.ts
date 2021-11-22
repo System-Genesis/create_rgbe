@@ -1,31 +1,30 @@
-import menash, { ConsumerMessage } from "menashmq";
-import config from "../config/env.config";
-import { logInfo, logError } from "../logger/logger";
-import { insertEntity } from "../service/entity/saveEntity";
-import { createRgb } from "../service/rgb/rgbHandler";
-import { entity } from "../types/entityType";
-import { rgb } from "../types/rgbType";
+import logger from 'logger-genesis';
+import menash, { ConsumerMessage } from 'menashmq';
+import config from '../config/env.config';
+import { insertEntity } from '../service/entity/saveEntity';
+import { createRgb } from '../service/rgb/rgbHandler';
+import { entity } from '../types/entityType';
+import { rgb } from '../types/rgbType';
 
 export const connectRabbit = async () => {
   try {
+    console.log('Try connect to Rabbit');
+
     await menash.connect(config.rabbit.uri, config.rabbit.retryOptions);
 
     await menash.declareQueue(config.rabbit.getEntity);
     await menash.declareQueue(config.rabbit.getRGB);
-    await menash.declareQueue(config.rabbit.connectDiToEntity);
-    await menash.declareQueue(config.rabbit.logger);
 
-    logInfo("Rabbit connected");
+    console.log('Rabbit connected');
 
-    await menash
-      .queue(config.rabbit.getEntity)
-      .prefetch(config.rabbit.prefetch);
+    await menash.queue(config.rabbit.getEntity).prefetch(config.rabbit.prefetch);
     await menash.queue(config.rabbit.getRGB).prefetch(config.rabbit.prefetch);
 
     await consumeGetEntity();
     await consumeGetRGB();
-  } catch (error) {
-    logError(JSON.stringify(error));
+    console.log('menash.isReady ' + menash.isReady);
+  } catch (error: any) {
+    logger.logError(true, 'Unknown Error, on Connect Rabbit', 'APP', error.message);
   }
 };
 
@@ -34,14 +33,15 @@ async function consumeGetRGB() {
     async (msg: ConsumerMessage) => {
       try {
         const rgb = msg.getContent();
-        logInfo(`Got from queue => `, rgb);
+        logger.logInfo(true, 'Got from RGB queue', 'SYSTEM', JSON.stringify(rgb));
 
         await createRgb(rgb as rgb);
-        logInfo("RGB insertion is done");
+        logger.logInfo(true, 'RGB insertion is done', 'SYSTEM', '');
 
         msg.ack();
       } catch (error: any) {
-        logError(error);
+        const erMsg = JSON.stringify(error.message);
+        logger.logError(false, 'Unknown Error', 'APP', `RGB Queue: ${erMsg}`);
 
         msg.ack();
       }
@@ -55,12 +55,15 @@ async function consumeGetEntity() {
     async (msg: ConsumerMessage) => {
       try {
         const entity = msg.getContent() as entity;
-        logInfo(`Got from queue => `, entity);
+        logger.logInfo(true, 'Got from ENTITY queue', 'SYSTEM', JSON.stringify(entity));
+
         await insertEntity(entity);
+        logger.logInfo(true, 'ENTITY insertion is done', 'SYSTEM', '');
 
         msg.ack();
       } catch (error: any) {
-        logError(error.msg || error, error.identifier);
+        const erMsg = JSON.stringify(error.message);
+        logger.logError(false, 'Unknown Error', 'APP', `ENTITY Queue: ${erMsg}`);
 
         msg.ack();
       }

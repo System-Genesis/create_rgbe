@@ -1,7 +1,7 @@
 import schedule from 'node-schedule';
 import config from '../config/env.config';
-import { logInfo } from '../logger/logger';
 import { runAll } from './connectDiToEntityRedis';
+import logger from 'logger-genesis';
 
 const { hour: defHour, minute: defMinute } = config.daily;
 
@@ -25,10 +25,10 @@ export class RecoveryDiConnection {
   }
 
   public async start() {
-    logInfo(`Daily run scheduled to ${this.hour}:${this.minute}`);
+    logger.logInfo(false, 'Daily run', 'SYSTEM', `Time: ${this.hour}:${this.minute}`);
     runAll();
     this.runFunc = schedule.scheduleJob({ hour: this.hour, minute: this.minute }, () => {
-      logInfo('Daily run is starting');
+      logger.logInfo(false, 'Daily run', 'SYSTEM', `start Daily run`);
       runAll();
     });
   }

@@ -1,4 +1,4 @@
-import { logInfo } from './../logger/logger';
+import logger from 'logger-genesis';
 import { entityApi } from '../api/entity';
 import { connectDiToEntityApi } from '../api/rgb';
 import { pushToArray, getArray, getAllKeys, delValue } from './redis';
@@ -9,6 +9,10 @@ export const connectDiToEntity = async (entityIdentifier: string, diId: string) 
   if (entity) {
     // TODO delete _id
     connectDiToEntityApi(entity.id || entity['_id'], diId);
+    logger.logInfo(false, 'Entity connected to DI', 'SYSTEM', '', {
+      entity: entityIdentifier,
+      di: diId,
+    });
   } else {
     pushToArray(entityIdentifier, diId);
   }
@@ -20,7 +24,7 @@ export const handleEntityEvent = async (entityIdentifier: string, entId: string)
   if (data.length > 0) {
     for (let i = 0; i < data.length; i++) {
       await connectDiToEntityApi(entId, data[i]);
-      logInfo('entity connected', { entity: entId, di: data[i] });
+      logger.logInfo(false, 'Entity connected to DI', 'SYSTEM', '', { entity: entId, di: data[i] });
     }
   }
 

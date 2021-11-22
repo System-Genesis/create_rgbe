@@ -1,5 +1,5 @@
+import logger from 'logger-genesis';
 import { ogApi } from '../../api/rgb';
-import { logInfo } from '../../logger/logger';
 import { og } from '../../types/rgbType';
 
 /**
@@ -21,9 +21,12 @@ export const insertOG = async (og: og) => {
     }
 
     krtflOg = await ogApi.create(og);
-
-    if (krtflOg) logInfo('OG created', krtflOg.id);
-    else throw { msg: 'OG not created', identifier: og.hierarchy + og.name };
+    if (krtflOg) logger.logInfo(false, 'Group created', 'SYSTEM', '', { id: krtflOg.id });
+    else {
+      throw logger.logError(false, 'Group not created', 'SYSTEM', '', {
+        identifier: og.hierarchy + og.name,
+      });
+    }
   }
 
   // TODO delete _id
@@ -31,7 +34,9 @@ export const insertOG = async (og: og) => {
 };
 
 function createFatherGroup(og: og) {
-  const fatherHierarchy = og.hierarchy.includes('/') ? og.hierarchy.slice(0, og.hierarchy.lastIndexOf('/')) : '';
+  const fatherHierarchy = og.hierarchy.includes('/')
+    ? og.hierarchy.slice(0, og.hierarchy.lastIndexOf('/'))
+    : '';
 
   let fatherOg = Object.assign({}, og);
   fatherOg.hierarchy = fatherHierarchy;
