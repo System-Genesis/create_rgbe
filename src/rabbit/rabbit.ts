@@ -22,7 +22,6 @@ export const connectRabbit = async () => {
 
     await consumeGetEntity();
     await consumeGetRGB();
-    console.log('menash.isReady ' + menash.isReady);
   } catch (error: any) {
     logger.logError(true, 'Unknown Error, on Connect Rabbit', 'SYSTEM', error.message);
   }
