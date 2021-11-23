@@ -55,13 +55,10 @@ export const getResData = async (axiosReq: Promise<AxiosResponse<any>>) => {
 
     const erConfig = error.config;
 
-    logger.logWarn(
-      true,
-      `Response ${JSON.stringify(erData?.message || erData || error.code)}`,
-      'APP',
-      error.message,
-      { url: erConfig?.url, data: erConfig?.data }
-    );
+    logger.warn(true, 'APP', `Response ${JSON.stringify(erData?.message || erData || error.code)}`, error.message, {
+      url: erConfig?.url,
+      data: erConfig?.data,
+    });
 
     return null;
   }

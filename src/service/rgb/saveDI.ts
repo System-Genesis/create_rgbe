@@ -23,9 +23,9 @@ export const insertDI = async (di: di) => {
       //TODO fix response
       if (krtflDI) krtflDI = { ...di };
 
-      logger.logInfo(false, 'DI created', 'APP', `${krtflDI.uniqueId} created`, { uniqueId: krtflDI.uniqueId });
+      logger.info(false, 'APP', 'DI created', `${krtflDI.uniqueId} created`, { uniqueId: krtflDI.uniqueId });
     } else {
-      logger.logError(false, 'DI not created', 'APP', `${di.uniqueId} not created`, { uniqueId: di.uniqueId });
+      logger.error(false, 'APP', 'DI not created', `${di.uniqueId} not created`, { uniqueId: di.uniqueId });
       return;
     }
   } else {
@@ -33,19 +33,19 @@ export const insertDI = async (di: di) => {
 
     if (Object.keys(diDiff).length > 0) {
       await diApi.update(krtflDI.uniqueId, diDiff);
-      logger.logInfo(false, 'DI updated', 'APP', `uniqueId: ${krtflDI.uniqueId}, updated: ${Object.keys(diDiff)}`, {
+      logger.info(false, 'APP', 'DI updated', `uniqueId: ${krtflDI.uniqueId}, updated: ${Object.keys(diDiff)}`, {
         uniqueId: krtflDI.uniqueId,
         updated: diDiff,
       });
     } else {
-      logger.logWarn(true, 'DI already up to date', 'APP', '', { uniqueId: krtflDI.uniqueId });
+      logger.warn(true, 'APP', 'DI already up to date', '', { uniqueId: krtflDI.uniqueId });
     }
   }
 
   if (entityIdentifier) {
     await connectDiToEntity(krtflDI, entityIdentifier);
   } else {
-    logger.logWarn(true, 'No entity to connect', 'APP', '', { uniqueId: krtflDI.uniqueId });
+    logger.warn(true, 'APP', 'No entity to connect', '', { uniqueId: krtflDI.uniqueId });
   }
 
   return krtflDI.uniqueId || di.uniqueId;
@@ -63,7 +63,7 @@ async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
 
     if (connectedEntityId === krtflDI.entityId) {
       const connectMsg = `di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`;
-      return logger.logInfo(true, 'DI already connected', 'APP', connectMsg);
+      return logger.info(true, 'APP', 'DI already connected', connectMsg);
     }
   }
 

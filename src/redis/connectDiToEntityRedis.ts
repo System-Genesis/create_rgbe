@@ -10,21 +10,15 @@ export const connectDiToEntity = async (entityIdentifier: string, di: di) => {
   if (entity) {
     if (di.entityId) {
       if (await disconnectDiToEntityApi(entity.id, di.uniqueId)) {
-        logger.logInfo(
-          false,
-          'Entity disconnected from DI',
-          'APP',
-          `${entityIdentifier} disconnect from ${di.uniqueId}`,
-          {
-            id: entityIdentifier,
-            uniqueId: di.uniqueId,
-          }
-        );
+        logger.info(false, 'APP', 'Entity disconnected from DI', `${entityIdentifier} disconnect from ${di.uniqueId}`, {
+          id: entityIdentifier,
+          uniqueId: di.uniqueId,
+        });
       } else {
-        return logger.logError(
+        return logger.error(
           false,
-          'Entity fail to disconnected from DI',
           'APP',
+          'Entity fail to disconnected from DI',
           `${entityIdentifier}  fail disconnect from ${di.uniqueId}`,
           {
             id: entityIdentifier,
@@ -34,7 +28,7 @@ export const connectDiToEntity = async (entityIdentifier: string, di: di) => {
       }
     }
     await connectDiToEntityApi(entity.id, di.uniqueId);
-    logger.logInfo(false, 'Entity connected to DI', 'APP', `${entityIdentifier} connect to ${di.uniqueId}`, {
+    logger.info(false, 'APP', 'Entity connected to DI', `${entityIdentifier} connect to ${di.uniqueId}`, {
       id: entityIdentifier,
       uniqueId: di.uniqueId,
     });
@@ -49,7 +43,7 @@ export const handleEntityEvent = async (entityIdentifier: string, entId: string)
   if (data.length > 0) {
     for (let i = 0; i < data.length; i++) {
       await connectDiToEntityApi(entId, data[i]);
-      logger.logInfo(false, 'Entity connected to DI', 'APP', `${entityIdentifier} connect to ${data[i]}`, {
+      logger.info(false, 'APP', 'Entity connected to DI', `${entityIdentifier} connect to ${data[i]}`, {
         id: entId,
         uniqueId: data[i],
       });

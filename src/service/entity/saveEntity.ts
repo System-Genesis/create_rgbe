@@ -17,11 +17,11 @@ export const insertEntity = async (entity: entity) => {
   if (!krtflEntity) {
     krtflEntity = await entityApi.create(entity);
     if (krtflEntity) {
-      logger.logInfo(false, 'Entity created', 'APP', `${fullName} created`, { id: entityIdentifier });
+      logger.info(false, 'APP', 'Entity created', `${fullName} created`, { id: entityIdentifier });
 
       handleEntityEvent(entityIdentifier, krtflEntity.id || krtflEntity['_id']);
     } else {
-      logger.logError(false, 'Entity not Created', 'APP', `${fullName} not created`, { id: entityIdentifier });
+      logger.error(false, 'APP', 'Entity not Created', `${fullName} not created`, { id: entityIdentifier });
     }
   } else {
     const oldEntity = { ...krtflEntity };
@@ -31,12 +31,12 @@ export const insertEntity = async (entity: entity) => {
 
     if (Object.keys(diffEntity).length > 0) {
       await entityApi.update(krtflEntity.id || krtflEntity['_id'], diffEntity);
-      logger.logInfo(false, 'Entity updated', 'APP', `${fullName} updated, ${Object.keys(diffEntity)}`, {
+      logger.info(false, 'APP', 'Entity updated', `${fullName} updated, ${Object.keys(diffEntity)}`, {
         id: entityIdentifier,
         update: diffEntity,
       });
     } else {
-      logger.logInfo(true, 'Nothing to update', 'APP', `${fullName} nothing to update`, { id: krtflEntity.id });
+      logger.info(true, 'APP', 'Nothing to update', `${fullName} nothing to update`, { id: krtflEntity.id });
     }
   }
 };

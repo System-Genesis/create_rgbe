@@ -23,7 +23,7 @@ export const connectRabbit = async () => {
     await consumeGetEntity();
     await consumeGetRGB();
   } catch (error: any) {
-    logger.logError(true, 'Unknown Error, on Connect Rabbit', 'SYSTEM', error.message);
+    logger.error(true, 'SYSTEM', 'Unknown Error, on Connect Rabbit', error.message);
   }
 };
 
@@ -32,15 +32,15 @@ async function consumeGetRGB() {
     async (msg: ConsumerMessage) => {
       try {
         const rgb = msg.getContent();
-        logger.logInfo(true, 'Got from RGB queue', 'APP', JSON.stringify(rgb));
+        logger.info(true, 'APP', 'Got from RGB queue', JSON.stringify(rgb));
 
         await createRgb(rgb as rgb);
-        logger.logInfo(true, 'RGB insertion is done', 'APP', '');
+        logger.info(true, 'APP', 'RGB insertion is done', '');
 
         msg.ack();
       } catch (error: any) {
         const erMsg = JSON.stringify(error.message);
-        logger.logError(false, 'Unknown Error', 'SYSTEM', `RGB Queue: ${erMsg}`);
+        logger.error(false, 'SYSTEM', 'Unknown Error', `RGB Queue: ${erMsg}`);
 
         msg.ack();
       }
@@ -54,15 +54,15 @@ async function consumeGetEntity() {
     async (msg: ConsumerMessage) => {
       try {
         const entity = msg.getContent() as entity;
-        logger.logInfo(true, 'Got from ENTITY queue', 'APP', JSON.stringify(entity));
+        logger.info(true, 'APP', 'Got from ENTITY queue', JSON.stringify(entity));
 
         await insertEntity(entity);
-        logger.logInfo(true, 'ENTITY insertion is done', 'APP', '');
+        logger.info(true, 'APP', 'ENTITY insertion is done', '');
 
         msg.ack();
       } catch (error: any) {
         const erMsg = JSON.stringify(error.message);
-        logger.logError(false, 'Unknown Error', 'SYSTEM', `ENTITY Queue: ${erMsg}`);
+        logger.error(false, 'SYSTEM', 'Unknown Error', `ENTITY Queue: ${erMsg}`);
 
         msg.ack();
       }

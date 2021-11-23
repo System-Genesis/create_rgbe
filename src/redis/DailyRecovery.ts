@@ -25,10 +25,10 @@ export class RecoveryDiConnection {
   }
 
   public async start() {
-    logger.logInfo(false, 'Daily run', 'SYSTEM', `Time: ${this.hour}:${this.minute}`);
+    logger.info(false, 'SYSTEM', 'Daily run', `Time: ${this.hour}:${this.minute}`);
     runAll();
     this.runFunc = schedule.scheduleJob({ hour: this.hour, minute: this.minute }, () => {
-      logger.logInfo(false, 'Daily run', 'SYSTEM', `start Daily run`);
+      logger.info(false, 'SYSTEM', 'Daily run', `start Daily run`);
       runAll();
     });
   }
