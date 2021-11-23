@@ -8,9 +8,7 @@ import { og } from '../../types/rgbType';
  * @returns object id from kartoffel
  */
 export const insertOG = async (og: og) => {
-  let krtflOg: og = await ogApi.getByHierarchy(
-    og.hierarchy ? og.hierarchy + '/' + og.name : og.name
-  );
+  let krtflOg: og = await ogApi.getByHierarchy(og.hierarchy ? og.hierarchy + '/' + og.name : og.name);
 
   if (!krtflOg) {
     if (hasFatherGroup(og)) {
@@ -21,22 +19,19 @@ export const insertOG = async (og: og) => {
     }
 
     krtflOg = await ogApi.create(og);
-    if (krtflOg) logger.logInfo(false, 'Group created', 'APP', '', { id: krtflOg.id });
+    if (krtflOg) logger.logInfo(false, 'Group created', 'APP', `${og.hierarchy + og.name} created`, { id: krtflOg.id });
     else {
-      throw logger.logError(false, 'Group not created', 'APP', '', {
+      throw logger.logError(false, 'Group not created', 'APP', `${og.hierarchy + og.name} not created`, {
         identifier: og.hierarchy + og.name,
       });
     }
   }
 
-  // TODO delete _id
-  return krtflOg._id || krtflOg.id;
+  return krtflOg.id;
 };
 
 function createFatherGroup(og: og) {
-  const fatherHierarchy = og.hierarchy.includes('/')
-    ? og.hierarchy.slice(0, og.hierarchy.lastIndexOf('/'))
-    : '';
+  const fatherHierarchy = og.hierarchy.includes('/') ? og.hierarchy.slice(0, og.hierarchy.lastIndexOf('/')) : '';
 
   let fatherOg = Object.assign({}, og);
   fatherOg.hierarchy = fatherHierarchy;

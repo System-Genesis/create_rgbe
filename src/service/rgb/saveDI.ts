@@ -23,9 +23,9 @@ export const insertDI = async (di: di) => {
       //TODO fix response
       if (krtflDI) krtflDI = { ...di };
 
-      logger.logInfo(false, 'DI created', 'APP', '', { uniqueId: krtflDI.uniqueId });
+      logger.logInfo(false, 'DI created', 'APP', `${krtflDI.uniqueId} created`, { uniqueId: krtflDI.uniqueId });
     } else {
-      logger.logError(false, 'DI not created', 'APP', '', { uniqueId: di.uniqueId });
+      logger.logError(false, 'DI not created', 'APP', `${di.uniqueId} not created`, { uniqueId: di.uniqueId });
       return;
     }
   } else {
@@ -33,7 +33,7 @@ export const insertDI = async (di: di) => {
 
     if (Object.keys(diDiff).length > 0) {
       await diApi.update(krtflDI.uniqueId, diDiff);
-      logger.logInfo(false, 'DI updated', 'APP', `updated: ${Object.keys(diDiff)}`, {
+      logger.logInfo(false, 'DI updated', 'APP', `uniqueId: ${krtflDI.uniqueId}, updated: ${Object.keys(diDiff)}`, {
         uniqueId: krtflDI.uniqueId,
         updated: diDiff,
       });
@@ -59,13 +59,13 @@ export const insertDI = async (di: di) => {
 async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
   if (krtflDI.entityId) {
     const getEnt = await entityApi.get(entityIdentifier);
-    const connectedEntityId = getEnt.id || getEnt['_id'];
-    const connectMsg = `di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`;
+    const connectedEntityId = getEnt.id;
 
     if (connectedEntityId === krtflDI.entityId) {
+      const connectMsg = `di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`;
       return logger.logInfo(true, 'DI already connected', 'APP', connectMsg);
     }
   }
 
-  await diApi.connectToEntity(entityIdentifier, krtflDI.uniqueId);
+  await diApi.connectToEntity(entityIdentifier, krtflDI);
 }

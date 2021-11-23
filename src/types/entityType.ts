@@ -3,6 +3,8 @@ export interface entity {
   personalNumber?: string;
   goalUserId?: string;
   pictures?: { profile?: { meta: { updateAt: string } }; avatar?: { meta: { updateAt: string } } };
+  firstName?: string;
+  lastName?: string;
 }
 export interface krtflEntity {
   id: string;
@@ -10,4 +12,6 @@ export interface krtflEntity {
   goalUserId?: string;
   personalNumber?: string;
   pictures?: { profile?: { meta: { updateAt: string } }; avatar?: { meta: { updateAt: string } } };
+  firstName?: string;
+  lastName?: string;
 }

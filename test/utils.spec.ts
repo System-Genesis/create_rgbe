@@ -1,4 +1,4 @@
-import { diff, diffPic } from './../src/util/utils';
+import { diff, diffPicture } from './../src/util/utils';
 
 describe('utils', () => {
   describe('diff', () => {
@@ -95,12 +95,12 @@ describe('utils', () => {
         a: { name: 'a', age: 1 },
         active: { a: false },
       };
-      diffPic(toCompare, compareTo);
+      diffPicture(toCompare, compareTo);
 
       expect(compareTo).toEqual(expected);
     });
 
-    it('Should diffPic only avatar', () => {
+    it('Should diffPicture only avatar', () => {
       const toCompare: any = {
         pictures: {
           profile: { meta: { updateAt: '123' } },
@@ -122,12 +122,12 @@ describe('utils', () => {
         a: { name: 'a', age: 1 },
         active: { a: false },
       };
-      diffPic(toCompare, compareTo);
+      diffPicture(toCompare, compareTo);
 
       expect(compareTo).toEqual(expected);
     });
 
-    it('Should diffPic profile & avatar', () => {
+    it('Should diffPicture profile & avatar', () => {
       const toCompare: any = {
         pictures: {
           profile: { meta: { updateAt: '123' } },
@@ -152,7 +152,7 @@ describe('utils', () => {
         a: { name: 'a', age: 1 },
         active: { a: false },
       };
-      diffPic(toCompare, compareTo);
+      diffPicture(toCompare, compareTo);
 
       expect(compareTo).toEqual(expected);
     });

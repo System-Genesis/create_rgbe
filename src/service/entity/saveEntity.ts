@@ -10,21 +10,18 @@ import { diff, diffPicture } from '../../util/utils';
  * @param entity - from buildEntity queue
  */
 export const insertEntity = async (entity: entity) => {
+  const entityIdentifier = entity.identityCard || entity.personalNumber || entity.goalUserId!;
+  const fullName = `${entity.firstName} ${entity.lastName || ''}`;
   let krtflEntity = await getExistsEntity(entity);
 
   if (!krtflEntity) {
     krtflEntity = await entityApi.create(entity);
     if (krtflEntity) {
-      logger.logInfo(false, 'Entity created', 'APP', '', { id: krtflEntity?.id });
+      logger.logInfo(false, 'Entity created', 'APP', `${fullName} created`, { id: entityIdentifier });
 
-      handleEntityEvent(
-        entity.identityCard || entity.personalNumber || entity.goalUserId!,
-        krtflEntity.id || krtflEntity['_id']
-      );
+      handleEntityEvent(entityIdentifier, krtflEntity.id || krtflEntity['_id']);
     } else {
-      logger.logError(false, 'Entity not Created', 'APP', '', {
-        identifier: entity.identityCard || entity.personalNumber || entity.goalUserId!,
-      });
+      logger.logError(false, 'Entity not Created', 'APP', `${fullName} not created`, { id: entityIdentifier });
     }
   } else {
     const oldEntity = { ...krtflEntity };
@@ -34,12 +31,12 @@ export const insertEntity = async (entity: entity) => {
 
     if (Object.keys(diffEntity).length > 0) {
       await entityApi.update(krtflEntity.id || krtflEntity['_id'], diffEntity);
-      logger.logInfo(false, 'Entity updated', 'APP', '', {
-        id: krtflEntity?.id,
+      logger.logInfo(false, 'Entity updated', 'APP', `${fullName} updated, ${Object.keys(diffEntity)}`, {
+        id: entityIdentifier,
         update: diffEntity,
       });
     } else {
-      logger.logInfo(true, 'Nothing to update', 'APP', '', { id: krtflEntity.id });
+      logger.logInfo(true, 'Nothing to update', 'APP', `${fullName} nothing to update`, { id: krtflEntity.id });
     }
   }
 };

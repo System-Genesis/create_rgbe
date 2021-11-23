@@ -1,20 +1,45 @@
 import logger from 'logger-genesis';
 import { entityApi } from '../api/entity';
-import { connectDiToEntityApi } from '../api/rgb';
+import { connectDiToEntityApi, disconnectDiToEntityApi } from '../api/rgb';
+import { di } from '../types/rgbType';
 import { pushToArray, getArray, getAllKeys, delValue } from './redis';
 
-export const connectDiToEntity = async (entityIdentifier: string, diId: string) => {
+export const connectDiToEntity = async (entityIdentifier: string, di: di) => {
   const entity = await entityApi.get(entityIdentifier);
 
   if (entity) {
-    // TODO delete _id
-    connectDiToEntityApi(entity.id || entity['_id'], diId);
-    logger.logInfo(false, 'Entity connected to DI', 'APP', '', {
-      entity: entityIdentifier,
-      di: diId,
+    if (di.entityId) {
+      if (await disconnectDiToEntityApi(entity.id, di.uniqueId)) {
+        logger.logInfo(
+          false,
+          'Entity disconnected from DI',
+          'APP',
+          `${entityIdentifier} disconnect from ${di.uniqueId}`,
+          {
+            id: entityIdentifier,
+            uniqueId: di.uniqueId,
+          }
+        );
+      } else {
+        return logger.logError(
+          false,
+          'Entity fail to disconnected from DI',
+          'APP',
+          `${entityIdentifier}  fail disconnect from ${di.uniqueId}`,
+          {
+            id: entityIdentifier,
+            uniqueId: di.uniqueId,
+          }
+        );
+      }
+    }
+    await connectDiToEntityApi(entity.id, di.uniqueId);
+    logger.logInfo(false, 'Entity connected to DI', 'APP', `${entityIdentifier} connect to ${di.uniqueId}`, {
+      id: entityIdentifier,
+      uniqueId: di.uniqueId,
     });
   } else {
-    pushToArray(entityIdentifier, diId);
+    pushToArray(entityIdentifier, di.uniqueId);
   }
 };
 
@@ -24,7 +49,10 @@ export const handleEntityEvent = async (entityIdentifier: string, entId: string)
   if (data.length > 0) {
     for (let i = 0; i < data.length; i++) {
       await connectDiToEntityApi(entId, data[i]);
-      logger.logInfo(false, 'Entity connected to DI', 'APP', '', { entity: entId, di: data[i] });
+      logger.logInfo(false, 'Entity connected to DI', 'APP', `${entityIdentifier} connect to ${data[i]}`, {
+        id: entId,
+        uniqueId: data[i],
+      });
     }
   }
 
