@@ -25,7 +25,7 @@ export const insertEntity = async (entity: entity) => {
     }
   } else {
     const oldEntity = { ...krtflEntity };
-    if (oldEntity.pictures) diffPicture(oldEntity, entity);
+    if (oldEntity.pictures) diffPicture(entity, oldEntity);
 
     const diffEntity = diff(entity, oldEntity);
 
