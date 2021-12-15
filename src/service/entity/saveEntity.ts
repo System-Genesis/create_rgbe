@@ -25,7 +25,7 @@ export const insertEntity = async (entity: entity) => {
     }
   } else {
     const oldEntity = { ...krtflEntity };
-    diffPicture(oldEntity, entity);
+    if (oldEntity.pictures) diffPicture(oldEntity, entity);
 
     const diffEntity = diff(entity, oldEntity);
 
@@ -51,8 +51,5 @@ export const insertEntity = async (entity: entity) => {
 export async function getExistsEntity(entity: entity) {
   if (entity.goalUserId) return await entityApi.get(entity.goalUserId);
 
-  return (
-    (await entityApi.get(entity.identityCard || entity.personalNumber!)) ||
-    (await entityApi.get(entity.personalNumber!))
-  );
+  return (await entityApi.get(entity.identityCard || entity.personalNumber!)) || (await entityApi.get(entity.personalNumber!));
 }
