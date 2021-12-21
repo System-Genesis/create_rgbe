@@ -17,7 +17,7 @@ const options = {
   httpsValidation: false,
 };
 
-export const token = getTokenCreator(options);
+export const token = () => (config.isSpike ? getTokenCreator(options) : null);
 
 const getToken = async () => ({
   headers: { Authorization: await token() },

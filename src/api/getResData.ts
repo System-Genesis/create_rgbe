@@ -1,11 +1,14 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import logger from 'logger-genesis';
 import { token } from '../auth/spike';
+import envConfig from '../config/env.config';
 import config from '../config/env.config';
 import { sleep } from '../util/utils';
 
 axios.interceptors.request.use(async (req: AxiosRequestConfig) => {
-  req.headers.authorization = await token();
+  if (envConfig.isSpike) {
+    req.headers.authorization = await token();
+  }
   req.baseURL = config.krtflApi;
   return req;
 });

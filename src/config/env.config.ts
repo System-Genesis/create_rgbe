@@ -20,6 +20,7 @@ export default {
   },
   krtflApi: env.get('KRTFL_API').required().asString(),
   redisUrl: env.get('REDIS_URL').required().asString(),
+  isSpike: env.get('IS_SPIKE').asBool(),
   spike: {
     spikeUrl: env.get('SPIKE_URL').required().asString(),
     redisKeyName: env.get('REDIS_KEY_NAME').required().asString(),
