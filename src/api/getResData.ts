@@ -3,7 +3,6 @@ import logger from 'logger-genesis';
 import { token } from '../auth/spike';
 import envConfig from '../config/env.config';
 import config from '../config/env.config';
-import { sleep } from '../util/utils';
 
 axios.interceptors.request.use(async (req: AxiosRequestConfig) => {
   if (envConfig.isSpike) {
