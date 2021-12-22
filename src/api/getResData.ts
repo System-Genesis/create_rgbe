@@ -36,7 +36,6 @@ axios.interceptors.response.use(
       if (reRequestCount < 500) {
         console.log(`rereq ${JSON.stringify(error.response?.data || error.code)}`);
         reRequestCount++;
-        await sleep(3000);
         return await axios.request(error.config);
       }
     } else {
