@@ -32,7 +32,7 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
     connectRoleToDI(diId, krtflRole);
 
     if (Object.keys(diffRole).length > 0) {
-      await roleApi.update(krtflRole.roleId, role);
+      await roleApi.update(krtflRole.roleId, diffRole);
       logger.info(false, 'APP', 'Role updated', `updated: ${Object.keys(diffRole)}`, {
         roleId: krtflRole.roleId,
         update: diffRole,
