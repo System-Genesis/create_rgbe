@@ -23,7 +23,7 @@ export const connectRabbit = async () => {
     await consumeGetEntity();
     await consumeGetRGB();
   } catch (error: any) {
-    logger.error(false, 'SYSTEM', 'Unknown Error, on Connect Rabbit', error.message);
+    console.log('Unknown Error, on Connect Rabbit', error.message);
   }
 };
 
