@@ -19,17 +19,17 @@ const redisClient = (cb?: any) => {
     console.error('Redis Error: ' + err);
   });
 
-  delValue = async (key: string) => client.del(`DI_TO_ENTITY.${key}`);
-  pushToArray = async (key: string, value: string) => client.lpush(`DI_TO_ENTITY.${key}`, value);
+  delValue = async (key: string) => client.del(`DI_TO_ENTITY^${key}`);
+  pushToArray = async (key: string, value: string) => client.lpush(`DI_TO_ENTITY^${key}`, value);
   getArray = async (key: string) => {
-    return promisify(client.lrange).bind(client)(`DI_TO_ENTITY.${key}`, 0, -1);
+    return promisify(client.lrange).bind(client)(`DI_TO_ENTITY^${key}`, 0, -1);
   };
   getAllKeys = async () => {
-    const keys = await promisify(client.keys).bind(client)(`DI_TO_ENTITY.*`);
+    const keys = await promisify(client.keys).bind(client)(`DI_TO_ENTITY^*`);
     let normalizeKeys: string[] = [];
 
     for (let i = 0; i < keys.length; i++) {
-      normalizeKeys.push(keys[i].split('.')[1]);
+      normalizeKeys.push(keys[i].split('^')[1]);
     }
 
     return normalizeKeys;
