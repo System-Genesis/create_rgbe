@@ -1,6 +1,7 @@
 import logger from 'logger-genesis';
 import menash, { ConsumerMessage } from 'menashmq';
 import config from '../config/env.config';
+import { initializeLogger } from '../logger/logger';
 import { insertEntity } from '../service/entity/saveEntity';
 import { createRgb } from '../service/rgb/rgbHandler';
 import { entity } from '../types/entityType';
@@ -19,6 +20,7 @@ export const connectRabbit = async () => {
 
     await menash.queue(config.rabbit.getEntity).prefetch(config.rabbit.prefetch);
     await menash.queue(config.rabbit.getRGB).prefetch(config.rabbit.prefetch);
+    await initializeLogger();
 
     await consumeGetEntity();
     await consumeGetRGB();
