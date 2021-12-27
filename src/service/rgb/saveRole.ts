@@ -38,7 +38,7 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
         update: diffRole,
       });
     } else {
-      logger.info(true, 'APP', 'Role not updated', '', { roleId: krtflRole.roleId });
+      logger.info(true, 'APP', 'Role not updated', `roleId: ${krtflRole.roleId}`, { roleId: krtflRole.roleId });
     }
   }
 };

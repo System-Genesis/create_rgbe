@@ -38,14 +38,16 @@ export const insertDI = async (di: di) => {
         updated: diDiff,
       });
     } else {
-      logger.warn(true, 'APP', 'DI already up to date', '', { uniqueId: krtflDI.uniqueId });
+      logger.warn(true, 'APP', 'DI already up to date', `uniqueId: ${krtflDI.uniqueId}`, {
+        uniqueId: krtflDI.uniqueId,
+      });
     }
   }
 
   if (entityIdentifier) {
     await connectDiToEntity(krtflDI, entityIdentifier);
   } else {
-    logger.warn(true, 'APP', 'No entity to connect', '', { uniqueId: krtflDI.uniqueId });
+    logger.warn(true, 'APP', 'No entity to connect', `uniqueId: ${krtflDI.uniqueId}`, { uniqueId: krtflDI.uniqueId });
   }
 
   return krtflDI.uniqueId || di.uniqueId;
