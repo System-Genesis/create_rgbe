@@ -30,11 +30,18 @@ export const insertEntity = async (entity: entity) => {
     const diffEntity = diff(entity, oldEntity);
 
     if (Object.keys(diffEntity).length > 0) {
-      await entityApi.update(krtflEntity.id || krtflEntity['_id'], diffEntity);
-      logger.info(false, 'APP', 'Entity updated', `${fullName} updated, ${Object.keys(diffEntity)}`, {
-        id: entityIdentifier,
-        update: diffEntity,
-      });
+      const updated = await entityApi.update(krtflEntity.id || krtflEntity['_id'], diffEntity);
+      if (updated) {
+        logger.info(false, 'APP', 'Entity updated', `${fullName} updated, ${Object.keys(diffEntity)}`, {
+          id: entityIdentifier,
+          update: diffEntity,
+        });
+      } else {
+        logger.warn(false, 'APP', 'Entity fail to updated', `${fullName} updated, ${Object.keys(diffEntity)}`, {
+          id: entityIdentifier,
+          update: diffEntity,
+        });
+      }
     } else {
       logger.info(true, 'APP', 'Nothing to update', `${fullName} nothing to update`, { id: krtflEntity.id });
     }
@@ -51,5 +58,8 @@ export const insertEntity = async (entity: entity) => {
 export async function getExistsEntity(entity: entity) {
   if (entity.goalUserId) return await entityApi.get(entity.goalUserId);
 
-  return (await entityApi.get(entity.identityCard || entity.personalNumber!)) || (await entityApi.get(entity.personalNumber!));
+  return (
+    (await entityApi.get(entity.identityCard || entity.personalNumber!)) ||
+    (await entityApi.get(entity.personalNumber!))
+  );
 }

@@ -32,11 +32,15 @@ export const insertDI = async (di: di) => {
     const diDiff = diff(di, krtflDI);
 
     if (Object.keys(diDiff).length > 0) {
-      await diApi.update(krtflDI.uniqueId, diDiff);
-      logger.info(false, 'APP', 'DI updated', `uniqueId: ${krtflDI.uniqueId}, updated: ${Object.keys(diDiff)}`, {
-        uniqueId: krtflDI.uniqueId,
-        updated: diDiff,
-      });
+      const updated = await diApi.update(krtflDI.uniqueId, diDiff);
+
+      const msgLog = `uniqueId: ${krtflDI.uniqueId}, updated: ${Object.keys(diDiff)}`;
+      const extraFieldsLog = { uniqueId: krtflDI.uniqueId, updated: diDiff };
+      if (updated) {
+        logger.info(false, 'APP', 'DI updated', msgLog, extraFieldsLog);
+      } else {
+        logger.warn(false, 'APP', 'DI fail to updated', msgLog, extraFieldsLog);
+      }
     } else {
       logger.warn(true, 'APP', 'DI already up to date', `uniqueId: ${krtflDI.uniqueId}`, {
         uniqueId: krtflDI.uniqueId,

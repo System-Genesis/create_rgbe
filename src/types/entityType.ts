@@ -5,6 +5,7 @@ export interface entity {
   pictures?: { profile?: { meta: { updateAt: string } }; avatar?: { meta: { updateAt: string } } };
   firstName?: string;
   lastName?: string;
+  phone?: string[];
 }
 export interface krtflEntity {
   id: string;
@@ -14,4 +15,5 @@ export interface krtflEntity {
   pictures?: { profile?: { meta: { updateAt: string } }; avatar?: { meta: { updateAt: string } } };
   firstName?: string;
   lastName?: string;
+  phone?: string[];
 }
