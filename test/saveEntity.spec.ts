@@ -3,8 +3,8 @@ import { insertEntity } from '../src/service/entity/saveEntity';
 let create: boolean | undefined;
 let update: boolean | undefined;
 
-jest.mock('../src/logger/logger', () => ({
-  logInfo: () => {},
+jest.mock('logger-genesis', () => ({
+  logger: { info: () => {}, warn: () => {}, error: () => {} },
 }));
 
 jest.mock('../src/api/entity', () => ({
