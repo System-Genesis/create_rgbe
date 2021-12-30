@@ -25,8 +25,12 @@ export class RecoveryDiConnection {
   }
 
   public async start() {
+    if (config.redisRecovery) {
+      console.log('RECOVERY from redis starting');
+      runAll();
+    }
+
     logger.info(false, 'SYSTEM', 'Daily run', `Time: ${this.hour}:${this.minute}`);
-    runAll();
     this.runFunc = schedule.scheduleJob({ hour: this.hour, minute: this.minute }, () => {
       logger.info(false, 'SYSTEM', 'Daily run', `start Daily run`);
       runAll();

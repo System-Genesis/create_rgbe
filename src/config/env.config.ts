@@ -10,7 +10,7 @@ export default {
     logger: env.get('LOGGER_QUEUE').required().asString(),
     getEntity: env.get('GET_ENTITY_QUEUE').required().asString(),
     getRGB: env.get('GET_RGB_QUEUE').required().asString(),
-    connectDiToEntity: env.get('CONNECT_D_E_QUEUE').required().asString(),
+    getMir: env.get('MIR_QUEUE').required().asString(),
     prefetch: env.get('PREFETCH').required().default(100).asIntPositive(),
     retryOptions: {
       minTimeout: env.get('RABBIT_RETRY_MIN_TIMEOUT').default(1000).asIntPositive(),
@@ -33,4 +33,5 @@ export default {
     hour: env.get('HOUR').required().asInt(),
     minute: env.get('MINUTE').required().asInt(),
   },
+  redisRecovery: env.get('REDIS_RECOVERY').default('true').asBool(),
 };

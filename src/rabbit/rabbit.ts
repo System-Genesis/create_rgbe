@@ -2,6 +2,7 @@ import logger from 'logger-genesis';
 import menash, { ConsumerMessage } from 'menashmq';
 import config from '../config/env.config';
 import { insertEntity } from '../service/entity/saveEntity';
+import { mirHandler } from '../service/rgb/mirHandler';
 import { createRgb } from '../service/rgb/rgbHandler';
 import { entity } from '../types/entityType';
 import { rgb } from '../types/rgbType';
@@ -14,11 +15,13 @@ export const connectRabbit = async () => {
 
     await menash.declareQueue(config.rabbit.getEntity);
     await menash.declareQueue(config.rabbit.getRGB);
+    await menash.declareQueue(config.rabbit.getMir);
 
     console.log('Rabbit connected');
 
     await menash.queue(config.rabbit.getEntity).prefetch(config.rabbit.prefetch);
     await menash.queue(config.rabbit.getRGB).prefetch(config.rabbit.prefetch);
+    await menash.queue(config.rabbit.getMir).prefetch(config.rabbit.prefetch);
   } catch (error: any) {
     console.log('Unknown Error, on Connect Rabbit', error.message);
   }
@@ -27,6 +30,7 @@ export const connectRabbit = async () => {
 export const initializeConsumers = async () => {
   await consumeGetEntity();
   await consumeGetRGB();
+  await consumeGetMir();
 };
 
 async function consumeGetRGB() {
@@ -42,7 +46,29 @@ async function consumeGetRGB() {
         msg.ack();
       } catch (error: any) {
         const erMsg = JSON.stringify(error.message);
-        logger.error(false, 'SYSTEM', 'Unknown Error', `RGB Queue: ${erMsg}`);
+        console.log(`error RGB Queue: ${erMsg}`);
+
+        msg.ack();
+      }
+    },
+    { noAck: false }
+  );
+}
+
+async function consumeGetMir() {
+  await menash.queue(config.rabbit.getMir).activateConsumer(
+    async (msg: ConsumerMessage) => {
+      try {
+        const rgb = msg.getContent();
+        logger.info(true, 'APP', 'Got from MIR queue', JSON.stringify(rgb));
+
+        await mirHandler(rgb as rgb);
+        logger.info(true, 'APP', 'MIR insertion is done', '');
+
+        msg.ack();
+      } catch (error: any) {
+        const erMsg = JSON.stringify(error.message);
+        console.log(`error MIR Queue: ${erMsg}`);
 
         msg.ack();
       }
@@ -64,7 +90,7 @@ async function consumeGetEntity() {
         msg.ack();
       } catch (error: any) {
         const erMsg = JSON.stringify(error.message);
-        logger.error(false, 'SYSTEM', 'Unknown Error', `ENTITY Queue: ${erMsg}`);
+        console.log(`error ENTITY Queue: ${erMsg}`);
 
         msg.ack();
       }
