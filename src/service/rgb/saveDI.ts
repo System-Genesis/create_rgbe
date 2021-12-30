@@ -1,8 +1,30 @@
 import logger from 'logger-genesis';
 import { diApi } from '../../api/rgb';
+import config from '../../config/env.config';
 import { di } from '../../types/rgbType';
 import { diff } from '../../util/utils';
 import { entityApi } from './../../api/entity';
+
+/**
+ *
+ * @param uniqueId di uniqueId to find the di in kartoffel
+ * @param source of new di to check if the existing di need to be replaced by new di (deleted and create new)
+ * @returns the di that exists and need update or null for create new di
+ */
+export const getDi = async (uniqueId: string, source: string) => {
+  const di = await diApi.get(uniqueId);
+  if (!di) return null;
+
+  if (source === config.strongSource && di.source === config.weakSource) {
+    if (await diApi.delete(di.uniqueId)) {
+      return null;
+    } else {
+      logger.error(true, 'APP', `Fail to delete di from ${config.weakSource}`, di.uniqueId);
+      throw `Fail to delete di from ${config.weakSource}`;
+    }
+  }
+  return di;
+};
 
 /**
  * Create/update(the fields with changes) from given di to kartoffel
@@ -12,49 +34,59 @@ import { entityApi } from './../../api/entity';
  */
 export const insertDI = async (di: di) => {
   const entityIdentifier = di.entityId;
-  let krtflDI: di = await diApi.get(di.uniqueId);
+  try {
+    let krtflDI: di | null = await getDi(di.uniqueId, di.source);
 
-  // create/update DI without entity connected (connect later)
-  delete di.entityId;
+    // create/update DI without entity connected (connect later)
+    delete di.entityId;
 
-  if (!krtflDI) {
-    krtflDI = await diApi.create(di);
-    if (krtflDI) {
-      //TODO fix response
-      if (krtflDI) krtflDI = { ...di };
+    if (!krtflDI) {
+      krtflDI = await diApi.create(di);
+      if (krtflDI) {
+        //TODO fix response
+        if (krtflDI) krtflDI = { ...di };
 
-      logger.info(false, 'APP', 'DI created', `${krtflDI.uniqueId} created`, { uniqueId: krtflDI.uniqueId });
-    } else {
-      logger.error(false, 'APP', 'DI not created', `${di.uniqueId} not created`, { uniqueId: di.uniqueId });
-      return;
-    }
-  } else {
-    const diDiff = diff(di, krtflDI);
-
-    if (Object.keys(diDiff).length > 0) {
-      const updated = await diApi.update(krtflDI.uniqueId, diDiff);
-
-      const msgLog = `uniqueId: ${krtflDI.uniqueId}, updated: ${Object.keys(diDiff)}`;
-      const extraFieldsLog = { uniqueId: krtflDI.uniqueId, updated: diDiff };
-      if (updated) {
-        logger.info(false, 'APP', 'DI updated', msgLog, extraFieldsLog);
+        logger.info(false, 'APP', 'DI created', `${krtflDI.uniqueId} created`, {
+          uniqueId: krtflDI.uniqueId,
+        });
       } else {
-        logger.warn(false, 'APP', 'DI fail to updated', msgLog, extraFieldsLog);
+        logger.error(false, 'APP', 'DI not created', `${di.uniqueId} not created`, {
+          uniqueId: di.uniqueId,
+        });
+        return;
       }
     } else {
-      logger.warn(true, 'APP', 'DI already up to date', `uniqueId: ${krtflDI.uniqueId}`, {
+      const diDiff = diff(di, krtflDI);
+
+      if (Object.keys(diDiff).length > 0) {
+        const updated = await diApi.update(krtflDI.uniqueId, diDiff);
+
+        const msgLog = `uniqueId: ${krtflDI.uniqueId}, updated: ${Object.keys(diDiff)}`;
+        const extraFieldsLog = { uniqueId: krtflDI.uniqueId, updated: diDiff };
+        if (updated) {
+          logger.info(false, 'APP', 'DI updated', msgLog, extraFieldsLog);
+        } else {
+          logger.warn(false, 'APP', 'DI fail to updated', msgLog, extraFieldsLog);
+        }
+      } else {
+        logger.warn(true, 'APP', 'DI already up to date', `uniqueId: ${krtflDI.uniqueId}`, {
+          uniqueId: krtflDI.uniqueId,
+        });
+      }
+    }
+
+    if (entityIdentifier) {
+      await connectDiToEntity(krtflDI, entityIdentifier);
+    } else {
+      logger.warn(true, 'APP', 'No entity to connect', `uniqueId: ${krtflDI.uniqueId}`, {
         uniqueId: krtflDI.uniqueId,
       });
     }
-  }
 
-  if (entityIdentifier) {
-    await connectDiToEntity(krtflDI, entityIdentifier);
-  } else {
-    logger.warn(true, 'APP', 'No entity to connect', `uniqueId: ${krtflDI.uniqueId}`, { uniqueId: krtflDI.uniqueId });
+    return krtflDI.uniqueId || di.uniqueId;
+  } catch (error) {
+    return null;
   }
-
-  return krtflDI.uniqueId || di.uniqueId;
 };
 
 /**

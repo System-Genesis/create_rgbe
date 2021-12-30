@@ -20,6 +20,7 @@ jest.mock('../src/api/rgb', () => ({
     connectToEntity: () => {
       connect = true;
     },
+    delete: (_id: string, source: string) => (source === '1' ? true : null),
   },
 }));
 
@@ -39,10 +40,10 @@ jest.mock('../src/api/entity', () => ({
   },
 }));
 
-jest.mock('../src/logger/logger', () => ({
-  logInfo: () => {},
-  logWarn: () => {},
-  logError: () => {},
+jest.mock('logger-genesis', () => ({
+  info: () => {},
+  warn: () => {},
+  error: () => {},
 }));
 
 describe('insertDI', () => {
@@ -53,30 +54,30 @@ describe('insertDI', () => {
   });
 
   it('Should create DI', async () => {
-    await insertDI({ uniqueId: '526' });
+    await insertDI({ source: '1', uniqueId: '526' });
 
     expect(create).toBeTruthy();
   });
   it('Should update DI', async () => {
-    await insertDI({ uniqueId: '1', personalNumber: '2' } as di);
+    await insertDI({ source: '1', uniqueId: '1', personalNumber: '2' } as di);
 
     expect(update).toBeTruthy();
   });
 
   it('Should not update DI (no diff)', async () => {
-    await insertDI({ uniqueId: '1' });
+    await insertDI({ source: '1', uniqueId: '1' });
 
     expect(update).toBeFalsy();
   });
 
   it('Should send to connected entity to di', async () => {
-    await insertDI({ uniqueId: '1', entityId: '1' });
+    await insertDI({ source: '1', uniqueId: '1', entityId: '1' });
 
     expect(connect).toBeTruthy();
   });
 
   it('Should not send to connected entity to di', async () => {
-    await insertDI({ uniqueId: '1', entityId: '123' });
+    await insertDI({ source: '1', uniqueId: '1', entityId: '123' });
 
     expect(connect).toBeFalsy();
   });

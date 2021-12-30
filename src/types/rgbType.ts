@@ -15,7 +15,7 @@ export type postOg = {
   directGroup?: string;
 };
 
-export type di = { uniqueId: string; entityId?: string };
+export type di = { uniqueId: string; entityId?: string; source: string };
 export type role = { roleId: string; directGroup: string; digitalIdentityUniqueId?: string };
 
 export type rgb = {

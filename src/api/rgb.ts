@@ -30,6 +30,7 @@ export const diApi = {
   connectToEntity: async (entityIdentifier: string, di: di) => {
     connectDiToEntity(entityIdentifier, di);
   },
+  delete: async (di: string) => await getResData(axios.delete(`/digitalIdentities/${di}`)),
 };
 
 export const connectDiToEntityApi = async (entityId: string, diId: string) => {
@@ -45,12 +46,12 @@ export const roleApi = {
   create: async (role: object) => await getResData(axios.post(`/roles`, role)),
   update: async (id: string, role: object) => await getResData(axios.patch(`/roles/${id}`, role)),
 
-  connectToDI: async (roleId: string, digitalIdentityUniqueId: string) => {
-    return await getResData(axios.put(`/roles/${roleId}/digitalIdentity/${digitalIdentityUniqueId}`));
+  connectToDI: async (roleId: string, diUniqueId: string) => {
+    return await getResData(axios.put(`/roles/${roleId}/digitalIdentity/${diUniqueId}`));
   },
 
-  disconnectToDI: async (roleId: string, digitalIdentityUniqueId: string) => {
-    return await getResData(axios.delete(`/roles/${roleId}/digitalIdentity/${digitalIdentityUniqueId}`));
+  disconnectToDI: async (roleId: string, diUniqueId: string) => {
+    return await getResData(axios.delete(`/roles/${roleId}/digitalIdentity/${diUniqueId}`));
   },
 
   connectToOG: async (id: string, groupId: string) => {
