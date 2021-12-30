@@ -3,9 +3,7 @@ import { insertEntity } from '../src/service/entity/saveEntity';
 let create: boolean | undefined;
 let update: boolean | undefined;
 
-jest.mock('logger-genesis', () => ({
-  logger: { info: () => {}, warn: () => {}, error: () => {} },
-}));
+jest.mock('logger-genesis');
 
 jest.mock('../src/api/entity', () => ({
   entityApi: {

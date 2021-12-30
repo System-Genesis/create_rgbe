@@ -1,4 +1,4 @@
-import { insertDI } from '../src/service/rgb/saveDI';
+import { getDi, insertDI } from '../src/service/rgb/saveDI';
 import { di } from '../src/types/rgbType';
 
 let update: boolean | undefined;
@@ -14,6 +14,7 @@ jest.mock('../src/api/rgb', () => ({
             id: '144',
             uniqueId: '1',
             entityId: '1',
+            source: '1',
           },
     update: () => (update = true),
     create: () => (create = true),
@@ -40,11 +41,7 @@ jest.mock('../src/api/entity', () => ({
   },
 }));
 
-jest.mock('logger-genesis', () => ({
-  info: () => {},
-  warn: () => {},
-  error: () => {},
-}));
+jest.mock('logger-genesis');
 
 describe('insertDI', () => {
   beforeEach(() => {
@@ -71,7 +68,7 @@ describe('insertDI', () => {
   });
 
   it('Should send to connected entity to di', async () => {
-    await insertDI({ source: '1', uniqueId: '1', entityId: '1' });
+    await insertDI({ source: '1', uniqueId: '2', entityId: '2' });
 
     expect(connect).toBeTruthy();
   });
@@ -80,5 +77,20 @@ describe('insertDI', () => {
     await insertDI({ source: '1', uniqueId: '1', entityId: '123' });
 
     expect(connect).toBeFalsy();
+  });
+
+  describe('getDi', () => {
+    it('should return di', async () => {
+      const di = await getDi('1', '1');
+      expect(di).toBeTruthy();
+    });
+    it('should return null', async () => {
+      const di = await getDi('2', '1');
+      expect(di).toBeFalsy();
+    });
+    // it('should return null', async () => {
+    //   const di = await getDi('1', '2');
+    //   expect(di).toBeFalsy();
+    // });
   });
 });

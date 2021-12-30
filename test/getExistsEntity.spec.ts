@@ -1,10 +1,6 @@
 import { getExistsEntity } from '../src/service/entity/saveEntity';
 
-jest.mock('logger-genesis', () => ({
-  info: () => {},
-  warn: () => {},
-  error: () => {},
-}));
+jest.mock('logger-genesis');
 
 jest.mock('../src/api/entity', () => ({
   entityApi: {
