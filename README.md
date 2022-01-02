@@ -1,6 +1,6 @@
 # createRGBE
- 
-create\update and synchronize Role DI OG Entity
+
+create\update and synchronize Role DI OG & Entity
 
 - start object : GET_ENTITY_QUEUE
 - Entity: {
@@ -41,5 +41,18 @@ create\update and synchronize Role DI OG Entity
 -        }
 -      }
 -
-- End point: create/update object in kartoffel 
-- 
+- start object: MIR_QUEUE
+- RGB: {
+-        "og":null,
+-        "di": {
+-            "type": "domUser",
+-            "source": "city_name",
+-            "uniqueId": "e38313586@city.com",
+-            "entityId": "81946999",
+-            "isRoleAttachable": true
+-        },
+-        "role":null
+-      }
+-
+- End point: create/update object in kartoffel
+-

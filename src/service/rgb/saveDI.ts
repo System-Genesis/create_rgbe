@@ -6,10 +6,11 @@ import { diff } from '../../util/utils';
 import { entityApi } from './../../api/entity';
 
 /**
+ * Check if old di is need to be removed because the new di is stronger source
  *
  * @param uniqueId di uniqueId to find the di in kartoffel
  * @param source of new di to check if the existing di need to be replaced by new di (deleted and create new)
- * @returns the di that exists and need update or null for create new di
+ * @returns the di that exists and need update or null for create new di (not exist or deleted)
  */
 export const getDi = async (uniqueId: string, source: string) => {
   const di = await diApi.get(uniqueId);

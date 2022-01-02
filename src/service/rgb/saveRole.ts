@@ -20,9 +20,9 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
     if (krtflRole) connectRoleToDI(diId, role);
 
     if (krtflRole) {
-      logger.info(false, 'APP', 'Role created', `${krtflRole.roleId} created`, { roleId: krtflRole.roleId });
+      logger.info(false, 'APP', 'Role created', `roleId: ${krtflRole.roleId} created`, { roleId: krtflRole.roleId });
     } else
-      logger.error(false, 'APP', 'Role not created', `${krtflRole.roleId} not created`, {
+      logger.error(false, 'APP', 'Role not created', `roleId: ${krtflRole.roleId} not created`, {
         roleId: krtflRole.roleId,
       });
   } else {
@@ -33,13 +33,15 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
 
     if (Object.keys(diffRole).length > 0) {
       const updated = await roleApi.update(krtflRole.roleId, diffRole);
+
+      const msgLog = `roleId: ${krtflRole.roleId} updated: ${Object.keys(diffRole)}`;
       if (updated) {
-        logger.info(false, 'APP', 'Role updated', `updated: ${Object.keys(diffRole)}`, {
+        logger.info(false, 'APP', 'Role updated', msgLog, {
           roleId: krtflRole.roleId,
           update: diffRole,
         });
       } else {
-        logger.warn(false, 'APP', 'Role fail to updated', `updated: ${Object.keys(diffRole)}`, {
+        logger.warn(false, 'APP', 'Role fail to updated', msgLog, {
           roleId: krtflRole.roleId,
           update: diffRole,
         });

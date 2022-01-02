@@ -4,6 +4,13 @@ import { connectDiToEntityApi, disconnectDiToEntityApi } from '../api/rgb';
 import { di } from '../types/rgbType';
 import { pushToArray, getArray, getAllKeys, delValue } from './redis';
 
+/**
+ * Disconnect di before connect to new di
+ *
+ * @param di to disconnect from the entity
+ * @param entityIdentifier for logs to now entity identifier
+ * @returns void al throw if disconnect failed
+ */
 const disconnectDi = async (di: di, entityIdentifier: string) => {
   if (!di.entityId) return;
 
@@ -13,13 +20,25 @@ const disconnectDi = async (di: di, entityIdentifier: string) => {
       uniqueId: di.uniqueId,
     });
   } else {
-    throw logger.error(false, 'APP', 'Entity fail to disconnected from DI', `${entityIdentifier}  fail disconnect from ${di.uniqueId}`, {
-      id: entityIdentifier,
-      uniqueId: di.uniqueId,
-    });
+    throw logger.error(
+      false,
+      'APP',
+      'Entity fail to disconnected from DI',
+      `${entityIdentifier}  fail disconnect from ${di.uniqueId}`,
+      {
+        id: entityIdentifier,
+        uniqueId: di.uniqueId,
+      }
+    );
   }
 };
 
+/**
+ * Connect di to entity and cal disconnect if connected to another entity
+ *
+ * @param entityIdentifier to find entity to connect to
+ * @param di to connect to
+ */
 export const connectDiToEntity = async (entityIdentifier: string, di: di) => {
   const entity = await entityApi.get(entityIdentifier);
   try {
@@ -41,6 +60,12 @@ export const connectDiToEntity = async (entityIdentifier: string, di: di) => {
   }
 };
 
+/**
+ * Entity event when new entity created check if there is di that waiting to be connected
+ *
+ * @param entityIdentifier to find in redis all di that waiting to connect
+ * @param entId to connect to
+ */
 export const handleEntityEvent = async (entityIdentifier: string, entId: string) => {
   const data = await getArray(entityIdentifier);
 
@@ -57,6 +82,11 @@ export const handleEntityEvent = async (entityIdentifier: string, entId: string)
   delValue(entityIdentifier);
 };
 
+/**
+ * Recovery all waiting di's that waiting to connect,
+ * Probably they waiting to connect because entity and di created in same tome
+ *    so no event handle the connection
+ */
 export const runAll = async () => {
   const keys = await getAllKeys();
 

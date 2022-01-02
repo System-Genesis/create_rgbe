@@ -33,6 +33,9 @@ export const initializeConsumers = async () => {
   await consumeGetMir();
 };
 
+/**
+ * Create/update digital identity & group & role simple flow
+ */
 async function consumeGetRGB() {
   await menash.queue(config.rabbit.getRGB).activateConsumer(
     async (msg: ConsumerMessage) => {
@@ -55,6 +58,9 @@ async function consumeGetRGB() {
   );
 }
 
+/**
+ * Handle source that can be created only if kartoffel already have the related entity
+ */
 async function consumeGetMir() {
   await menash.queue(config.rabbit.getMir).activateConsumer(
     async (msg: ConsumerMessage) => {
@@ -77,6 +83,9 @@ async function consumeGetMir() {
   );
 }
 
+/**
+ * Create/update entity
+ */
 async function consumeGetEntity() {
   await menash.queue(config.rabbit.getEntity).activateConsumer(
     async (msg: ConsumerMessage) => {
