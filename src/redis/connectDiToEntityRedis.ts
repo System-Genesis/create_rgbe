@@ -47,11 +47,7 @@ export const connectDiToEntity = async (entityIdentifier: string, di: di) => {
     }
 
     if (entity) {
-      await connectDiToEntityApi(entity.id, di.uniqueId);
-      logger.info(false, 'APP', 'Entity connected to DI', `${entityIdentifier} connect to ${di.uniqueId}`, {
-        id: entityIdentifier,
-        uniqueId: di.uniqueId,
-      });
+      await handleConnectDiToEntity(entity.id, di.uniqueId, entityIdentifier);
     } else {
       pushToArray(entityIdentifier, di.uniqueId);
     }
@@ -59,6 +55,26 @@ export const connectDiToEntity = async (entityIdentifier: string, di: di) => {
     console.log('disconnect failed');
   }
 };
+
+/**
+ *
+ * @param entityId to connect to
+ * @param diUniqueId di to connect to the entity
+ * @param entityIdentifier entity identifier for logs
+ */
+async function handleConnectDiToEntity(entityId: string, diUniqueId: string, entityIdentifier: string) {
+  if (await connectDiToEntityApi(entityId, diUniqueId)) {
+    logger.info(false, 'APP', 'Entity connected to DI', `${entityIdentifier} connect to ${diUniqueId}`, {
+      id: entityIdentifier,
+      uniqueId: diUniqueId,
+    });
+  } else {
+    logger.error(true, 'APP', 'Entity failed to connect to DI', `entity: ${entityIdentifier}, di: ${diUniqueId}`, {
+      id: entityIdentifier,
+      uniqueId: diUniqueId,
+    });
+  }
+}
 
 /**
  * Entity event when new entity created check if there is di that waiting to be connected
@@ -71,11 +87,7 @@ export const handleEntityEvent = async (entityIdentifier: string, entId: string)
 
   if (data.length > 0) {
     for (let i = 0; i < data.length; i++) {
-      await connectDiToEntityApi(entId, data[i]);
-      logger.info(false, 'APP', 'Entity connected to DI', `${entityIdentifier} connect to ${data[i]}`, {
-        id: entId,
-        uniqueId: data[i],
-      });
+      await handleConnectDiToEntity(entId, data[i], entityIdentifier);
     }
   }
 
