@@ -4,9 +4,30 @@ import { token } from '../auth/spike';
 import envConfig from '../config/env.config';
 import config from '../config/env.config';
 
+// TODO: refactor tokenWrap or use other spike library to avoid redis clients
+class tokenWrap {
+  token?: string;
+
+  constructor() {}
+
+  async getToken(expired: Boolean): Promise<string> {
+    if (expired) {
+      this.token = await token()!();
+      return this.token;
+    } else if (!this.token) {
+      this.token = await token()!();
+      return this.token;
+    } else {
+      return this.token;
+    }
+  }
+}
+
+const tokenWrapIns = new tokenWrap();
+
 axios.interceptors.request.use(async (req: AxiosRequestConfig) => {
   if (envConfig.isSpike) {
-    req.headers.authorization = await token();
+    req.headers.authorization = await tokenWrapIns.getToken(false);
   }
   req.baseURL = config.krtflApi;
   return req;
@@ -32,6 +53,9 @@ axios.interceptors.response.use(
         error.code === 'ECONNREFUSED' ||
         error.message.toLowerCase().includes('spike'))
     ) {
+      if (error?.response?.status === 401) {
+        await tokenWrapIns.getToken(true);
+      }
       if (reRequestCount < 500) {
         console.log(`rereq ${JSON.stringify(error.response?.data || error.code)}`);
         reRequestCount++;

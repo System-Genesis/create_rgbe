@@ -75,6 +75,8 @@ async function connectRoleToOG(ogId: string, krtflRole: role) {
  * @param diId to send to kartoffel api
  * @param krtflRole to send to kartoffel api
  */
+
+//TODO: kartflRole -> role
 async function connectRoleToDI(diId: string, krtflRole: role) {
   if (diId !== krtflRole.digitalIdentityUniqueId) {
     const moveMsg = `Role: ${krtflRole.roleId}, DI: ${diId}`;

@@ -34,7 +34,7 @@ export const diApi = {
 };
 
 export const connectDiToEntityApi = async (entityId: string, diId: string) => {
-  return await getResData(axios.put(`/entities/${entityId}/digitalIdentity/${diId}`));
+  return await getResData(axios.put(`/entities/${entityId}/digitalIdentity/${diId}`, {}));
 };
 
 export const disconnectDiToEntityApi = async (entityId: string, diId: string) => {
