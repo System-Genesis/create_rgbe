@@ -5,7 +5,7 @@ import { insertEntity } from '../service/entity/saveEntity';
 import { mirHandler } from '../service/rgb/mirHandler';
 import { createRgb } from '../service/rgb/rgbHandler';
 import { entity } from '../types/entityType';
-import { rgb } from '../types/rgbType';
+import { rgb, rgbMir } from '../types/rgbType';
 
 export const connectRabbit = async () => {
   try {
@@ -68,7 +68,7 @@ async function consumeGetMir() {
         const rgb = msg.getContent();
         logger.info(true, 'APP', 'Got from MIR queue', JSON.stringify(rgb));
 
-        await mirHandler(rgb as rgb);
+        await mirHandler(rgb as rgbMir);
         logger.info(true, 'APP', 'MIR insertion is done', '');
 
         msg.ack();

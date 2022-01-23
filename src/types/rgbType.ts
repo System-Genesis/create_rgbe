@@ -18,8 +18,15 @@ export type postOg = {
 export type di = { uniqueId: string; entityId?: string; source: string };
 export type role = { roleId: string; directGroup: string; digitalIdentityUniqueId?: string };
 
-export type rgb = {
+export interface rgb {
   og: og | null;
   di: di;
   role: role | null;
+}
+
+export type rgbMir = {
+  og: og | null;
+  di: di;
+  role: role | null;
+  identifier: { personalNumber?: string; identityCard?: string; goalUserId?: string };
 };
