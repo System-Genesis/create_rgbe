@@ -14,15 +14,15 @@ const checkEntityExists = async (entityIdentifier: string | undefined) => {
 };
 
 export const mirHandler = async (rgb: rgbMir) => {
-  const identifier = rgb.identifier;
-  if (identifier) {
+  const identifiers = rgb.identifiers;
+  if (identifiers) {
     const entityIdentifier =
-      (await checkEntityExists(identifier.goalUserId)) ||
-      (await checkEntityExists(identifier.identityCard)) ||
-      (await checkEntityExists(identifier.personalNumber));
+      (await checkEntityExists(identifiers.goalUserId)) ||
+      (await checkEntityExists(identifiers.identityCard)) ||
+      (await checkEntityExists(identifiers.personalNumber));
 
     if (entityIdentifier) {
-      const msg = `di.uniqueId: ${rgb.di.uniqueId} to entity identifier: ${rgb.di.entityId}`;
+      const msg = `di.uniqueId: ${rgb.di.uniqueId} to entity identifiers: ${rgb.di.entityId}`;
       logger.info(true, 'APP', 'Mir has entity to connect', msg);
 
       rgb.di.entityId = entityIdentifier;
@@ -33,6 +33,6 @@ export const mirHandler = async (rgb: rgbMir) => {
       });
     }
   } else {
-    logger.error(true, 'APP', 'Mir object without any identifier', `di:${rgb.di.uniqueId}`, { di: rgb.di.uniqueId });
+    logger.error(true, 'APP', 'Mir object without any identifiers', `di:${rgb.di.uniqueId}`, { di: rgb.di.uniqueId });
   }
 };

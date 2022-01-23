@@ -28,5 +28,5 @@ export type rgbMir = {
   og: og | null;
   di: di;
   role: role | null;
-  identifier: { personalNumber?: string; identityCard?: string; goalUserId?: string };
+  identifiers: { personalNumber?: string; identityCard?: string; goalUserId?: string };
 };

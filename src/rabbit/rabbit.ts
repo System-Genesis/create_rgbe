@@ -13,9 +13,9 @@ export const connectRabbit = async () => {
 
     await menash.connect(config.rabbit.uri, config.rabbit.retryOptions);
 
-    await menash.declareQueue(config.rabbit.getEntity);
-    await menash.declareQueue(config.rabbit.getRGB);
-    await menash.declareQueue(config.rabbit.getMir);
+    await menash.declareQueue(config.rabbit.getEntity, { durable: true });
+    await menash.declareQueue(config.rabbit.getRGB, { durable: true });
+    await menash.declareQueue(config.rabbit.getMir, { durable: true });
 
     console.log('Rabbit connected');
 
