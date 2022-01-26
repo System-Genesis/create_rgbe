@@ -4,13 +4,10 @@ import { createRgb } from './rgbHandler';
 import { entityApi } from './../../api/entity';
 import logger from 'logger-genesis';
 
-const checkEntityExists = async (entityIdentifier: string | undefined) => {
-  if (!entityIdentifier) {
-    return null;
-  }
+export const checkEntityExists = async (entityIdentifier: string | undefined) => {
+  if (!entityIdentifier) return null;
 
-  await entityApi.get(entityIdentifier);
-  return entityIdentifier;
+  return (await entityApi.get(entityIdentifier)) ? entityIdentifier : null;
 };
 
 export const mirHandler = async (rgb: rgbMir) => {
