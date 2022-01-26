@@ -46,20 +46,20 @@ axios.interceptors.response.use(
     // OR  SPIKE didn't give token
     // after 500 error in a row stop resend
     if (
-      !error.response?.data?.id &&
-      ((error.config && error.response && error.response.status === 401) ||
-        error.response.status === 503 ||
-        (error.config.method === 'post' && error.config.url.includes('group')) ||
-        error.code === 'ECONNREFUSED' ||
-        error.message.toLowerCase().includes('spike'))
+      !error?.response?.data?.id &&
+      ((error?.config && error?.response && error?.response?.status === 401) ||
+        error?.response?.status === 503 ||
+        (error?.config?.method === 'post' && error?.config?.url.includes('group')) ||
+        error?.code === 'ECONNREFUSED' ||
+        error?.message?.toLowerCase().includes('spike'))
     ) {
       if (error?.response?.status === 401) {
         await tokenWrapIns.getToken(true);
       }
       if (reRequestCount < 500) {
-        console.log(`rereq ${JSON.stringify(error.response?.data || error.code)}`);
+        console.log(`rereq ${JSON.stringify(error?.response?.data || error?.code)}`);
         reRequestCount++;
-        return await axios.request(error.config);
+        return await axios.request(error?.config);
       }
     } else {
       reRequestCount = 0;
@@ -74,16 +74,16 @@ export const getResData = async (axiosReq: Promise<AxiosResponse<any>>) => {
     const res = await axiosReq;
     return res.data;
   } catch (error: any) {
-    const erData = error.response?.data;
+    const erData = error?.response?.data;
 
     if (erData?.id) return { id: erData.id };
 
-    const erConfig = error.config;
+    const erConfig = error?.config;
 
-    const resMgs = `Response ${JSON.stringify(erData?.message || erData || error.code)}`;
-    const reqMgs = `Request ${erConfig.method}:${erConfig.url}`;
+    const resMgs = `Response ${JSON.stringify(erData?.message || erData || error?.code || '')}`;
+    const reqMgs = `Request ${erConfig?.method}:${erConfig?.url}`;
 
-    logger.warn(true, 'APP', `${resMgs}, ${reqMgs}`, error.message, {
+    logger.warn(true, 'APP', `${resMgs}, ${reqMgs}`, error?.message, {
       url: erConfig?.url,
       data: erConfig?.data,
     });
