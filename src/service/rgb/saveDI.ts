@@ -1,5 +1,5 @@
 import logger from 'logger-genesis';
-import { diApi } from '../../api/rgb';
+import { diApi, disconnectDiToEntityApi } from '../../api/rgb';
 import config from '../../config/env.config';
 import { di } from '../../types/rgbType';
 import { diff } from '../../util/utils';
@@ -17,6 +17,16 @@ export const getDi = async (uniqueId: string, source: string) => {
   if (!di) return null;
 
   if (source === config.strongSource && di.source === config.weakSource) {
+    // disconnect di from his entity before delete the di
+    const krtflDi: di = await diApi.get(di.uniqueId);
+    if (krtflDi.entityId) {
+      if (!(await disconnectDiToEntityApi(krtflDi.uniqueId, krtflDi.entityId))) {
+        const errTitle = `Fail to disconnect di from ${config.weakSource}`;
+        logger.error(true, 'APP', errTitle, `di: ${krtflDi.uniqueId} entity: ${krtflDi.entityId}`);
+        throw `Fail delete di because fail to disconnect di from ${config.weakSource}`;
+      }
+    }
+
     if (await diApi.delete(di.uniqueId)) {
       return null;
     } else {
