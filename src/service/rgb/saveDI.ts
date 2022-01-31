@@ -47,11 +47,11 @@ export const insertDI = async (di: di) => {
         //TODO fix response
         if (krtflDI) krtflDI = { ...di };
 
-        logger.info(false, 'APP', 'DI created', `${krtflDI.uniqueId} created`, {
+        logger.info(true, 'APP', 'DI created', `${krtflDI.uniqueId} created`, {
           uniqueId: krtflDI.uniqueId,
         });
       } else {
-        logger.error(false, 'APP', 'DI not created', `${di.uniqueId} not created`, {
+        logger.error(true, 'APP', 'DI not created', `${di.uniqueId} not created`, {
           uniqueId: di.uniqueId,
         });
         return;
@@ -65,9 +65,9 @@ export const insertDI = async (di: di) => {
         const msgLog = `uniqueId: ${krtflDI.uniqueId}, updated: ${Object.keys(diDiff)}`;
         const extraFieldsLog = { uniqueId: krtflDI.uniqueId, updated: diDiff };
         if (updated) {
-          logger.info(false, 'APP', 'DI updated', msgLog, extraFieldsLog);
+          logger.info(true, 'APP', 'DI updated', msgLog, extraFieldsLog);
         } else {
-          logger.warn(false, 'APP', 'DI fail to updated', msgLog, extraFieldsLog);
+          logger.warn(true, 'APP', 'DI fail to updated', msgLog, extraFieldsLog);
         }
       } else {
         logger.warn(true, 'APP', 'DI already up to date', `uniqueId: ${krtflDI.uniqueId}`, {

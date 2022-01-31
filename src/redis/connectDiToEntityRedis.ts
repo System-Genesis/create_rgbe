@@ -15,13 +15,13 @@ const disconnectDi = async (di: di, entityIdentifier: string) => {
   if (!di.entityId) return;
 
   if (await disconnectDiToEntityApi(di.entityId, di.uniqueId)) {
-    logger.info(false, 'APP', 'Entity disconnected from DI', `${entityIdentifier} disconnect from ${di.uniqueId}`, {
+    logger.info(true, 'APP', 'Entity disconnected from DI', `${entityIdentifier} disconnect from ${di.uniqueId}`, {
       id: entityIdentifier,
       uniqueId: di.uniqueId,
     });
   } else {
     throw logger.error(
-      false,
+      true,
       'APP',
       'Entity fail to disconnected from DI',
       `${entityIdentifier}  fail disconnect from ${di.uniqueId}`,
@@ -64,7 +64,7 @@ export const connectDiToEntity = async (entityIdentifier: string, di: di) => {
  */
 async function handleConnectDiToEntity(entityId: string, diUniqueId: string, entityIdentifier: string) {
   if (await connectDiToEntityApi(entityId, diUniqueId)) {
-    logger.info(false, 'APP', 'Entity connected to DI', `${entityIdentifier} connect to ${diUniqueId}`, {
+    logger.info(true, 'APP', 'Entity connected to DI', `${entityIdentifier} connect to ${diUniqueId}`, {
       id: entityIdentifier,
       uniqueId: diUniqueId,
     });

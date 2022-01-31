@@ -25,7 +25,7 @@ export const mirHandler = async (rgb: rgbMir) => {
       rgb.di.entityId = entityIdentifier;
       await createRgb(rgb as rgb);
     } else {
-      logger.warn(false, 'APP', 'Mir does not have entity to connect', `di:${rgb.di.uniqueId}`, {
+      logger.warn(true, 'APP', 'Mir does not have entity to connect', `di:${rgb.di.uniqueId}`, {
         di: rgb.di.uniqueId,
       });
     }
