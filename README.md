@@ -7,6 +7,12 @@ create new one / update exist / delete last and insert new ...
 
 This service must to get object that good for kartoffel.
 
+QUEUES
+
+- buildEntity --> createRGBE: CREATE_RGBE_ENTITY_QUEUE
+- buildROGD --> createRGBE(normal flow): CREATE_RGBE_ROGD_QUEUE
+- buildROGD --> createRGBE(Mir flow): CREATE_RGBE_ROGD_MIR_QUEUE
+
 - start object : GET_ENTITY_QUEUE
 - Entity: {
 -           entityType: 'tamarz',
