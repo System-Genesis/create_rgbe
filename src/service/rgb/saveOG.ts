@@ -19,9 +19,9 @@ export const insertOG = async (og: og) => {
     }
 
     krtflOg = await ogApi.create(og);
-    if (krtflOg) logger.info(false, 'APP', 'Group created', `${og.hierarchy + og.name} created`, { id: krtflOg.id });
+    if (krtflOg) logger.info(true, 'APP', 'Group created', `${og.hierarchy + og.name} created`, { id: krtflOg.id });
     else {
-      throw logger.error(false, 'APP', 'Group not created', `${og.hierarchy + og.name} not created`, {
+      throw logger.error(true, 'APP', 'Group not created', `${og.hierarchy + og.name} not created`, {
         identifier: og.hierarchy + og.name,
       });
     }

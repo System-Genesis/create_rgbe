@@ -63,7 +63,7 @@ async function connectRoleToOG(ogId: string, krtflRole: role) {
 
     try {
       await roleApi.connectToOG(krtflRole.roleId, ogId);
-      logger.info(false, 'APP', 'Role connect to Group', moveMsg, { id: krtflRole.roleId });
+      logger.info(true, 'APP', 'Role connect to Group', moveMsg, { id: krtflRole.roleId });
     } catch (error: any) {
       logger.error(true, 'APP', 'Role fail to connect to Group ', moveMsg, { id: krtflRole.roleId, error });
     }
