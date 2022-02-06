@@ -28,8 +28,9 @@ QUEUES
             clearance: 5,
             mobilePhone: '0534724983',
           };
- 
+ ```
   start object: GET_RGB_QUEUE
+  ```
   RGB: {
          "og": {
              "name": "reprehenderit",
@@ -52,8 +53,9 @@ QUEUES
              "source": "city_name"
          }
        }
- 
+ ```
   start object: MIR_QUEUE
+  ```
   RGB: {
          "og":null,
          "di": {
