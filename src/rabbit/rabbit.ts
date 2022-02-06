@@ -41,10 +41,10 @@ async function consumeGetRGB() {
     async (msg: ConsumerMessage) => {
       try {
         const rgb = msg.getContent();
-        logger.info(true, 'APP', 'Got from RGB queue', JSON.stringify(rgb));
+        logger.info(false, 'APP', 'Got from RGB queue', JSON.stringify(rgb));
 
         await createRgb(rgb as rgb);
-        logger.info(true, 'APP', 'RGB insertion is done', '');
+        logger.info(false, 'APP', 'RGB insertion is done', '');
 
         msg.ack();
       } catch (error: any) {
@@ -66,10 +66,10 @@ async function consumeGetMir() {
     async (msg: ConsumerMessage) => {
       try {
         const rgb = msg.getContent();
-        logger.info(true, 'APP', 'Got from MIR queue', JSON.stringify(rgb));
+        logger.info(false, 'APP', 'Got from MIR queue', JSON.stringify(rgb));
 
         await mirHandler(rgb as rgbMir);
-        logger.info(true, 'APP', 'MIR insertion is done', '');
+        logger.info(false, 'APP', 'MIR insertion is done', '');
 
         msg.ack();
       } catch (error: any) {
@@ -91,10 +91,10 @@ async function consumeGetEntity() {
     async (msg: ConsumerMessage) => {
       try {
         const entity = msg.getContent() as entity;
-        logger.info(true, 'APP', 'Got from ENTITY queue', JSON.stringify(entity));
+        logger.info(false, 'APP', 'Got from ENTITY queue', JSON.stringify(entity));
 
         await insertEntity(entity);
-        logger.info(true, 'APP', 'ENTITY insertion is done', '');
+        logger.info(false, 'APP', 'ENTITY insertion is done', '');
 
         msg.ack();
       } catch (error: any) {
