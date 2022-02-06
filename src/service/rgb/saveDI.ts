@@ -20,7 +20,7 @@ export const getDi = async (uniqueId: string, source: string) => {
     // disconnect di from his entity before delete the di
     const krtflDi: di = await diApi.get(di.uniqueId);
     if (krtflDi.entityId) {
-      if (!(await disconnectDiToEntityApi(krtflDi.uniqueId, krtflDi.entityId))) {
+      if (!(await disconnectDiToEntityApi(krtflDi.entityId, krtflDi.uniqueId))) {
         const errTitle = `Fail to disconnect di from ${config.weakSource}`;
         logger.error(true, 'APP', errTitle, `di: ${krtflDi.uniqueId} entity: ${krtflDi.entityId}`);
         throw `Fail delete di because fail to disconnect di from ${config.weakSource}`;

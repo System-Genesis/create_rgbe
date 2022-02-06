@@ -1,6 +1,10 @@
 # createRGBE
 
 create\update and synchronize Role DI OG & Entity
+Take the builded object that ready to kartoffel and check which action need to do
+create new one / update exist / delete last and insert new ...
+
+This service must to get object that good for kartoffel.
 
 - start object : GET_ENTITY_QUEUE
 - Entity: {
@@ -52,6 +56,12 @@ create\update and synchronize Role DI OG & Entity
 -            "isRoleAttachable": true
 -        },
 -        "role":null
+-        "identifiers": {
+-            // minimum 1 of 3 max 2
+-            "personalNumber": "14685465",
+-            "identityCard": "5465434",
+-            "goalUserId": "e38313586@city.com",
+-        }
 -      }
 -
 - End point: create/update object in kartoffel
