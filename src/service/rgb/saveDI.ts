@@ -21,8 +21,8 @@ export const getDi = async (uniqueId: string, source: string) => {
     const krtflDi: di = await diApi.get(di.uniqueId);
     if (krtflDi.entityId) {
       if (!(await disconnectDiToEntityApi(krtflDi.entityId, krtflDi.uniqueId))) {
-        const errTitle = `Fail to disconnect di from ${config.weakSource}`;
-        logger.error(true, 'APP', errTitle, `di: ${krtflDi.uniqueId} entity: ${krtflDi.entityId}`);
+        const errTitle = `source: ${config.weakSource} di: ${krtflDi.uniqueId} entity: ${krtflDi.entityId}`;
+        logger.error(true, 'APP', `Fail to disconnect di`, errTitle);
         throw `Fail delete di because fail to disconnect di from ${config.weakSource}`;
       }
     }
@@ -30,7 +30,7 @@ export const getDi = async (uniqueId: string, source: string) => {
     if (await diApi.delete(di.uniqueId)) {
       return null;
     } else {
-      logger.error(true, 'APP', `Fail to delete di from ${config.weakSource}`, di.uniqueId);
+      logger.error(true, 'APP', `Fail to delete di`, `source: ${config.weakSource} di: di.uniqueId`);
       throw `Fail to delete di from ${config.weakSource}`;
     }
   }
