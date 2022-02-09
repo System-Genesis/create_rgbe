@@ -47,7 +47,7 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
         });
       }
     } else {
-      logger.info(true, 'APP', 'Role not updated', `roleId: ${krtflRole.roleId}`, { roleId: krtflRole.roleId });
+      logger.info(true, 'APP', 'Role already up to date', `roleId: ${krtflRole.roleId}`, { roleId: krtflRole.roleId });
     }
   }
 };
