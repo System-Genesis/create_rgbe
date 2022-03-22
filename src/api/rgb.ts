@@ -22,7 +22,7 @@ export const ogApi = {
 };
 
 export const diApi = {
-  get: async (di: string) => await getResData(axios.get(`/digitalIdentities/${di}`)),
+  get: async (di: string) => await getResData(axios.get(`/digitalIdentities/${di}?expanded=true`)),
   create: async (di: object) => await getResData(axios.post(`/digitalIdentities`, di)),
   update: async (id: string, di: object) => {
     return await getResData(axios.patch(`/digitalIdentities/${id}`, di));
@@ -43,6 +43,7 @@ export const disconnectDiToEntityApi = async (entityId: string, diId: string) =>
 
 export const roleApi = {
   get: async (id: string) => await getResData(axios.get(`/roles/${id}`)),
+  delete: async (id: string) => await getResData(axios.delete(`/roles/${id}`)),
   create: async (role: object) => await getResData(axios.post(`/roles`, role)),
   update: async (id: string, role: object) => await getResData(axios.patch(`/roles/${id}`, role)),
 

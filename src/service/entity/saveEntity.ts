@@ -10,7 +10,7 @@ import { diff, diffPicture } from '../../util/utils';
  * @param entity - from buildEntity queue
  */
 export const insertEntity = async (entity: entity) => {
-  const entityIdentifier = entity.identityCard || entity.personalNumber || entity.goalUserId!;
+  const entityIdentifier = entity.goalUserId || entity.identityCard || entity.personalNumber!;
   const fullName = `${entity.firstName} ${entity.lastName || ''}`;
   let krtflEntity = await getExistsEntity(entity);
 

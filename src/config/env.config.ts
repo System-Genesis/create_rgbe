@@ -11,6 +11,7 @@ export default {
     getEntity: env.get('GET_ENTITY_QUEUE').required().asString(),
     getRGB: env.get('GET_RGB_QUEUE').required().asString(),
     getMir: env.get('MIR_QUEUE').required().asString(),
+    getDelete: env.get('KILL_CREATE_QUEUE').required().asString(),
     prefetch: env.get('PREFETCH').required().default(100).asIntPositive(),
     retryOptions: {
       minTimeout: env.get('RABBIT_RETRY_MIN_TIMEOUT').default(1000).asIntPositive(),

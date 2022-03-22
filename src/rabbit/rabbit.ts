@@ -1,6 +1,7 @@
 import logger from 'logger-genesis';
 import menash, { ConsumerMessage } from 'menashmq';
 import config from '../config/env.config';
+import { deleteDIAndRole } from '../service/delete/handleDelete';
 import { insertEntity } from '../service/entity/saveEntity';
 import { mirHandler } from '../service/rgb/mirHandler';
 import { createRgb } from '../service/rgb/rgbHandler';
@@ -16,12 +17,14 @@ export const connectRabbit = async () => {
     await menash.declareQueue(config.rabbit.getEntity, { durable: true });
     await menash.declareQueue(config.rabbit.getRGB, { durable: true });
     await menash.declareQueue(config.rabbit.getMir, { durable: true });
+    await menash.declareQueue(config.rabbit.getDelete, { durable: true });
 
     console.log('Rabbit connected');
 
     await menash.queue(config.rabbit.getEntity).prefetch(config.rabbit.prefetch);
     await menash.queue(config.rabbit.getRGB).prefetch(config.rabbit.prefetch);
     await menash.queue(config.rabbit.getMir).prefetch(config.rabbit.prefetch);
+    await menash.queue(config.rabbit.getDelete).prefetch(config.rabbit.prefetch);
   } catch (error: any) {
     console.log('Unknown Error, on Connect Rabbit', error.message);
   }
@@ -31,6 +34,7 @@ export const initializeConsumers = async () => {
   await consumeGetEntity();
   await consumeGetRGB();
   await consumeGetMir();
+  await consumeDeleteDIAndRole();
 };
 
 /**
@@ -100,6 +104,28 @@ async function consumeGetEntity() {
       } catch (error: any) {
         const erMsg = JSON.stringify(error.message);
         console.log(`error ENTITY Queue: ${erMsg}`);
+
+        msg.ack();
+      }
+    },
+    { noAck: false }
+  );
+}
+
+async function consumeDeleteDIAndRole() {
+  await menash.queue(config.rabbit.getDelete).activateConsumer(
+    async (msg: ConsumerMessage) => {
+      try {
+        const uniqueId: string = msg.getContent() as string;
+        logger.info(false, 'APP', 'Got uniqueId to delete', JSON.stringify(uniqueId));
+
+        await deleteDIAndRole(uniqueId);
+        logger.info(false, 'APP', 'DI and Role delete done', '');
+
+        msg.ack();
+      } catch (error: any) {
+        const erMsg = JSON.stringify(error.message);
+        console.log(`error DELETE Queue: ${erMsg}`);
 
         msg.ack();
       }
