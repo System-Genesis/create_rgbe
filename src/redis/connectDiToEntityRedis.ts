@@ -1,6 +1,6 @@
 import logger from 'logger-genesis';
 import { entityApi } from '../api/entity';
-import { connectDiToEntityApi, disconnectDiToEntityApi } from '../api/rgb';
+import { connectDiToEntityApi, disconnectDiToEntityApi } from '../api/di';
 import { di } from '../types/rgbType';
 import { pushToArray, getArray, getAllKeys, delValue } from './redis';
 

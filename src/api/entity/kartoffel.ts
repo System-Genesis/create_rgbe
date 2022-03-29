@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { krtflEntity, entity } from '../types/entityType';
-import { getResData } from './getResData';
+import { krtflEntity, entity } from '../../types/entityType';
+import { getResData } from '../utils/getResData';
 
 const create = async (entity: entity): Promise<krtflEntity | null> => {
   return await getResData(axios.post(`/entities`, entity));

@@ -1,6 +1,6 @@
-import { kartoffelApi } from './kartoffel';
+import { kartoffelApi } from './entity/kartoffel';
 import { entity, krtflEntity } from '../types/entityType';
-import { mirrorApi } from './mirror';
+import { mirrorApi } from './entity/mirror';
 
 const create = async (entity: entity): Promise<krtflEntity | null> => {
   const krtflEnt = await kartoffelApi.create(entity);

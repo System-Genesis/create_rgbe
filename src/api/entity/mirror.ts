@@ -1,7 +1,7 @@
 import axios from 'axios';
-import config from '../config/env.config';
-import { entity } from '../types/entityType';
-import { getResData } from './getResData';
+import config from '../../config/env.config';
+import { entity } from '../../types/entityType';
+import { getResData } from '../utils/getResData';
 
 const create = async (entity: entity) => {
   return await getResData(axios.post(`/${config.mirrorUnique}`, entity));

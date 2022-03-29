@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import logger from 'logger-genesis';
-import { token } from '../auth/spike';
-import envConfig from '../config/env.config';
-import config from '../config/env.config';
+import { token } from '../../auth/spike';
+import envConfig from '../../config/env.config';
+import config from '../../config/env.config';
 
 // TODO: refactor tokenWrap or use other spike library to avoid redis clients
 class tokenWrap {

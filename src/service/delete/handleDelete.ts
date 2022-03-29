@@ -1,4 +1,5 @@
-import { diApi, disconnectDiToEntityApi, roleApi } from '../../api/rgb';
+import { diApi, disconnectDiToEntityApi } from '../../api/di';
+import { roleApi } from '../../api/role';
 import logger from 'logger-genesis';
 
 export const deleteDIAndRole = async (uniqueId: string) => {

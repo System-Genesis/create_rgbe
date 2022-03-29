@@ -1,5 +1,5 @@
 import logger from 'logger-genesis';
-import { roleApi } from '../../api/rgb';
+import { roleApi } from '../../api/role';
 import { role } from '../../types/rgbType';
 import { diff } from '../../util/utils';
 /**

@@ -1,5 +1,5 @@
 import logger from 'logger-genesis';
-import { ogApi } from '../../api/rgb';
+import { ogApi } from '../../api/og';
 import { og } from '../../types/rgbType';
 
 /**
