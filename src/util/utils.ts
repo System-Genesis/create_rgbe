@@ -41,15 +41,13 @@ export const diffPicture = (newEntity: entity, oldEntity: entity) => {
 
   if (
     oldPic?.profile?.meta?.updateAt &&
-    (!oldPic?.profile?.meta?.updateAt ||
-      newPic?.profile?.meta?.updateAt != oldPic?.profile?.meta?.updateAt)
+    (!oldPic?.profile?.meta?.updateAt || newPic?.profile?.meta?.updateAt != oldPic?.profile?.meta?.updateAt)
   ) {
     oldEntity.pictures = { profile: newPic?.profile };
   }
   if (
     oldPic?.avatar?.meta?.updateAt &&
-    (!oldPic?.avatar?.meta?.updateAt ||
-      newPic?.avatar?.meta?.updateAt != oldPic?.avatar?.meta?.updateAt)
+    (!oldPic?.avatar?.meta?.updateAt || newPic?.avatar?.meta?.updateAt != oldPic?.avatar?.meta?.updateAt)
   ) {
     oldEntity.pictures = { avatar: newPic?.avatar, ...oldEntity.pictures };
   }
@@ -57,4 +55,8 @@ export const diffPicture = (newEntity: entity, oldEntity: entity) => {
 
 export const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+export const getIdentifier = (entity: entity) => {
+  return entity.goalUserId || entity.identityCard || entity.personalNumber!;
 };

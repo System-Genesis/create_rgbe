@@ -20,6 +20,8 @@ export default {
     },
   },
   krtflApi: env.get('KRTFL_API').required().asString(),
+  mirrorUnique: env.get('MIRROR_UNIQUE_API_PREFIX').required().asString(),
+  mirrorApi: env.get('MIRROR_API').required().asString(),
   redisUrl: env.get('REDIS_URL').required().asString(),
   isSpike: env.get('IS_SPIKE').asBool(),
   strongSource: env.get('STRONG_SOURCE').required().asString(),

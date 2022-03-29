@@ -3,7 +3,7 @@ import { diApi, disconnectDiToEntityApi } from '../../api/rgb';
 import config from '../../config/env.config';
 import { di } from '../../types/rgbType';
 import { diff } from '../../util/utils';
-import { entityApi } from './../../api/entity';
+import { entityApi } from '../../api/entity';
 
 /**
  * Check if old di is need to be removed because the new di is stronger source
@@ -107,10 +107,9 @@ export const insertDI = async (di: di) => {
  */
 async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
   if (krtflDI.entityId) {
-    const getEnt = await entityApi.get(entityIdentifier);
-    const connectedEntityId = getEnt.id;
+    const connectedEntityId: string | null = await entityApi.getId(entityIdentifier);
 
-    if (connectedEntityId === krtflDI.entityId) {
+    if (connectedEntityId && connectedEntityId === krtflDI.entityId) {
       const connectMsg = `di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`;
       return logger.info(true, 'APP', 'DI already connected', connectMsg);
     }

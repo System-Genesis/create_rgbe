@@ -40,14 +40,14 @@ const disconnectDi = async (di: di, entityIdentifier: string) => {
  * @param di to connect to
  */
 export const connectDiToEntity = async (entityIdentifier: string, di: di) => {
-  const entity = await entityApi.get(entityIdentifier);
+  const entityId: string | null = await entityApi.getId(entityIdentifier);
   try {
     if (di.entityId) {
       await disconnectDi(di, entityIdentifier);
     }
 
-    if (entity) {
-      await handleConnectDiToEntity(entity.id, di.uniqueId, entityIdentifier);
+    if (entityId) {
+      await handleConnectDiToEntity(entityId, di.uniqueId, entityIdentifier);
     } else {
       pushToArray(entityIdentifier, di.uniqueId);
     }
@@ -83,7 +83,7 @@ async function handleConnectDiToEntity(entityId: string, diUniqueId: string, ent
  * @param entId to connect to
  */
 export const handleEntityEvent = async (entityIdentifier: string, entId: string) => {
-  const data = await getArray(entityIdentifier);
+  const data: string[] = await getArray(entityIdentifier);
 
   if (data.length > 0) {
     for (let i = 0; i < data.length; i++) {
@@ -100,13 +100,13 @@ export const handleEntityEvent = async (entityIdentifier: string, entId: string)
  *    so no event handle the connection
  */
 export const runAll = async () => {
-  const keys = await getAllKeys();
+  const keys: string[] = await getAllKeys();
 
   for (let i = 0; i < keys.length; i++) {
-    const entityIdentifier = keys[i];
-    const ent = await entityApi.get(entityIdentifier);
-    if (ent) {
-      handleEntityEvent(entityIdentifier, ent.id);
+    const entityIdentifier: string = keys[i];
+    const entId: string | null = await entityApi.getId(entityIdentifier);
+    if (entId) {
+      handleEntityEvent(entityIdentifier, entId);
     }
   }
 };

@@ -26,10 +26,16 @@ class tokenWrap {
 const tokenWrapIns = new tokenWrap();
 
 axios.interceptors.request.use(async (req: AxiosRequestConfig) => {
-  if (envConfig.isSpike) {
-    req.headers.authorization = await tokenWrapIns.getToken(false);
+  // for mirror req use mirror baseurl no authorization needed
+  // for kartoffel req use kartoffel baseurl handle authorization
+  if (req.url?.includes(config.mirrorUnique)) {
+    req.baseURL = config.mirrorApi;
+  } else {
+    if (envConfig.isSpike) {
+      req.headers.authorization = await tokenWrapIns.getToken(false);
+    }
+    req.baseURL = config.krtflApi;
   }
-  req.baseURL = config.krtflApi;
   return req;
 });
 
@@ -37,10 +43,16 @@ let reRequestCount = 0;
 
 axios.interceptors.response.use(
   (res) => {
-    reRequestCount = 0;
+    if (!res.config.url?.includes(config.mirrorUnique)) {
+      reRequestCount = 0;
+    }
     return res;
   },
   async (error) => {
+    if (error.config.url?.includes(config.mirrorUnique)) {
+      return Promise.reject(error);
+    }
+
     // Get new token if error reason is unauthorized
     // OR  ReRequest if connection error
     // OR  ReRequest if conflict error
@@ -85,7 +97,7 @@ export const getResData = async (axiosReq: Promise<AxiosResponse<any>>) => {
     const resMgs = `Response ${JSON.stringify(erData?.message || erData || error?.code || '')}`;
     const reqMgs = `Request ${erConfig?.method}:${erConfig?.url}`;
 
-    logger.warn(!resMgs.includes('Not Found'), 'APP', `Request fail ${resMgs}`, `${reqMgs} ${error?.message}`, {
+    logger.warn(!resMgs.includes('Not found'), 'APP', `Request fail ${resMgs}`, `${reqMgs} ${error?.message}`, {
       url: erConfig?.url,
       data: erConfig?.data,
     });
