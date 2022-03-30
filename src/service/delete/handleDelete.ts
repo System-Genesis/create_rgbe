@@ -14,7 +14,7 @@ export const deleteDIAndRole = async (uniqueId: string) => {
     await roleApi.disconnectToDI(krtflDi.role.roleId, uniqueId);
     logger.info(true, 'APP', 'Disconnect Role', `Role: ${krtflDi.role.roleId} disconnected from DI ${uniqueId}`);
 
-    await roleApi.delete(uniqueId);
+    await roleApi.delete(krtflDi.role.roleId);
     logger.info(true, 'APP', 'Delete Role', `Role with roleId ${krtflDi.role.roleId} deleted`);
   }
 
