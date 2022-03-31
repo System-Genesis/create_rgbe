@@ -1,5 +1,5 @@
 import logger from 'logger-genesis';
-import { diApi, disconnectDiToEntityApi } from '../../api/rgb';
+import { diApi, disconnectDiToEntityApi } from '../../api/di';
 import config from '../../config/env.config';
 import { di } from '../../types/rgbType';
 import { diff } from '../../util/utils';

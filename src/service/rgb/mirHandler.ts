@@ -1,4 +1,4 @@
-import { entityApi } from './../../api/entity';
+import { entityApi } from '../../api/entity';
 import { rgbMir } from './../../types/rgbType';
 import { rgb } from '../../types/rgbType';
 import { createRgb } from './rgbHandler';

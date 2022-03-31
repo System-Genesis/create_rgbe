@@ -1,4 +1,5 @@
-import { diApi, disconnectDiToEntityApi, roleApi } from '../../api/rgb';
+import { diApi, disconnectDiToEntityApi } from '../../api/di';
+import { roleApi } from '../../api/role';
 import logger from 'logger-genesis';
 
 export const deleteDIAndRole = async (uniqueId: string) => {
@@ -13,7 +14,7 @@ export const deleteDIAndRole = async (uniqueId: string) => {
     await roleApi.disconnectToDI(krtflDi.role.roleId, uniqueId);
     logger.info(true, 'APP', 'Disconnect Role', `Role: ${krtflDi.role.roleId} disconnected from DI ${uniqueId}`);
 
-    await roleApi.delete(uniqueId);
+    await roleApi.delete(krtflDi.role.roleId);
     logger.info(true, 'APP', 'Delete Role', `Role with roleId ${krtflDi.role.roleId} deleted`);
   }
 
