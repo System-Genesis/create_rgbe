@@ -4,7 +4,7 @@ import { token } from '../auth/spike';
 import envConfig from '../config/env.config';
 import config from '../config/env.config';
 
-// TODO: refactor tokenWrap or use other spike library to avoid redis clients
+// TODO (N): refactor tokenWrap or use other spike library to avoid redis clients
 class tokenWrap {
   token?: string;
 
@@ -28,6 +28,7 @@ const tokenWrapIns = new tokenWrap();
 axios.interceptors.request.use(async (req: AxiosRequestConfig) => {
   // for mirror req use mirror baseurl no authorization needed
   // for kartoffel req use kartoffel baseurl handle authorization
+  // TODO (N): just seperate between the api's and manage multiple axios instances if necessary
   if (req.url?.includes(config.mirrorUnique)) {
     req.baseURL = config.mirrorApi;
   } else {
@@ -44,6 +45,7 @@ let reRequestCount = 0;
 axios.interceptors.response.use(
   (res) => {
     if (!res.config.url?.includes(config.mirrorUnique)) {
+      // TODO (N)
       reRequestCount = 0;
     }
     return res;
@@ -52,7 +54,7 @@ axios.interceptors.response.use(
     if (error.config.url?.includes(config.mirrorUnique)) {
       return Promise.reject(error);
     }
-
+    // TODO (N): The following conditions might be not necessary now, consider building a function to that
     // Get new token if error reason is unauthorized
     // OR  ReRequest if connection error
     // OR  ReRequest if conflict error
@@ -88,6 +90,7 @@ export const getResData = async (axiosReq: Promise<AxiosResponse<any>>) => {
     const res = await axiosReq;
     return res.data;
   } catch (error: any) {
+    // TODO (N): should be more information about why error gives id (group doesnt exists?) - shouldnt be here
     const erData = error?.response?.data;
 
     if (erData?.id) return { id: erData.id };
