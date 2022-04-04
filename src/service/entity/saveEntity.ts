@@ -25,6 +25,7 @@ export const insertEntity = async (entity: entity) => {
     }
   } else {
     const oldEntity = { ...entityToUpdate };
+    // TODO: change diff picture
     if (oldEntity.pictures) diffPicture(entity, oldEntity);
 
     const diffEntity = diff(entity, oldEntity);

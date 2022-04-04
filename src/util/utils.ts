@@ -6,6 +6,7 @@ import { entity } from '../types/entityType';
  * @param krtObj obj to compare to
  * @returns new obj with the fields that changed
  */
+// TODO give an example
 export function diff<T>(newObj: T, krtObj: T): T {
   const diffObj: T = {} as T;
 
@@ -22,13 +23,17 @@ export function diff<T>(newObj: T, krtObj: T): T {
       diffObj[k] = diff(newObj[k], krtObj[k]);
 
       if (Object.keys(diffObj[k]).length === 0) delete diffObj[k];
-      else diffObj[k] = newObj[k];
-    } else if (!krtObj || newObj[k] != krtObj[k]) diffObj[k] = newObj[k];
+      else diffObj[k] = newObj[k]; 
+    } else if (!krtObj || newObj[k] != krtObj[k])
+    // TODO : brackets
+    diffObj[k] = newObj[k];
   });
 
   return diffObj;
 }
 
+
+// TODO: irrelavant following diffPic
 /**
  * diff of pictures only by updateAt
  */

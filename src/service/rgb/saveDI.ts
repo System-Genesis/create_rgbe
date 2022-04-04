@@ -54,7 +54,7 @@ export const insertDI = async (di: di) => {
     if (!krtflDI) {
       krtflDI = await diApi.create(di);
       if (krtflDI) {
-        //TODO fix response
+        //TODO fix response / di copy / krtflDI => krtflDIRes / the same type / unncessary following line?
         if (krtflDI) krtflDI = { ...di };
 
         logger.info(true, 'APP', 'DI created', `${krtflDI.uniqueId} created`, {
@@ -85,7 +85,7 @@ export const insertDI = async (di: di) => {
         });
       }
     }
-
+  // TODO (N): move to outer function
     if (entityIdentifier) {
       await connectDiToEntity(krtflDI, entityIdentifier);
     } else {
@@ -114,6 +114,6 @@ async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
       return logger.info(true, 'APP', 'DI already connected', connectMsg);
     }
   }
-
+  // TODO: deep dependency between functions? can't reduce that? should be error handling?
   await diApi.connectToEntity(entityIdentifier, krtflDI);
 }

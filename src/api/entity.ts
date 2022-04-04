@@ -29,6 +29,7 @@ const getId = async (identifier: string): Promise<string | null> => {
   return entityKrtfl ? entityKrtfl.id : null;
 };
 
+// TODO: entity => fields to update, updateByIdentifier
 const update = async (identifier: string, entity: entity) => {
   if (!(await kartoffelApi.update(identifier, entity))) {
     return null;
