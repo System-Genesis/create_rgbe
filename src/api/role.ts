@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getResData } from './utils/getResData';
+import { getResData } from './utils/axios/axiosWrap';
 
 export const roleApi = {
   get: async (id: string) => await getResData(axios.get(`/roles/${id}`)),

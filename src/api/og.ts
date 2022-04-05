@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getResData } from './utils/getResData';
+import { getResData } from './utils/axios/axiosWrap';
 import { og, postOg } from '../types/rgbType';
 
 export const ogApi = {
