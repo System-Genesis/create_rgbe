@@ -1,6 +1,6 @@
 import { handleResponseError } from './responseError';
 import { AxiosReqEnum } from '../../types/axiosReqType';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import config from '../../config/env.config';
 import { tokenWrap } from './tokenWrap';
 
@@ -13,13 +13,13 @@ export async function axiosWrapKartoffel(axiosFunc: AxiosReqEnum, url: string, b
   try {
     const res = body ? await axios[axiosFunc](fullUrl, body, header) : await axios[axiosFunc](fullUrl, header);
     return res.data;
-  } catch (error) {
-    const data = kartoffelError(error);
+  } catch (error: any) {
+    const data = kartoffelError(error as AxiosError, url);
     return data || null;
   }
 }
 
-async function kartoffelError(error: any) {
+async function kartoffelError(error: AxiosError, url: string) {
   if (isNeedToReRequest(error)) {
     if (error?.response?.status === 401) {
       await new tokenWrap().getToken(true);
@@ -28,8 +28,8 @@ async function kartoffelError(error: any) {
       console.log(`rereq ${JSON.stringify(error?.response?.data || error?.code)}`);
       reRequestCount++;
       return await axiosWrapKartoffel(
-        error?.config.method,
-        `${error?.config.url}`.replace(config.krtflApi, ''),
+        error.config.method! as AxiosReqEnum,
+        url,
         error.config.data
       );
     }
