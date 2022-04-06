@@ -1,5 +1,5 @@
 import logger from 'logger-genesis';
-import { ogApi } from '../../api/rgb';
+import { ogApi } from '../../api/og';
 import { og } from '../../types/rgbType';
 
 /**
@@ -33,7 +33,7 @@ export const insertOG = async (og: og) => {
 function createFatherGroup(og: og) {
   const fatherHierarchy = og.hierarchy.includes('/') ? og.hierarchy.slice(0, og.hierarchy.lastIndexOf('/')) : '';
 
-  let fatherOg = Object.assign({}, og);
+  let fatherOg = { ...og };
   fatherOg.hierarchy = fatherHierarchy;
   fatherOg.name = og.hierarchy.slice(og.hierarchy.lastIndexOf('/') + 1);
 

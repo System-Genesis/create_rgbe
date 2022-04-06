@@ -1,7 +1,7 @@
+import { entityApi } from '../../api/entity';
 import { rgbMir } from './../../types/rgbType';
 import { rgb } from '../../types/rgbType';
 import { createRgb } from './rgbHandler';
-import { entityApi } from './../../api/entity';
 import logger from 'logger-genesis';
 
 export const checkEntityExists = async (entityIdentifier: string | undefined) => {

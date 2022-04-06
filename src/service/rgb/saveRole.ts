@@ -1,5 +1,5 @@
 import logger from 'logger-genesis';
-import { roleApi } from '../../api/rgb';
+import { roleApi } from '../../api/role';
 import { role } from '../../types/rgbType';
 import { diff } from '../../util/utils';
 /**
@@ -76,7 +76,6 @@ async function connectRoleToOG(ogId: string, krtflRole: role) {
  * @param krtflRole to send to kartoffel api
  */
 
-//TODO: kartflRole -> role
 async function connectRoleToDI(diId: string, krtflRole: role) {
   if (diId !== krtflRole.digitalIdentityUniqueId) {
     const moveMsg = `Role: ${krtflRole.roleId}, DI: ${diId}`;

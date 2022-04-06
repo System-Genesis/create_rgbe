@@ -1,6 +1,6 @@
 import { insertOG } from './saveOG';
 import { insertRole } from './saveRole';
-import { insertDI } from './saveDI';
+import { handleDi } from './saveDI';
 import { rgb } from '../../types/rgbType';
 
 /**
@@ -8,7 +8,7 @@ import { rgb } from '../../types/rgbType';
  * @param rgbObj {og:{...},role:{...},di:{...}} get from buildRGB queue
  */
 export const createRgb = async (rgbObj: rgb) => {
-  const diId = await insertDI(rgbObj.di);
+  const diId = await handleDi(rgbObj.di);
 
   if (diId && rgbObj.og && rgbObj.role) {
     let ogId: string | undefined;
