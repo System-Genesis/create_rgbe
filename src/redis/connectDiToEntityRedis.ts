@@ -83,11 +83,10 @@ async function handleConnectDiToEntity(entityId: string, diUniqueId: string, ent
  * @param entId to connect to
  */
 export const handleEntityEvent = async (entityIdentifier: string, entId: string) => {
-  const data: string[] = await getArray(entityIdentifier);
-  // TODO (N): data => uniqueIds
-  if (data.length > 0) {
-    for (let i = 0; i < data.length; i++) {
-      await handleConnectDiToEntity(entId, data[i], entityIdentifier);
+  const disUniqueId: string[] = await getArray(entityIdentifier);
+  if (disUniqueId.length > 0) {
+    for (let i = 0; i < disUniqueId.length; i++) {
+      await handleConnectDiToEntity(entId, disUniqueId[i], entityIdentifier);
     }
   }
 

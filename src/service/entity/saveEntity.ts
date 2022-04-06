@@ -3,7 +3,7 @@ import { entityApi } from '../../api/entity';
 
 import { handleEntityEvent } from '../../redis/connectDiToEntityRedis';
 import { entity, krtflEntity } from '../../types/entityType';
-import { diff, diffPicture, getIdentifier } from '../../util/utils';
+import { diff, getIdentifier } from '../../util/utils';
 
 /**
  * Create/update (only fields that change) entity from buildEntity queue to kartoffel
@@ -25,8 +25,9 @@ export const insertEntity = async (entity: entity) => {
     }
   } else {
     const oldEntity = { ...entityToUpdate };
-    // TODO: change diff picture
-    if (oldEntity.pictures) diffPicture(entity, oldEntity);
+
+    // not need because we compare with mirror and not with kartoffel
+    // if (oldEntity.pictures) diffPicture(entity, oldEntity);
 
     const diffEntity = diff(entity, oldEntity);
 

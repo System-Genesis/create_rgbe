@@ -31,10 +31,9 @@ export const insertOG = async (og: og) => {
 };
 
 function createFatherGroup(og: og) {
-  // TODO: consider move to a function 
   const fatherHierarchy = og.hierarchy.includes('/') ? og.hierarchy.slice(0, og.hierarchy.lastIndexOf('/')) : '';
-  // TODO: assign => spread op
-  let fatherOg = Object.assign({}, og);
+
+  let fatherOg = { ...og };
   fatherOg.hierarchy = fatherHierarchy;
   fatherOg.name = og.hierarchy.slice(og.hierarchy.lastIndexOf('/') + 1);
 

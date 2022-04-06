@@ -1,22 +1,22 @@
-import axios from 'axios';
 import config from '../../config/env.config';
+import { AxiosReqEnum } from '../../types/axiosReqType';
 import { entity } from '../../types/entityType';
-import { getResData } from '../utils/getResData';
+import { axiosWrapMirror } from '../utils/axiosWrapMirror';
 
 const create = async (entity: entity) => {
-  return await getResData(axios.post(`/${config.mirrorUnique}`, entity));
+  return await axiosWrapMirror(AxiosReqEnum.post, `/${config.mirrorUnique}`, entity);
 };
 
 const deleteEntity = async (identifier: string) => {
-  return await getResData(axios.delete(`/${config.mirrorUnique}/${identifier}`));
+  return await axiosWrapMirror(AxiosReqEnum.delete, `/${config.mirrorUnique}/${identifier}`);
 };
 
 const get = async (identifier: string): Promise<entity> => {
-  return await getResData(axios.get(`/${config.mirrorUnique}/${identifier}`));
+  return await axiosWrapMirror(AxiosReqEnum.get, `/${config.mirrorUnique}/${identifier}`);
 };
 
 const update = async (identifier: string, entity: entity) => {
-  return await getResData(axios.patch(`/${config.mirrorUnique}/${identifier}`, entity));
+  return await axiosWrapMirror(AxiosReqEnum.patch, `/${config.mirrorUnique}/${identifier}`, entity);
 };
 
 export const mirrorApi = {

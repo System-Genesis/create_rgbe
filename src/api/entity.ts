@@ -29,13 +29,12 @@ const getId = async (identifier: string): Promise<string | null> => {
   return entityKrtfl ? entityKrtfl.id : null;
 };
 
-// TODO: entity => fields to update, updateByIdentifier
-const update = async (identifier: string, entity: entity) => {
-  if (!(await kartoffelApi.update(identifier, entity))) {
+const update = async (identifier: string, entityToUpdate: entity) => {
+  if (!(await kartoffelApi.update(identifier, entityToUpdate))) {
     return null;
   }
 
-  return await mirrorApi.update(identifier, entity);
+  return await mirrorApi.update(identifier, entityToUpdate);
 };
 
 export const entityApi = {

@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { getResData } from './utils/getResData';
+import { AxiosReqEnum } from '../types/axiosReqType';
 import { og, postOg } from '../types/rgbType';
+import { axiosWrapKartoffel } from './utils/axiosWrapKartoffel';
 
 export const ogApi = {
   create: async (og: og) => {
@@ -10,12 +10,12 @@ export const ogApi = {
       directGroup: og.directGroup,
     };
 
-    return await getResData(axios.post(`/groups`, postOg));
+    return await axiosWrapKartoffel(AxiosReqEnum.post, `/groups`, postOg);
   },
   getByHierarchy: async (hierarchy: string) => {
-    return await getResData(axios.get(`/groups/hierarchy/${encodeURIComponent(hierarchy)}`));
+    return await axiosWrapKartoffel(AxiosReqEnum.get, `/groups/hierarchy/${encodeURIComponent(hierarchy)}`);
   },
   update: async (id: string, og: object) => {
-    return await getResData(axios.patch(`/groups/${id}`, og));
+    return await axiosWrapKartoffel(AxiosReqEnum.patch, `/groups/${id}`, og);
   },
 };

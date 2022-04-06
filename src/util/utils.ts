@@ -2,11 +2,10 @@ import { entity } from '../types/entityType';
 
 /**
  * Check the which fields has change
- * @param newObj obj to compare from
- * @param krtObj obj to compare to
- * @returns new obj with the fields that changed
+ * @param newObj obj to compare from { a: 1, b: 2 }
+ * @param krtObj obj to compare to { a: 1 c: 3}
+ * @returns new obj with the fields that changed { b: 2 }
  */
-// TODO give an example
 export function diff<T>(newObj: T, krtObj: T): T {
   const diffObj: T = {} as T;
 
@@ -23,18 +22,17 @@ export function diff<T>(newObj: T, krtObj: T): T {
       diffObj[k] = diff(newObj[k], krtObj[k]);
 
       if (Object.keys(diffObj[k]).length === 0) delete diffObj[k];
-      else diffObj[k] = newObj[k]; 
-    } else if (!krtObj || newObj[k] != krtObj[k])
-    // TODO : brackets
-    diffObj[k] = newObj[k];
+      else diffObj[k] = newObj[k];
+    } else if (!krtObj || newObj[k] != krtObj[k]) {
+      diffObj[k] = newObj[k];
+    }
   });
 
   return diffObj;
 }
 
-
-// TODO: irrelavant following diffPic
 /**
+ * use if compare with kartoffel
  * diff of pictures only by updateAt
  */
 export const diffPicture = (newEntity: entity, oldEntity: entity) => {

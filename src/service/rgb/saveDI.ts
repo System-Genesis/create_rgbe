@@ -6,13 +6,97 @@ import { diff } from '../../util/utils';
 import { entityApi } from '../../api/entity';
 
 /**
+ * Create/update(the fields with changes) from given di to kartoffel
+ * And connect to his entity by id of DI end entity
+ * @param di the got from rgb object
+ * @returns objectId of kartoffel DI
+ */
+export const handleDi = async (di: di) => {
+  const entityIdentifier = di.entityId;
+  try {
+    const krtflDI = await insertDi(di);
+
+    await connectDiToEntity(krtflDI, entityIdentifier);
+
+    return krtflDI.uniqueId || di.uniqueId;
+  } catch (error) {
+    return null;
+  }
+};
+
+async function insertDi(di: di) {
+  let krtflDI: di | null = await getDi(di.uniqueId, di.source);
+
+  // create/update DI without entity connected (connect later)
+  delete di.entityId;
+
+  if (!krtflDI) {
+    krtflDI = await diApi.create(di);
+    if (krtflDI) {
+      logger.info(true, 'APP', 'DI created', `${krtflDI.uniqueId} created`, {
+        uniqueId: krtflDI.uniqueId,
+      });
+    } else {
+      throw logger.error(true, 'APP', 'DI not created', `${di.uniqueId} not created`, {
+        uniqueId: di.uniqueId,
+      });
+    }
+  } else {
+    const diDiff = diff(di, krtflDI);
+
+    if (Object.keys(diDiff).length > 0) {
+      const updated = await diApi.update(krtflDI.uniqueId, diDiff);
+
+      const msgLog = `uniqueId: ${krtflDI.uniqueId}, updated: ${Object.keys(diDiff)}`;
+      const extraFieldsLog = { uniqueId: krtflDI.uniqueId, updated: diDiff };
+      if (updated) {
+        logger.info(true, 'APP', 'DI updated', msgLog, extraFieldsLog);
+      } else {
+        logger.warn(true, 'APP', 'DI fail to updated', msgLog, extraFieldsLog);
+      }
+    } else {
+      logger.warn(true, 'APP', 'DI already up to date', `uniqueId: ${krtflDI.uniqueId}`, {
+        uniqueId: krtflDI.uniqueId,
+      });
+    }
+  }
+
+  return krtflDI;
+}
+
+/**
+ * Connect di and entity (send to queue)
+ * @param krtflDI di from kartoffel to connect to
+ * @param entityIdentifier entity to connect by identifier (goalUserId/identityCard/personalNumber)
+ */
+async function connectDiToEntity(krtflDI: di, entityIdentifier?: string) {
+  if (!entityIdentifier) {
+    logger.warn(true, 'APP', 'No entity to connect', `uniqueId: ${krtflDI.uniqueId}`, {
+      uniqueId: krtflDI.uniqueId,
+    });
+    return;
+  }
+
+  if (krtflDI.entityId) {
+    const connectedEntityId: string | null = await entityApi.getId(entityIdentifier);
+
+    if (connectedEntityId && connectedEntityId === krtflDI.entityId) {
+      const connectMsg = `di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`;
+      return logger.info(true, 'APP', 'DI already connected', connectMsg);
+    }
+  }
+
+  await diApi.connectToEntity(entityIdentifier, krtflDI);
+}
+
+/**
  * Check if old di is need to be removed because the new di is stronger source
  *
  * @param uniqueId di uniqueId to find the di in kartoffel
  * @param source of new di to check if the existing di need to be replaced by new di (deleted and create new)
  * @returns the di that exists and need update or null for create new di (not exist or deleted)
  */
-export const getDi = async (uniqueId: string, source: string) => {
+export async function getDi(uniqueId: string, source: string) {
   const di = await diApi.get(uniqueId);
   if (!di) return null;
 
@@ -35,85 +119,4 @@ export const getDi = async (uniqueId: string, source: string) => {
     }
   }
   return di;
-};
-
-/**
- * Create/update(the fields with changes) from given di to kartoffel
- * And connect to his entity by id of DI end entity
- * @param di the got from rgb object
- * @returns objectId of kartoffel DI
- */
-export const insertDI = async (di: di) => {
-  const entityIdentifier = di.entityId;
-  try {
-    let krtflDI: di | null = await getDi(di.uniqueId, di.source);
-
-    // create/update DI without entity connected (connect later)
-    delete di.entityId;
-
-    if (!krtflDI) {
-      krtflDI = await diApi.create(di);
-      if (krtflDI) {
-        //TODO fix response / di copy / krtflDI => krtflDIRes / the same type / unncessary following line?
-        if (krtflDI) krtflDI = { ...di };
-
-        logger.info(true, 'APP', 'DI created', `${krtflDI.uniqueId} created`, {
-          uniqueId: krtflDI.uniqueId,
-        });
-      } else {
-        logger.error(true, 'APP', 'DI not created', `${di.uniqueId} not created`, {
-          uniqueId: di.uniqueId,
-        });
-        return;
-      }
-    } else {
-      const diDiff = diff(di, krtflDI);
-
-      if (Object.keys(diDiff).length > 0) {
-        const updated = await diApi.update(krtflDI.uniqueId, diDiff);
-
-        const msgLog = `uniqueId: ${krtflDI.uniqueId}, updated: ${Object.keys(diDiff)}`;
-        const extraFieldsLog = { uniqueId: krtflDI.uniqueId, updated: diDiff };
-        if (updated) {
-          logger.info(true, 'APP', 'DI updated', msgLog, extraFieldsLog);
-        } else {
-          logger.warn(true, 'APP', 'DI fail to updated', msgLog, extraFieldsLog);
-        }
-      } else {
-        logger.warn(true, 'APP', 'DI already up to date', `uniqueId: ${krtflDI.uniqueId}`, {
-          uniqueId: krtflDI.uniqueId,
-        });
-      }
-    }
-  // TODO (N): move to outer function
-    if (entityIdentifier) {
-      await connectDiToEntity(krtflDI, entityIdentifier);
-    } else {
-      logger.warn(true, 'APP', 'No entity to connect', `uniqueId: ${krtflDI.uniqueId}`, {
-        uniqueId: krtflDI.uniqueId,
-      });
-    }
-
-    return krtflDI.uniqueId || di.uniqueId;
-  } catch (error) {
-    return null;
-  }
-};
-
-/**
- * Connect di and entity (send to queue)
- * @param krtflDI di from kartoffel to connect to
- * @param entityIdentifier entity to connect by identifier (goalUserId/identityCard/personalNumber)
- */
-async function connectDiToEntity(krtflDI: di, entityIdentifier: string) {
-  if (krtflDI.entityId) {
-    const connectedEntityId: string | null = await entityApi.getId(entityIdentifier);
-
-    if (connectedEntityId && connectedEntityId === krtflDI.entityId) {
-      const connectMsg = `di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`;
-      return logger.info(true, 'APP', 'DI already connected', connectMsg);
-    }
-  }
-  // TODO: deep dependency between functions? can't reduce that? should be error handling?
-  await diApi.connectToEntity(entityIdentifier, krtflDI);
 }
