@@ -1,9 +1,9 @@
-import logger from 'logger-genesis';
 import { diApi, disconnectDiToEntityApi } from '../../api/di';
 import config from '../../config/env.config';
 import { di } from '../../types/rgbType';
 import { diff } from '../../util/utils';
 import { entityApi } from '../../api/entity';
+import logs from '../../logger/logs';
 
 /**
  * Create/update(the fields with changes) from given di to kartoffel
@@ -33,31 +33,19 @@ async function insertDi(di: di) {
   if (!krtflDI) {
     krtflDI = await diApi.create(di);
     if (krtflDI) {
-      logger.info(true, 'APP', 'DI created', `${krtflDI.uniqueId} created`, {
-        uniqueId: krtflDI.uniqueId,
-      });
+      logs.DI.CREATED(krtflDI.uniqueId);
     } else {
-      throw logger.error(true, 'APP', 'DI not created', `${di.uniqueId} not created`, {
-        uniqueId: di.uniqueId,
-      });
+      throw logs.DI.FAIL_TO_CREATE(di.uniqueId);
     }
   } else {
     const diDiff = diff(di, krtflDI);
 
-    if (Object.keys(diDiff).length > 0) {
+    if (Object.keys(diDiff).length == 0) {
+      logs.DI.ALREADY_UP_TO_DATE(krtflDI.uniqueId);
+    } else {
       const updated = await diApi.update(krtflDI.uniqueId, diDiff);
 
-      const msgLog = `uniqueId: ${krtflDI.uniqueId}, updated: ${Object.keys(diDiff)}`;
-      const extraFieldsLog = { uniqueId: krtflDI.uniqueId, updated: diDiff };
-      if (updated) {
-        logger.info(true, 'APP', 'DI updated', msgLog, extraFieldsLog);
-      } else {
-        logger.warn(true, 'APP', 'DI fail to updated', msgLog, extraFieldsLog);
-      }
-    } else {
-      logger.warn(true, 'APP', 'DI already up to date', `uniqueId: ${krtflDI.uniqueId}`, {
-        uniqueId: krtflDI.uniqueId,
-      });
+      updated ? logs.DI.UPDATED(krtflDI.uniqueId, diDiff) : logs.DI.FAIL_TO_UPDATE(krtflDI.uniqueId, diDiff);
     }
   }
 
@@ -70,19 +58,13 @@ async function insertDi(di: di) {
  * @param entityIdentifier entity to connect by identifier (goalUserId/identityCard/personalNumber)
  */
 async function connectDiToEntity(krtflDI: di, entityIdentifier?: string) {
-  if (!entityIdentifier) {
-    logger.warn(true, 'APP', 'No entity to connect', `uniqueId: ${krtflDI.uniqueId}`, {
-      uniqueId: krtflDI.uniqueId,
-    });
-    return;
-  }
+  if (!entityIdentifier) return logs.DI.HASNT_ENTITY(krtflDI.uniqueId);
 
   if (krtflDI.entityId) {
     const connectedEntityId: string | null = await entityApi.getId(entityIdentifier);
 
     if (connectedEntityId && connectedEntityId === krtflDI.entityId) {
-      const connectMsg = `di: ${krtflDI.uniqueId} => entity: ${entityIdentifier}`;
-      return logger.info(true, 'APP', 'DI already connected', connectMsg);
+      return logs.DI.ALREADY_CONNECTED(krtflDI.uniqueId, entityIdentifier);
     }
   }
 
@@ -105,16 +87,16 @@ export async function getDi(uniqueId: string, source: string) {
     const krtflDi: di = await diApi.get(di.uniqueId);
     if (krtflDi.entityId) {
       if (!(await disconnectDiToEntityApi(krtflDi.entityId, krtflDi.uniqueId))) {
-        const errTitle = `source: ${config.weakSource} di: ${krtflDi.uniqueId} entity: ${krtflDi.entityId}`;
-        logger.error(true, 'APP', `Fail to disconnect di`, errTitle);
+        logs.DI.FAIL_TO_DISCONNECT(krtflDi.uniqueId, config.weakSource, krtflDi.entityId);
         throw `Fail delete di because fail to disconnect di from ${config.weakSource}`;
       }
     }
 
     if (await diApi.delete(di.uniqueId)) {
+      // return null for create new di because di not existing anymore
       return null;
     } else {
-      logger.error(true, 'APP', `Fail to delete di`, `source: ${config.weakSource} di: di.uniqueId`);
+      logs.DI.FAIL_TO_DELETE(krtflDi.uniqueId, config.weakSource);
       throw `Fail to delete di from ${config.weakSource}`;
     }
   }

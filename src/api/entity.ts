@@ -3,13 +3,12 @@ import { entity, krtflEntity } from '../types/entityType';
 import { mirrorApi } from './entity/mirror';
 
 const create = async (entity: entity): Promise<krtflEntity | null> => {
-  // const krtflEnt = await kartoffelApi.create(entity);
-  // if (!krtflEnt || !(await mirrorApi.create(entity))) {
-  //   return null;
-  // }
+  const krtflEnt = await kartoffelApi.create(entity);
+  if (!krtflEnt || !(await mirrorApi.create(entity))) {
+    return null;
+  }
 
-  // return krtflEnt;
-  return await mirrorApi.create(entity);
+  return krtflEnt;
 };
 
 const deleteEntity = async (identifier: string) => {

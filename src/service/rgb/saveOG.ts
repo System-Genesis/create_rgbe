@@ -1,5 +1,5 @@
-import logger from 'logger-genesis';
 import { ogApi } from '../../api/og';
+import logs from '../../logger/logs';
 import { og } from '../../types/rgbType';
 
 /**
@@ -19,12 +19,9 @@ export const insertOG = async (og: og) => {
     }
 
     krtflOg = await ogApi.create(og);
-    if (krtflOg) logger.info(true, 'APP', 'Group created', `${og.hierarchy + og.name} created`, { id: krtflOg.id });
-    else {
-      throw logger.error(true, 'APP', 'Group not created', `${og.hierarchy + og.name} not created`, {
-        identifier: og.hierarchy + og.name,
-      });
-    }
+
+    if (krtflOg) logs.OG.CREATE(og.hierarchy, og.name, krtflOg.id);
+    else throw logs.OG.FAIL_TO_CREATE(og.hierarchy, og.name);
   }
 
   return krtflOg.id;

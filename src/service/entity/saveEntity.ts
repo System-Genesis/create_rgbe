@@ -1,5 +1,5 @@
-import logger from 'logger-genesis';
 import { entityApi } from '../../api/entity';
+import logs from '../../logger/logs';
 
 import { handleEntityEvent } from '../../redis/connectDiToEntityRedis';
 import { entity, krtflEntity } from '../../types/entityType';
@@ -17,11 +17,11 @@ export const insertEntity = async (entity: entity) => {
   if (!entityToUpdate) {
     const createdEntity = await entityApi.create(entity);
     if (createdEntity) {
-      logger.info(true, 'APP', 'Entity created', `${fullName} created`, { id: entityIdentifier });
+      logs.ENTITY.CREATED(fullName, entityIdentifier);
 
       handleEntityEvent(entityIdentifier, (createdEntity as krtflEntity).id || createdEntity['_id']);
     } else {
-      logger.error(true, 'APP', 'Entity not Created', `${fullName} not created`, { id: entityIdentifier });
+      logs.ENTITY.FAIL_TO_CREATE(fullName, entityIdentifier);
     }
   } else {
     const oldEntity = { ...entityToUpdate };
@@ -31,23 +31,14 @@ export const insertEntity = async (entity: entity) => {
 
     const diffEntity = diff(entity, oldEntity);
 
-    if (Object.keys(diffEntity).length > 0) {
-      const updated = await entityApi.update(getIdentifier(entityToUpdate), diffEntity);
-      if (updated) {
-        logger.info(true, 'APP', 'Entity updated', `${fullName} updated, ${Object.keys(diffEntity)}`, {
-          id: entityIdentifier,
-          update: diffEntity,
-        });
-      } else {
-        logger.warn(true, 'APP', 'Entity fail to updated', `${fullName} updated, ${Object.keys(diffEntity)}`, {
-          id: entityIdentifier,
-          update: diffEntity,
-        });
-      }
+    if (Object.keys(diffEntity).length == 0) {
+      logs.ENTITY.NOTHING_TO_UPDATE(fullName, getIdentifier(entityToUpdate));
     } else {
-      logger.info(true, 'APP', 'Nothing to update', `${fullName} nothing to update`, {
-        identifier: getIdentifier(entityToUpdate),
-      });
+      const updated = await entityApi.update(getIdentifier(entityToUpdate), diffEntity);
+
+      updated
+        ? logs.ENTITY.UPDATE(fullName, entityIdentifier, diffEntity)
+        : logs.ENTITY.FAIL_TO_UPDATE(fullName, entityIdentifier, diffEntity);
     }
   }
 };

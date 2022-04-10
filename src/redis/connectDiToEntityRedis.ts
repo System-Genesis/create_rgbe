@@ -1,8 +1,8 @@
-import logger from 'logger-genesis';
 import { entityApi } from '../api/entity';
 import { connectDiToEntityApi, disconnectDiToEntityApi } from '../api/di';
 import { di } from '../types/rgbType';
 import { pushToArray, getArray, getAllKeys, delValue } from './redis';
+import logs from '../logger/logs';
 
 /**
  * Disconnect di before connect to new di
@@ -15,21 +15,9 @@ const disconnectDi = async (di: di, entityIdentifier: string) => {
   if (!di.entityId) return;
 
   if (await disconnectDiToEntityApi(di.entityId, di.uniqueId)) {
-    logger.info(true, 'APP', 'Entity disconnected from DI', `${entityIdentifier} disconnect from ${di.uniqueId}`, {
-      id: entityIdentifier,
-      uniqueId: di.uniqueId,
-    });
+    logs.DI.DISCONNECTED_FROM_ENTITY(di.uniqueId, entityIdentifier);
   } else {
-    throw logger.error(
-      true,
-      'APP',
-      'Entity fail to disconnected from DI',
-      `${entityIdentifier}  fail disconnect from ${di.uniqueId}`,
-      {
-        id: entityIdentifier,
-        uniqueId: di.uniqueId,
-      }
-    );
+    throw logs.DI.FAIL_TO_DISCONNECT(entityIdentifier, di.source, di.uniqueId);
   }
 };
 
@@ -64,15 +52,9 @@ export const connectDiToEntity = async (entityIdentifier: string, di: di) => {
  */
 async function handleConnectDiToEntity(entityId: string, diUniqueId: string, entityIdentifier: string) {
   if (await connectDiToEntityApi(entityId, diUniqueId)) {
-    logger.info(true, 'APP', 'Entity connected to DI', `${entityIdentifier} connect to ${diUniqueId}`, {
-      id: entityIdentifier,
-      uniqueId: diUniqueId,
-    });
+    logs.DI.CONNECT_TO_ENTITY(diUniqueId, entityIdentifier);
   } else {
-    logger.error(true, 'APP', 'Entity failed to connect to DI', `entity: ${entityIdentifier}, di: ${diUniqueId}`, {
-      id: entityIdentifier,
-      uniqueId: diUniqueId,
-    });
+    logs.DI.FAIL_TO_CONNECT_TO_ENTITY(diUniqueId, entityIdentifier);
   }
 }
 

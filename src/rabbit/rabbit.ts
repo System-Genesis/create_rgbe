@@ -1,6 +1,6 @@
-import logger from 'logger-genesis';
 import menash, { ConsumerMessage } from 'menashmq';
 import config from '../config/env.config';
+import logs from '../logger/logs';
 import { deleteDIAndRole } from '../service/delete/handleDelete';
 import { insertEntity } from '../service/entity/saveEntity';
 import { mirHandler } from '../service/rgb/mirHandler';
@@ -44,11 +44,11 @@ async function consumeGetRGB() {
   await menash.queue(config.rabbit.getRGB).activateConsumer(
     async (msg: ConsumerMessage) => {
       try {
-        const rgb = msg.getContent();
-        logger.info(false, 'APP', 'Got from RGB queue', JSON.stringify(rgb));
+        const rgb = msg.getContent() as rgb;
+        logs.RABBIT.GOT_FROM_QUEUE('rgb', rgb);
 
-        await createRgb(rgb as rgb);
-        logger.info(false, 'APP', 'RGB insertion is done', '');
+        await createRgb(rgb);
+        logs.RABBIT.QUEUE_FLOW_DONE('RGB');
 
         msg.ack();
       } catch (error: any) {
@@ -69,11 +69,11 @@ async function consumeGetMir() {
   await menash.queue(config.rabbit.getMir).activateConsumer(
     async (msg: ConsumerMessage) => {
       try {
-        const rgb = msg.getContent();
-        logger.info(false, 'APP', 'Got from MIR queue', JSON.stringify(rgb));
+        const rgb = msg.getContent() as rgbMir;
+        logs.RABBIT.GOT_FROM_QUEUE('MIR', rgb);
 
-        await mirHandler(rgb as rgbMir);
-        logger.info(false, 'APP', 'MIR insertion is done', '');
+        await mirHandler(rgb);
+        logs.RABBIT.QUEUE_FLOW_DONE('MIR');
 
         msg.ack();
       } catch (error: any) {
@@ -95,10 +95,10 @@ async function consumeGetEntity() {
     async (msg: ConsumerMessage) => {
       try {
         const entity = msg.getContent() as entity;
-        logger.info(false, 'APP', 'Got from ENTITY queue', JSON.stringify(entity));
+        logs.RABBIT.GOT_FROM_QUEUE('ENTITY', entity);
 
         await insertEntity(entity);
-        logger.info(false, 'APP', 'ENTITY insertion is done', '');
+        logs.RABBIT.QUEUE_FLOW_DONE('ENTITY');
 
         msg.ack();
       } catch (error: any) {
@@ -117,10 +117,10 @@ async function consumeDeleteDIAndRole() {
     async (msg: ConsumerMessage) => {
       try {
         const uniqueId: string = msg.getContent() as string;
-        logger.info(false, 'APP', 'Got uniqueId to delete', JSON.stringify(uniqueId));
+        logs.RABBIT.GOT_FROM_QUEUE('DELETE', uniqueId);
 
         await deleteDIAndRole(uniqueId);
-        logger.info(false, 'APP', 'DI and Role delete done', '');
+        logs.RABBIT.QUEUE_FLOW_DONE('DELETE');
 
         msg.ack();
       } catch (error: any) {

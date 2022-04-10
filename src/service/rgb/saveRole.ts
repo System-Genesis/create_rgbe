@@ -1,5 +1,5 @@
-import logger from 'logger-genesis';
 import { roleApi } from '../../api/role';
+import logs from '../../logger/logs';
 import { role } from '../../types/rgbType';
 import { diff } from '../../util/utils';
 /**
@@ -19,35 +19,19 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
 
     if (krtflRole) connectRoleToDI(diId, role);
 
-    if (krtflRole) {
-      logger.info(true, 'APP', 'Role created', `roleId: ${krtflRole.roleId} created`, { roleId: krtflRole.roleId });
-    } else
-      logger.error(true, 'APP', 'Role not created', `roleId: ${krtflRole.roleId} not created`, {
-        roleId: krtflRole.roleId,
-      });
+    krtflRole ? logs.ROLE.CREATE(krtflRole.roleId) : logs.ROLE.FAIL_TO_CREATE(krtflRole.roleId);
   } else {
     const diffRole = diff(role, krtflRole);
 
     connectRoleToOG(ogId, krtflRole);
     connectRoleToDI(diId, krtflRole);
 
-    if (Object.keys(diffRole).length > 0) {
+    if (Object.keys(diffRole).length == 0) {
+      logs.ROLE.ALREADY_UP_TO_DATE(krtflRole.roleId);
+    } else {
       const updated = await roleApi.update(krtflRole.roleId, diffRole);
 
-      const msgLog = `roleId: ${krtflRole.roleId} updated: ${Object.keys(diffRole)}`;
-      if (updated) {
-        logger.info(true, 'APP', 'Role updated', msgLog, {
-          roleId: krtflRole.roleId,
-          update: diffRole,
-        });
-      } else {
-        logger.warn(true, 'APP', 'Role fail to updated', msgLog, {
-          roleId: krtflRole.roleId,
-          update: diffRole,
-        });
-      }
-    } else {
-      logger.info(true, 'APP', 'Role already up to date', `roleId: ${krtflRole.roleId}`, { roleId: krtflRole.roleId });
+      updated ? logs.ROLE.UPDATE(krtflRole.roleId, diffRole) : logs.ROLE.FAIL_TO_UPDATE(krtflRole.roleId, diffRole);
     }
   }
 };
@@ -59,13 +43,11 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
  */
 async function connectRoleToOG(ogId: string, krtflRole: role) {
   if (ogId !== krtflRole.directGroup) {
-    const moveMsg = `Role: ${krtflRole.roleId}, Group: ${ogId}`;
-
     try {
       await roleApi.connectToOG(krtflRole.roleId, ogId);
-      logger.info(true, 'APP', 'Role connect to Group', moveMsg, { id: krtflRole.roleId });
+      logs.ROLE.CONNECT_TO_OG(krtflRole.roleId, ogId);
     } catch (error: any) {
-      logger.error(true, 'APP', 'Role fail to connect to Group ', moveMsg, { id: krtflRole.roleId, error });
+      logs.ROLE.FAIL_TO_CONNECT_TO_OG(krtflRole.roleId, ogId, error);
     }
   }
 }
@@ -78,17 +60,15 @@ async function connectRoleToOG(ogId: string, krtflRole: role) {
 
 async function connectRoleToDI(diId: string, krtflRole: role) {
   if (diId !== krtflRole.digitalIdentityUniqueId) {
-    const moveMsg = `Role: ${krtflRole.roleId}, DI: ${diId}`;
-
     try {
       if (krtflRole.digitalIdentityUniqueId) {
         await roleApi.disconnectToDI(krtflRole.roleId, krtflRole.digitalIdentityUniqueId);
       }
 
       await roleApi.connectToDI(krtflRole.roleId, diId);
-      logger.info(true, 'APP', 'Role connect to DI', moveMsg, { roleId: krtflRole.roleId });
+      logs.ROLE.CONNECT_TO_DI(krtflRole.roleId, diId);
     } catch (error: any) {
-      logger.error(true, 'APP', 'Role fail to connect to DI ', moveMsg, { roleId: krtflRole.roleId, error });
+      logs.ROLE.FAIL_TO_CONNECT_TO_DI(krtflRole.roleId, diId, error);
     }
   }
 }
