@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Transpiled files
+dist/
+
+# Package lock
+package-lock.json
+
+log/
+coverage/
