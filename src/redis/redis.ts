@@ -6,9 +6,10 @@ export let delValue: (key: string) => Promise<boolean>;
 export let pushToArray: (key: string, value: string) => Promise<boolean>;
 export let getArray: (key: string) => Promise<string[]>;
 export let getAllKeys: () => Promise<string[]>;
+export let client: redis.RedisClient;
 
 const redisClient = (cb?: any) => {
-  const client = redis.createClient(envConfig.redisUrl);
+  client = redis.createClient(envConfig.redisUrl);
 
   client.on('connect', () => {
     console.log('Redis connected (di to entity)');

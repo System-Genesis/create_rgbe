@@ -39,4 +39,5 @@ export default {
     minute: env.get('MINUTE').required().asInt(),
   },
   redisRecovery: env.get('REDIS_RECOVERY').default('true').asBool(),
+  port: env.get('PORT').required().asInt(),
 };
