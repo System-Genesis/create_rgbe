@@ -75,4 +75,3 @@ QUEUES
        }
  ```
   End point: create/update object in kartoffel
- 
