@@ -31,9 +31,8 @@ async function insertDi(di: di) {
   delete di.entityId;
 
   if (!krtflDI) {
-    krtflDI = await diApi.create(di);
-    if (krtflDI) {
-      logs.DI.CREATED(krtflDI.uniqueId);
+    if (await diApi.create(di)) {
+      logs.DI.CREATED(di.uniqueId);
     } else {
       throw logs.DI.FAIL_TO_CREATE(di.uniqueId);
     }
@@ -49,7 +48,7 @@ async function insertDi(di: di) {
     }
   }
 
-  return krtflDI;
+  return krtflDI || di;
 }
 
 /**
