@@ -1,4 +1,4 @@
-import { token } from '../../auth/spike';
+import getToken from '../../auth/spike';
 
 export class tokenWrap {
   token?: string;
@@ -7,10 +7,10 @@ export class tokenWrap {
 
   async getToken(expired: Boolean): Promise<string> {
     if (expired) {
-      this.token = await token()!();
+      this.token = await getToken();
       return this.token;
     } else if (!this.token) {
-      this.token = await token()!();
+      this.token = await getToken();
       return this.token;
     } else {
       return this.token;
