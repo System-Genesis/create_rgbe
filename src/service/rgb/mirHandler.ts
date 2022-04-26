@@ -7,7 +7,7 @@ import logs from '../../logger/logs';
 export const checkEntityExists = async (entityIdentifier: string | undefined) => {
   if (!entityIdentifier) return null;
 
-  return (await entityApi.get(entityIdentifier)) ? entityIdentifier : null;
+  return (await entityApi.getId(entityIdentifier)) ? entityIdentifier : null;
 };
 
 export const mirHandler = async (rgb: rgbMir) => {
