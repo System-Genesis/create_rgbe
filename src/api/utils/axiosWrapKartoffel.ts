@@ -11,7 +11,11 @@ export async function axiosWrapKartoffel(axiosFunc: AxiosReqEnum, url: string, b
   const fullUrl = config.krtflApi + url;
 
   try {
-    const res = body ? await axios[axiosFunc](fullUrl, body, header) : await axios[axiosFunc](fullUrl, header);
+    const res =
+      axiosFunc.toLowerCase() === 'get'
+        ? await axios[axiosFunc](fullUrl, header)
+        : await axios[axiosFunc](fullUrl, body, header);
+
     return res.data;
   } catch (error: any) {
     const data = kartoffelError(error as AxiosError, url);
@@ -27,11 +31,7 @@ async function kartoffelError(error: AxiosError, url: string) {
     if (reRequestCount < 5) {
       console.log(`rereq ${JSON.stringify(error?.response?.data || error?.code)}`);
       reRequestCount++;
-      return await axiosWrapKartoffel(
-        error.config.method! as AxiosReqEnum,
-        url,
-        error.config.data
-      );
+      return await axiosWrapKartoffel(error.config.method! as AxiosReqEnum, url, error.config.data);
     }
   } else {
     reRequestCount = 0;

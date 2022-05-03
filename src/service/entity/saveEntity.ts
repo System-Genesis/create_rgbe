@@ -12,7 +12,7 @@ import { diff, getIdentifier } from '../../util/utils';
 export const insertEntity = async (entity: entity) => {
   const entityIdentifier = getIdentifier(entity);
   const fullName = `${entity.firstName} ${entity.lastName || ''}`;
-  let entityToUpdate = await getExistsEntity(entity);
+  let entityToUpdate = await entityApi.getExistsEntity(entity);
 
   if (!entityToUpdate) {
     const createdEntity = await entityApi.create(entity);
@@ -42,19 +42,3 @@ export const insertEntity = async (entity: entity) => {
     }
   }
 };
-
-/**
- * Search entity in kartofel by goalUserId or identityCard and/or personalNumber
- * If has identityCard but not found steel need to check by personalNumber
- * If there in so identityCard field than personalNumber must to exist
- * @param entity from queue
- * @returns kartofel entity / null
- */
-export async function getExistsEntity(entity: entity) {
-  if (entity.goalUserId) return await entityApi.get(entity.goalUserId);
-
-  return (
-    (await entityApi.get(entity.identityCard || entity.personalNumber!)) ||
-    (await entityApi.get(entity.personalNumber!))
-  );
-}
