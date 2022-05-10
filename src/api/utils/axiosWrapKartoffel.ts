@@ -12,7 +12,7 @@ export async function axiosWrapKartoffel(axiosFunc: AxiosReqEnum, url: string, b
 
   try {
     const res =
-      axiosFunc.toLowerCase() === 'get'
+      axiosFunc.toLowerCase() === 'get' || 'delete'
         ? await axios[axiosFunc](fullUrl, header)
         : await axios[axiosFunc](fullUrl, body, header);
 
