@@ -11,7 +11,7 @@ export async function axiosWrapKartoffel(axiosFunc: AxiosReqEnum, url: string, b
   const fullUrl = config.krtflApi + url;
 
   try {
-    const res = ['get' || 'delete'].includes(axiosFunc.toLowerCase())
+    const res = ['get', 'delete'].includes(axiosFunc.toLowerCase())
       ? await axios[axiosFunc](fullUrl, header)
       : await axios[axiosFunc](fullUrl, body, header);
 
