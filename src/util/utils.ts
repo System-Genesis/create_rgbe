@@ -61,5 +61,5 @@ export const sleep = (ms: number) => {
 };
 
 export const getIdentifier = (entity: entity) => {
-  return entity.goalUserId || entity.identityCard || entity.personalNumber!;
+  return entity.goalUserId || entity.identityCard || entity.personalNumber || entity.employeeId!;
 };
