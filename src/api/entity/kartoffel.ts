@@ -3,8 +3,9 @@ import { krtflEntity, entity } from '../../types/entityType';
 import { axiosWrapKartoffel } from '../utils/axiosWrapKartoffel';
 
 const create = async (entity: entity): Promise<krtflEntity | null> => {
-  delete entity.employeeId;
-  return await axiosWrapKartoffel(AxiosReqEnum.post, `/entities`, entity);
+  const entityToCreate = { ...entity };
+  delete entityToCreate.employeeId;
+  return await axiosWrapKartoffel(AxiosReqEnum.post, `/entities`, entityToCreate);
 };
 
 const get = async (identifier: string): Promise<krtflEntity | null> => {
