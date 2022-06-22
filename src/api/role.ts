@@ -18,7 +18,4 @@ export const roleApi = {
   connectToOG: async (id: string, groupId: string) => {
     return await axiosWrapKartoffel(AxiosReqEnum.put, `/roles/${id}/group/${groupId}`);
   },
-  disConnectFromOG: async (id: string, groupId: string) => {
-    return await axiosWrapKartoffel(AxiosReqEnum.delete, `/roles/${id}/group/${groupId}`);
-  },
 };

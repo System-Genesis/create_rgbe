@@ -18,4 +18,13 @@ export const ogApi = {
   update: async (id: string, og: object) => {
     return await axiosWrapKartoffel(AxiosReqEnum.patch, `/groups/${id}`, og);
   },
+  getById: async (id: string) => {
+    return await axiosWrapKartoffel(AxiosReqEnum.get, `/groups/${id}`);
+  },
+  getDirectChildrenGroups: async (ogId: string) => {
+    return await axiosWrapKartoffel(AxiosReqEnum.get, `/groups/${ogId}/children?page=1&pageSize=1&direct=true`);
+  },
+  delete: async (ogId: string) => {
+    return await axiosWrapKartoffel(AxiosReqEnum.delete, `/groups/${ogId}`);
+  },
 };

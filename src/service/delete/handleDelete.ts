@@ -1,6 +1,7 @@
 import { diApi, disconnectDiToEntityApi } from '../../api/di';
 import { roleApi } from '../../api/role';
 import logs from '../../logger/logs';
+import { deleteEmptyGroupsRecursive } from '../../util/deleteGroupsRecursive';
 
 export const deleteDIAndRole = async (uniqueId: string) => {
   const krtflDi = await diApi.get(uniqueId);
@@ -16,6 +17,7 @@ export const deleteDIAndRole = async (uniqueId: string) => {
 
     await roleApi.delete(krtflDi.role.roleId);
     logs.ROLE.DELETE(krtflDi.role.roleId);
+    if (krtflDi.role.directGroup) await deleteEmptyGroupsRecursive(krtflDi.role.directGroup);
   }
 
   await diApi.delete(uniqueId);

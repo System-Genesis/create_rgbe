@@ -10,4 +10,8 @@ const FAIL_TO_CREATE = (hierarchy: string, name: string) => {
   });
 };
 
-export default { CREATE, FAIL_TO_CREATE };
+const DELETE = (hierarchy: string, name: string, id: string) => {
+  logger.info(true, 'APP', 'Group Deleted', `${hierarchy + '/' + name} created`, { id });
+};
+
+export default { CREATE, FAIL_TO_CREATE, DELETE };

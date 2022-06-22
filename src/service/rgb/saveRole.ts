@@ -2,6 +2,7 @@ import { roleApi } from '../../api/role';
 import logs from '../../logger/logs';
 import { role } from '../../types/rgbType';
 import { diff } from '../../util/utils';
+import { deleteEmptyGroupsRecursive } from '../../util/deleteGroupsRecursive';
 /**
  * Create/update(the fields with changes) from given role to kartoffel
  * And connect to his di and og
@@ -44,12 +45,11 @@ export const insertRole = async (role: role, ogId: string, diId: string) => {
 async function connectRoleToOG(ogId: string, krtflRole: role) {
   if (ogId !== krtflRole.directGroup) {
     try {
-      if (krtflRole.directGroup) {
-        await roleApi.disConnectFromOG(krtflRole.roleId, krtflRole.directGroup);
-        // delete all empty groups
-      }
       await roleApi.connectToOG(krtflRole.roleId, ogId);
       logs.ROLE.CONNECT_TO_OG(krtflRole.roleId, ogId);
+      if (krtflRole.directGroup) {
+        deleteEmptyGroupsRecursive(krtflRole.directGroup);
+      }
     } catch (error: any) {
       logs.ROLE.FAIL_TO_CONNECT_TO_OG(krtflRole.roleId, ogId, error);
     }

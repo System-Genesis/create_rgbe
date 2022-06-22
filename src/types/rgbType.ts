@@ -5,6 +5,7 @@ export type og = {
   name: string;
   source: string;
   directGroup?: string;
+  isLeaf: boolean;
 };
 
 export type postOg = {
