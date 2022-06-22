@@ -24,9 +24,14 @@ const update = async (identifier: string, entityToUpdate: entity) => {
   return await axiosWrapKartoffel(AxiosReqEnum.patch, `/entities/${entityKrtfl.id}`, entityToUpdate);
 };
 
+const getDirectMembersUnderGroup = async (ogId: string) => {
+  return axiosWrapKartoffel(AxiosReqEnum.get, `/entities/group/${ogId}?page=1&pageSize=1&direct=true`);
+};
+
 export const kartoffelApi = {
   create,
   update,
   delete: deleteEntity,
   get,
+  getDirectMembersUnderGroup,
 };

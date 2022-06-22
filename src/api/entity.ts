@@ -73,10 +73,11 @@ async function getEntityFromFunc(entity: entity, searchFunc: Function) {
   if (entity.goalUserId) return await searchFunc(entity.goalUserId);
   if (entity.employeeId) return await searchFunc(entity.employeeId);
 
-  return (
-    (await searchFunc(entity.identityCard || entity.personalNumber!)) ||
-    (await searchFunc(entity.personalNumber!))
-  );
+  return (await searchFunc(entity.identityCard || entity.personalNumber!)) || (await searchFunc(entity.personalNumber!));
+}
+
+async function getDirectMembersUnderGroup(ogId: string) {
+  return await kartoffelApi.getDirectMembersUnderGroup(ogId);
 }
 
 export const entityApi = {
@@ -86,4 +87,5 @@ export const entityApi = {
   get,
   getId,
   getExistsEntity,
+  getDirectMembersUnderGroup,
 };
