@@ -6,6 +6,9 @@ export interface entity {
   firstName?: string;
   lastName?: string;
   phone?: string[];
+  employeeId?: string;
+  employeeNumber?: string;
+  organization?: string;
 }
 export interface krtflEntity {
   id: string;
@@ -16,4 +19,7 @@ export interface krtflEntity {
   firstName?: string;
   lastName?: string;
   phone?: string[];
+  employeeId?: string;
+  employeeNumber?: string;
+  organization?: string;
 }
