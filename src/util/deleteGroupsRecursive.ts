@@ -1,10 +1,10 @@
-import { entityApi } from '../api/entity';
+import { roleApi } from '../api/role';
 import { ogApi } from '../api/og';
 import logs from '../logger/logs';
 import { og } from '../types/rgbType';
 
 async function groupHasNoRoles(ogId: string) {
-  const members = await entityApi.getDirectMembersUnderGroup(ogId);
+  const members = await roleApi.getRolesUnderGroup(ogId);
   return members.length === 0;
 }
 

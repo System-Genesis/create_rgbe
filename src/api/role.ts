@@ -18,4 +18,8 @@ export const roleApi = {
   connectToOG: async (id: string, groupId: string) => {
     return await axiosWrapKartoffel(AxiosReqEnum.put, `/roles/${id}/group/${groupId}`);
   },
+
+  getRolesUnderGroup: async (ogId: string) => {
+    return await axiosWrapKartoffel(AxiosReqEnum.get, `/role/group/${ogId}?page=1&pageSize=1&direct=true`);
+  },
 };
